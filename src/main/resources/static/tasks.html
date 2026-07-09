@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Inbox — Epic Games IT</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
+      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
+      --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+    .nav { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
+    .brand-e { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link.active { color: #fff; }
+
+    main { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .page-header-left { display: flex; align-items: center; gap: 12px; }
+    .page-header h1 { font-size: 24px; font-weight: 700; }
+    .task-count-badge { background: var(--accent); color: #fff; font-size: 12px; font-weight: 700;
+      padding: 2px 9px; border-radius: 10px; }
+    .task-count-badge.zero { background: var(--surface2); color: var(--muted); }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background .15s; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: #2a2a2a; }
+    .btn-sm { padding: 5px 11px; font-size: 12px; }
+    .btn-full { width: 100%; justify-content: center; padding: 10px 16px; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Task cards */
+    .task-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center;
+      justify-content: space-between; cursor: pointer; transition: border-color .15s, background .15s; gap: 16px; }
+    .task-card:hover { border-color: var(--accent); background: #1d1d1d; }
+    .task-card-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+    .task-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--surface2);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0; }
+    .task-name { font-weight: 600; font-size: 14px; }
+    .task-app-line { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .task-meta-line { font-size: 11px; color: #666; margin-top: 2px; }
+    .task-type-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      padding: 2px 7px; border-radius: 5px; margin-right: 6px; }
+    .pill-review { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .pill-procurement { background: rgba(139,92,246,.15); color: #a78bfa; }
+
+    .empty-state { text-align: center; padding: 72px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; line-height: 1.6; max-width: 420px; margin: 0 auto 20px; }
+    .empty-state a { color: var(--accent); text-decoration: none; }
+
+    .loading-msg { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+    .error-msg { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      border-radius: 8px; padding: 12px 16px; color: var(--error); font-size: 13px; margin-bottom: 12px; }
+
+    /* Drawer */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 199; }
+    .drawer-overlay.show { opacity: 1; pointer-events: all; }
+    .drawer { position: fixed; top: 56px; right: 0; bottom: 0; width: min(540px, 100vw);
+      background: var(--surface); border-left: 1px solid var(--border);
+      transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1);
+      overflow: hidden; z-index: 200; display: flex; flex-direction: column; }
+    .drawer.open { transform: translateX(0); }
+
+    .drawer-header { display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 18px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px; }
+    .drawer-header-title { font-weight: 700; font-size: 15px; line-height: 1.3; }
+    .drawer-close { background: none; border: none; color: var(--muted); font-size: 22px;
+      cursor: pointer; padding: 0 4px; border-radius: 5px; line-height: 1; flex-shrink: 0; }
+    .drawer-close:hover { color: var(--text); background: var(--surface2); }
+    .drawer-scroll { flex: 1; overflow-y: auto; }
+
+    .drawer-app-bar { padding: 14px 24px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .drawer-app-name { font-weight: 700; font-size: 16px; }
+    .drawer-app-vendor { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .drawer-section { padding: 18px 24px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .count-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px;
+      padding: 1px 7px; font-size: 11px; font-weight: 600; color: var(--text); text-transform: none; letter-spacing: 0; }
+
+    .kv-grid { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; align-items: center; }
+    .kv-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .kv-value { font-size: 13px; font-weight: 500; }
+    .kv-total { font-size: 16px; font-weight: 700; }
+
+    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
+    .badge-ok    { background: rgba(34,197,94,.15);   color: #4ade80; }
+    .badge-err   { background: rgba(239,68,68,.15);   color: #f87171; }
+    .badge-green { background: rgba(34,197,94,.15);   color: #4ade80; }
+    .badge-blue  { background: rgba(59,130,246,.15);  color: #60a5fa; }
+    .badge-amber { background: rgba(245,158,11,.15);  color: #fbbf24; }
+    .badge-red   { background: rgba(239,68,68,.15);   color: #f87171; }
+
+    .band-text.high     { color: var(--success); font-weight: 600; }
+    .band-text.medium   { color: var(--info); font-weight: 600; }
+    .band-text.low      { color: var(--warning); font-weight: 600; }
+    .band-text.conflict { color: var(--error); font-weight: 600; }
+
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .mini-table th { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--muted); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border);
+      background: var(--surface2); }
+    .mini-table td { padding: 8px 10px; border-bottom: 1px solid #1f1f1f; color: var(--text); }
+    .mini-table tr:last-child td { border-bottom: none; }
+    .reason-tag { display: inline-block; font-size: 10px; background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.2); color: #f87171; border-radius: 4px; padding: 1px 6px; }
+
+    .jira-key { font-family: monospace; font-size: 12px; background: rgba(0,120,242,.1);
+      border: 1px solid rgba(0,120,242,.25); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+
+    .form-section { background: #161616; }
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    .req { color: var(--error); margin-left: 1px; }
+    .opt { color: #666; font-weight: 400; font-size: 11px; }
+    .select-input, .num-input, .textarea-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
+      color: var(--text); font-size: 13px; padding: 8px 12px; outline: none; transition: border-color .15s;
+      font-family: inherit; }
+    .select-input:focus, .num-input:focus, .textarea-input:focus { border-color: var(--accent); }
+    .select-input option { background: #1a1a1a; }
+    .textarea-input { resize: vertical; }
+    .error-inline { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      border-radius: 6px; padding: 8px 12px; color: var(--error); font-size: 12px; margin-bottom: 12px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: #1a1a1a; border: 1px solid var(--success); color: var(--success);
+      padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      opacity: 0; transition: opacity .2s, transform .2s; z-index: 300; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .spinner-sm { display: inline-block; width: 10px; height: 10px; border: 1.5px solid rgba(255,255,255,.15);
+      border-top-color: var(--muted); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-brand">
+    <span class="brand-e">E</span>
+    Epic Games IT
+  </a>
+  <div class="nav-links">
+    <a href="/start.html" class="nav-link">New Renewal</a>
+    <a href="/tasks.html" class="nav-link active">Tasks</a>
+    <a href="/admin.html" class="nav-link">Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Task Inbox</h1>
+      <span class="task-count-badge zero" id="taskCountBadge">—</span>
+    </div>
+    <button class="btn btn-ghost" onclick="loadTasks()">Refresh</button>
+  </div>
+
+  <div id="taskList">
+    <div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>
+  </div>
+</main>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<!-- Task detail drawer -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-header-title" id="drawerTitle">Task Detail</div>
+    <button class="drawer-close" onclick="closeDrawer()" title="Close">✕</button>
+  </div>
+  <div class="drawer-scroll" id="drawerBody">
+    <div class="loading-msg">Loading…</div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+const TASK_LABELS = {
+  Task_ReviewReclamation:   'App Owner: Review License Reclamation',
+  Task_ProcurementApproval: 'Procurement: Approve License Renewal PO'
+};
+const TASK_ICONS = {
+  Task_ReviewReclamation:   '🔍',
+  Task_ProcurementApproval: '💰'
+};
+const TASK_PILLS = {
+  Task_ReviewReclamation:   ['App Owner Review', 'pill-review'],
+  Task_ProcurementApproval: ['Procurement Approval', 'pill-procurement']
+};
+
+let currentTaskKey  = null;
+let currentTaskType = null;
+let currentReclaimable = [];
+
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function relativeTime(iso) {
+  if (!iso) return '—';
+  const diff = Date.now() - new Date(iso).getTime();
+  const s = Math.floor(diff / 1000);
+  if (s < 60)   return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+function recBadgeClass(rec) {
+  return { renew_as_is:'badge-green', reduce_seats:'badge-blue', reclaim_and_reduce:'badge-amber', escalate_to_human:'badge-red' }[rec] || '';
+}
+
+// ─── Load task list ──────────────────────────────────────────────────────────
+
+async function loadTasks() {
+  const list = document.getElementById('taskList');
+  const badge = document.getElementById('taskCountBadge');
+
+  list.innerHTML = '<div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>';
+  badge.textContent = '—';
+  badge.className = 'task-count-badge zero';
+
+  try {
+    const tasks = await fetch('/api/tasks').then(r => r.json());
+
+    if (!Array.isArray(tasks) || tasks.length === 0) {
+      badge.textContent = '0';
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">📭</div>
+          <h3>No open tasks</h3>
+          <p>Tasks requiring human review will appear here when the license renewal process reaches the App Owner Review or Procurement Approval stages.</p>
+          <a href="/start.html">Start a renewal to generate tasks →</a>
+        </div>`;
+      return;
+    }
+
+    badge.textContent = tasks.length;
+    badge.className = 'task-count-badge';
+
+    list.innerHTML = tasks.map(t => {
+      const label    = TASK_LABELS[t.elementId] || t.elementId;
+      const icon     = TASK_ICONS[t.elementId]  || '📋';
+      const [pillTxt, pillCls] = TASK_PILLS[t.elementId] || ['Task', ''];
+      const appName  = t.appName  || '—';
+      const vendor   = t.vendor   || '—';
+      const assignee = t.assignee || (Array.isArray(t.candidateGroups) ? t.candidateGroups.join(', ') : (t.candidateGroups || null));
+      const age      = relativeTime(t.creationDate);
+      return `
+        <div class="task-card" onclick="openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">
+          <div class="task-card-left">
+            <div class="task-icon">${icon}</div>
+            <div>
+              <div class="task-name">${escHtml(label)}</div>
+              <div class="task-app-line">${escHtml(appName)} · ${escHtml(vendor)}</div>
+              <div class="task-meta-line">
+                <span class="task-type-pill ${pillCls}">${escHtml(pillTxt)}</span>
+                ${assignee ? escHtml(assignee) + ' · ' : ''}${age}
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">Review →</button>
+        </div>`;
+    }).join('');
+
+  } catch (err) {
+    badge.textContent = '!';
+    list.innerHTML = `<div class="error-msg">Could not load tasks: ${escHtml(err.message)}</div>`;
+  }
+}
+
+// ─── Open drawer ─────────────────────────────────────────────────────────────
+
+async function openTask(taskKey, elementId, piKey) {
+  currentTaskKey  = taskKey;
+  currentTaskType = elementId;
+  currentReclaimable = [];
+
+  document.getElementById('drawerTitle').textContent = TASK_LABELS[elementId] || elementId;
+  document.getElementById('drawerBody').innerHTML = '<div class="loading-msg"><span class="spinner-sm"></span> Loading task details…</div>';
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+
+  try {
+    const ctx = await fetch(`/api/tasks/${taskKey}/context?piKey=${piKey}`).then(r => r.json());
+    if (ctx.error) throw new Error(ctx.error);
+
+    const vars = ctx.variables || {};
+    document.getElementById('drawerBody').innerHTML = renderDrawer(elementId, vars);
+
+  } catch (err) {
+    document.getElementById('drawerBody').innerHTML = `<div class="drawer-section"><div class="error-msg">${escHtml(err.message)}</div></div>`;
+  }
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  currentTaskKey  = null;
+  currentTaskType = null;
+}
+
+// ─── Drawer content ──────────────────────────────────────────────────────────
+
+function renderDrawer(elementId, vars) {
+  if (elementId === 'Task_ReviewReclamation')   return renderReviewDrawer(vars);
+  if (elementId === 'Task_ProcurementApproval') return renderProcurementDrawer(vars);
+  return `<div class="drawer-section"><div class="error-msg">Unknown task type: ${escHtml(elementId)}</div></div>`;
+}
+
+function renderReviewDrawer(vars) {
+  const summary   = vars.usageSummary || {};
+  const score     = vars.usageScore   || {};
+  const reclaimable = Array.isArray(vars.reclaimable) ? vars.reclaimable : [];
+  currentReclaimable = reclaimable;
+
+  const rec     = score.recommendation  || '—';
+  const band    = score.utilizationBand || '—';
+  const conflict = summary.conflictDetected;
+  const resolved = summary.resolvedActiveUsers ?? '—';
+  const total    = vars.requestedSeats ?? '—';
+
+  const reclaimRows = reclaimable.length
+    ? reclaimable.map(r => `
+        <tr>
+          <td>${escHtml(r.userId || '—')}</td>
+          <td><span class="reason-tag">${escHtml(r.reason || '—')}</span></td>
+          <td>${escHtml(r.lastLogin || '—')}</td>
+        </tr>`).join('')
+    : '<tr><td colspan="3" style="text-align:center;padding:14px;color:var(--muted)">None identified</td></tr>';
+
+  return `
+    <div class="drawer-app-bar">
+      <div class="drawer-app-name">${escHtml(vars.appName || '—')}</div>
+      <div class="drawer-app-vendor">${escHtml(vars.vendor || '—')}</div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-title">Usage Summary</div>
+      <div class="kv-grid">
+        <div class="kv-label">Resolved Active Users</div>
+        <div class="kv-value"><strong>${resolved}</strong> of ${total} seats</div>
+        <div class="kv-label">Okta Active</div>
+        <div class="kv-value">${summary.oktaActive ?? '—'}</div>
+        <div class="kv-label">Flexera Active</div>
+        <div class="kv-value">${summary.flexeraActive ?? '—'}</div>
+        <div class="kv-label">Conflict Detected</div>
+        <div class="kv-value">
+          ${conflict ? '<span class="badge badge-err">Yes — signals diverge</span>' : '<span class="badge badge-ok">No</span>'}
+        </div>
+        <div class="kv-label">Recommendation</div>
+        <div class="kv-value"><span class="badge ${recBadgeClass(rec)}">${escHtml(rec)}</span></div>
+        <div class="kv-label">Utilization Band</div>
+        <div class="kv-value"><span class="band-text ${band}">${escHtml(band)}</span></div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-title">Proposed Reclamations <span class="count-pill">${reclaimable.length}</span></div>
+      <table class="mini-table">
+        <thead><tr><th>User ID</th><th>Reason</th><th>Last Login</th></tr></thead>
+        <tbody>${reclaimRows}</tbody>
+      </table>
+    </div>
+
+    <div class="drawer-section form-section">
+      <div class="section-title">Decision</div>
+      <div class="field">
+        <label>Decision<span class="req">*</span></label>
+        <select id="reviewDecision" class="select-input">
+          <option value="">Select a decision…</option>
+          <option value="approve">Approve Reclamation</option>
+          <option value="reject">Reject Reclamation</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Notes <span class="opt">(optional)</span></label>
+        <textarea id="reviewNotes" class="textarea-input" rows="3" placeholder="Add notes for the record…"></textarea>
+      </div>
+      <div id="submitError" class="error-inline" style="display:none"></div>
+      <button class="btn btn-primary btn-full" id="submitBtn" onclick="submitTask()">Submit Decision</button>
+    </div>`;
+}
+
+function renderProcurementDrawer(vars) {
+  const quote = vars.vendorQuote  || {};
+  const score = vars.usageScore   || {};
+  const jira  = vars.jiraTicket   || {};
+
+  const rec  = score.recommendation  || '—';
+  const band = score.utilizationBand || '—';
+  const fmt  = n => n != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n) : '—';
+
+  return `
+    <div class="drawer-app-bar">
+      <div class="drawer-app-name">${escHtml(vars.appName || '—')}</div>
+      <div class="drawer-app-vendor">${escHtml(vars.vendor || '—')}</div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-title">Renewal Summary</div>
+      <div class="kv-grid">
+        <div class="kv-label">Licenses Reclaimed</div>
+        <div class="kv-value">${vars.reclaimedCount ?? '—'}</div>
+        <div class="kv-label">Legal Ticket</div>
+        <div class="kv-value">${jira.key ? `<span class="jira-key">${escHtml(jira.key)}</span>` : '—'}</div>
+        <div class="kv-label">Recommendation</div>
+        <div class="kv-value"><span class="badge ${recBadgeClass(rec)}">${escHtml(rec)}</span></div>
+        <div class="kv-label">Utilization Band</div>
+        <div class="kv-value"><span class="band-text ${band}">${escHtml(band)}</span></div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-title">Vendor Quote</div>
+      <div class="kv-grid">
+        <div class="kv-label">Seats</div>
+        <div class="kv-value">${quote.seats ?? '—'}</div>
+        <div class="kv-label">Price / Seat</div>
+        <div class="kv-value">${fmt(quote.pricePerSeat)}</div>
+        <div class="kv-label">Total Price</div>
+        <div class="kv-value kv-total">${fmt(quote.totalPrice)}</div>
+      </div>
+    </div>
+
+    <div class="drawer-section form-section">
+      <div class="section-title">Decision</div>
+      <div class="field">
+        <label>Approved Seat Count<span class="req">*</span></label>
+        <input type="number" id="finalSeats" class="num-input" value="${quote.seats || ''}" min="1" placeholder="Enter approved seat count">
+      </div>
+      <div class="field">
+        <label>Decision<span class="req">*</span></label>
+        <select id="procurementDecision" class="select-input">
+          <option value="">Select a decision…</option>
+          <option value="approve">Approve PO</option>
+          <option value="reject">Reject PO</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Notes <span class="opt">(optional)</span></label>
+        <textarea id="procurementNotes" class="textarea-input" rows="3" placeholder="Add notes for the record…"></textarea>
+      </div>
+      <div id="submitError" class="error-inline" style="display:none"></div>
+      <button class="btn btn-primary btn-full" id="submitBtn" onclick="submitTask()">Submit Decision</button>
+    </div>`;
+}
+
+// ─── Submit task ─────────────────────────────────────────────────────────────
+
+async function submitTask() {
+  const btn  = document.getElementById('submitBtn');
+  const errEl = document.getElementById('submitError');
+  errEl.style.display = 'none';
+
+  const variables = {};
+
+  if (currentTaskType === 'Task_ReviewReclamation') {
+    variables.reviewDecision = document.getElementById('reviewDecision').value;
+    const notes = document.getElementById('reviewNotes').value.trim();
+    if (!variables.reviewDecision) {
+      return showInlineError('Please select a decision before submitting.');
+    }
+    if (variables.reviewDecision === 'approve') {
+      variables.approvedReclaims = currentReclaimable;
+    }
+    if (notes) variables.reviewNotes = notes;
+
+  } else if (currentTaskType === 'Task_ProcurementApproval') {
+    variables.procurementDecision = document.getElementById('procurementDecision').value;
+    const seatsVal = document.getElementById('finalSeats').value;
+    const notes    = document.getElementById('procurementNotes').value.trim();
+    if (!variables.procurementDecision) {
+      return showInlineError('Please select a decision before submitting.');
+    }
+    if (!seatsVal || isNaN(parseInt(seatsVal, 10)) || parseInt(seatsVal, 10) < 1) {
+      return showInlineError('Please enter a valid approved seat count.');
+    }
+    variables.finalSeats = parseInt(seatsVal, 10);
+    if (notes) variables.procurementNotes = notes;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch(`/api/tasks/${currentTaskKey}/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ variables })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    closeDrawer();
+    showToast('Task completed successfully!');
+    loadTasks();
+  } catch (err) {
+    showInlineError('Error: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'Submit Decision';
+  }
+}
+
+function showInlineError(msg) {
+  const el = document.getElementById('submitError');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Start
+loadTasks();
+setInterval(loadTasks, 30000);
+</script>
+</body>
+</html>

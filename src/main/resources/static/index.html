@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epic Games IT — License Renewal Portal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
+      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
+      --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+    /* Nav */
+    .nav { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
+    .brand-e { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link.active { color: #fff; }
+
+    main { max-width: 960px; margin: 0 auto; padding: 64px 24px 80px; }
+
+    /* Hero */
+    .hero { text-align: center; margin-bottom: 56px; }
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px; }
+    .hero h1 { font-size: 34px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; line-height: 1.2; }
+    .hero p { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 540px; margin: 0 auto; }
+
+    /* Flow stepper */
+    .flow { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 48px; flex-wrap: wrap; }
+    .flow-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); padding: 6px 0; }
+    .flow-step .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); flex-shrink: 0; }
+    .flow-step.active .dot { background: var(--accent); border-color: var(--accent); }
+    .flow-arrow { color: #333; font-size: 12px; padding: 0 12px; }
+
+    /* Action cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px 24px; display: flex; flex-direction: column; gap: 0; text-decoration: none;
+      color: inherit; transition: border-color .15s, background .15s; position: relative; }
+    .card:hover { border-color: var(--accent); background: #1d1d1d; }
+    .card-num { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px; }
+    .card-icon { font-size: 28px; margin-bottom: 14px; }
+    .card h2 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 13px; line-height: 1.55; flex: 1; margin-bottom: 24px; }
+    .card-action { display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+      font-weight: 600; color: var(--accent); margin-top: auto; }
+    .card:hover .card-action { gap: 10px; }
+    .card-badge { position: absolute; top: 18px; right: 18px; background: var(--accent);
+      color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 9px;
+      display: none; }
+    .card-badge.visible { display: block; }
+
+    /* Steps summary */
+    .steps-section { margin-top: 56px; border-top: 1px solid var(--border); padding-top: 40px; }
+    .steps-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 20px; text-align: center; }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 680px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+    .step-item { background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+      padding: 14px 16px; }
+    .step-emoji { font-size: 18px; margin-bottom: 7px; }
+    .step-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+    .step-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-brand">
+    <span class="brand-e">E</span>
+    Epic Games IT
+  </a>
+  <div class="nav-links">
+    <a href="/start.html" class="nav-link">New Renewal</a>
+    <a href="/tasks.html" class="nav-link">Tasks</a>
+    <a href="/admin.html" class="nav-link">Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">Epic Games IT · Camunda 8 Demo</div>
+    <h1>License Renewal Orchestration</h1>
+    <p>Automated 90-day renewal lifecycle — aggregates Okta SSO, Flexera metering, and vendor quotes into a single usage score, then routes to the right human at the right time.</p>
+  </div>
+
+  <div class="cards">
+
+    <a href="/start.html" class="card">
+      <div class="card-num">Step 1</div>
+      <div class="card-icon">🚀</div>
+      <h2>Start a Renewal</h2>
+      <p>Trigger the 90-day renewal flow for any software application. Pick a demo scenario or enter your own data.</p>
+      <div class="card-action">Start renewal →</div>
+    </a>
+
+    <a href="/tasks.html" class="card">
+      <div class="card-num">Step 2</div>
+      <div class="card-icon">✅</div>
+      <span class="card-badge" id="taskBadge">0</span>
+      <h2>Review Open Tasks</h2>
+      <p>Complete App Owner and Procurement Approval user tasks — the human-in-the-loop step before licenses are reclaimed and the PO is submitted.</p>
+      <div class="card-action">Open task inbox →</div>
+    </a>
+
+    <a href="/admin.html" class="card">
+      <div class="card-num">Step 3</div>
+      <div class="card-icon">📊</div>
+      <h2>Monitor Dashboard</h2>
+      <p>Track all renewal instances in real time — see which step each process is on, spot items awaiting review, and link directly into Operate.</p>
+      <div class="card-action">View dashboard →</div>
+    </a>
+
+  </div>
+
+  <div class="steps-section">
+    <div class="steps-label">What happens inside the process</div>
+    <div class="steps-grid">
+      <div class="step-item">
+        <div class="step-emoji">📡</div>
+        <div class="step-name">Signal aggregation</div>
+        <div class="step-desc">Fetches Okta SSO, Flexera on-prem metering, and vendor quote in parallel</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">🧠</div>
+        <div class="step-name">DMN scoring</div>
+        <div class="step-desc">Decision table resolves conflicting signals into a utilization band and recommendation</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">👤</div>
+        <div class="step-name">Human review</div>
+        <div class="step-desc">App owner approves reclamation; procurement manager approves the final PO</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">📋</div>
+        <div class="step-name">Jira + Coupa</div>
+        <div class="step-desc">Legal ticket raised in Jira; approved seat count submitted as a Coupa PO</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+async function loadTaskCount() {
+  try {
+    const tasks = await fetch('/api/tasks').then(r => r.json());
+    const count = Array.isArray(tasks) ? tasks.length : 0;
+    const badge = document.getElementById('taskBadge');
+    if (count > 0) {
+      badge.textContent = count;
+      badge.classList.add('visible');
+    }
+  } catch (_) {}
+}
+loadTaskCount();
+</script>
+</body>
+</html>

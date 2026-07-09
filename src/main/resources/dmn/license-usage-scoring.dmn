@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+             id="license_usage_scoring_definitions"
+             name="License Usage Scoring"
+             namespace="http://camunda.org/schema/1.0/dmn"
+             modeler:executionPlatform="Camunda Cloud"
+             modeler:executionPlatformVersion="8.9.0">
+
+  <decision id="license_usage_scoring" name="License Usage Scoring">
+    <decisionTable id="decisionTable_1" hitPolicy="FIRST">
+
+      <!-- Input 1: conflict flag — short-circuits all ratio logic -->
+      <input id="input_1" label="Conflict Detected">
+        <inputExpression id="inputExpression_1" typeRef="boolean">
+          <text>usageSummary.conflictDetected</text>
+        </inputExpression>
+      </input>
+
+      <!-- Input 2: utilization ratio computed from aggregated signals -->
+      <input id="input_2" label="Utilization Ratio (active / seats)">
+        <inputExpression id="inputExpression_2" typeRef="double">
+          <text>usageSummary.resolvedActiveUsers / requestedSeats</text>
+        </inputExpression>
+      </input>
+
+      <output id="output_1" label="Recommendation" name="recommendation" typeRef="string"/>
+      <output id="output_2" label="Utilization Band" name="utilizationBand" typeRef="string"/>
+
+      <!-- Rule 1: Signal conflict → escalate to human before any automated decision -->
+      <rule id="rule_1">
+        <description>Okta and Flexera counts conflict — human must reconcile</description>
+        <inputEntry id="ie_1_1"><text>true</text></inputEntry>
+        <inputEntry id="ie_1_2"><text></text></inputEntry>
+        <outputEntry id="oe_1_1"><text>"escalate_to_human"</text></outputEntry>
+        <outputEntry id="oe_1_2"><text>"conflict"</text></outputEntry>
+      </rule>
+
+      <!-- Rule 2: High utilization ≥ 85% → renew as-is -->
+      <rule id="rule_2">
+        <description>Utilization is healthy — renew current seat count</description>
+        <inputEntry id="ie_2_1"><text></text></inputEntry>
+        <inputEntry id="ie_2_2"><text>&gt;= 0.85</text></inputEntry>
+        <outputEntry id="oe_2_1"><text>"renew_as_is"</text></outputEntry>
+        <outputEntry id="oe_2_2"><text>"high"</text></outputEntry>
+      </rule>
+
+      <!-- Rule 3: Medium utilization 60–85% → negotiate seat reduction -->
+      <rule id="rule_3">
+        <description>Moderate usage — negotiate a reduced seat count at renewal</description>
+        <inputEntry id="ie_3_1"><text></text></inputEntry>
+        <inputEntry id="ie_3_2"><text>&gt;= 0.60</text></inputEntry>
+        <outputEntry id="oe_3_1"><text>"reduce_seats"</text></outputEntry>
+        <outputEntry id="oe_3_2"><text>"medium"</text></outputEntry>
+      </rule>
+
+      <!-- Rule 4: Low utilization < 60% → reclaim inactive seats then reduce -->
+      <rule id="rule_4">
+        <description>Low utilization — reclaim inactive/departed accounts and reduce renewal count</description>
+        <inputEntry id="ie_4_1"><text></text></inputEntry>
+        <inputEntry id="ie_4_2"><text>&lt; 0.60</text></inputEntry>
+        <outputEntry id="oe_4_1"><text>"reclaim_and_reduce"</text></outputEntry>
+        <outputEntry id="oe_4_2"><text>"low"</text></outputEntry>
+      </rule>
+
+    </decisionTable>
+  </decision>
+
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="license_usage_scoring">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+
+</definitions>

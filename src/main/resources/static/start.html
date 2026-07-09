@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New License Renewal — Epic Games IT</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
+      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
+      --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+    /* Nav */
+    .nav { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
+    .brand-e { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link.active { color: #fff; }
+
+    /* Layout */
+    main { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    .page-header { margin-bottom: 36px; }
+    .page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+    .page-header p { color: var(--muted); font-size: 14px; }
+
+    /* Scenarios */
+    .scenarios-label { font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px; }
+    .scenarios { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 36px; }
+    .scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 18px; cursor: pointer; transition: border-color .15s, background .15s; display: flex; flex-direction: column; gap: 8px; }
+    .scenario-card:hover { border-color: var(--accent); background: #1e2a38; }
+    .scenario-card.selected { border-color: var(--accent); background: #1e2a38; }
+    .sc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sc-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .sc-emoji { font-size: 18px; line-height: 1; }
+    .sc-desc { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .4px;
+      padding: 3px 7px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
+    .badge-success { background: rgba(34,197,94,.15); color: #4ade80; }
+    .badge-warning { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .badge-error   { background: rgba(239,68,68,.15);  color: #f87171; }
+    .badge-info    { background: rgba(59,130,246,.15); color: #60a5fa; }
+
+    /* Form */
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; }
+    .form-title { font-size: 14px; font-weight: 600; margin-bottom: 20px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .6px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 500; color: var(--muted); }
+    input, select, textarea {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 11px;
+      width: 100%; outline: none; transition: border-color .15s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    select option { background: var(--surface2); }
+
+    .form-actions { margin-top: 24px; display: flex; align-items: center; gap: 12px; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 7px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background .15s; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled { background: #333; color: var(--muted); cursor: not-allowed; }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: #2a2a2a; }
+
+    /* Result */
+    #result { margin-top: 24px; border-radius: 10px; padding: 20px 24px; display: none; }
+    #result.success { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.3); }
+    #result.error   { background: rgba(239,68,68,.08);  border: 1px solid rgba(239,68,68,.3); }
+    .result-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .result-success .result-title { color: #4ade80; }
+    .result-error   .result-title { color: #f87171; }
+    .result-meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; font-family: monospace; }
+    .result-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.2);
+      border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-brand">
+    <span class="brand-e">E</span>
+    Epic Games IT
+  </a>
+  <div class="nav-links">
+    <a href="/start.html" class="nav-link active">New Renewal</a>
+    <a href="/tasks.html" class="nav-link">Tasks</a>
+    <a href="/admin.html" class="nav-link">Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h1>Start License Renewal</h1>
+    <p>Kicks off the 90-day renewal orchestration: usage aggregation → DMN scoring → reclamation → procurement PO.</p>
+  </div>
+
+  <!-- Demo scenarios -->
+  <div class="scenarios-label">Demo scenarios — click to pre-fill</div>
+  <div class="scenarios" id="scenarioGrid"></div>
+
+  <!-- Form -->
+  <div class="form-card">
+    <div class="form-title">Renewal details</div>
+    <form id="renewalForm" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="appName">Application name</label>
+          <input id="appName" name="appName" type="text" placeholder="Adobe Creative Cloud" required>
+        </div>
+        <div class="form-group">
+          <label for="vendor">Vendor</label>
+          <input id="vendor" name="vendor" type="text" placeholder="Adobe Inc." required>
+        </div>
+        <div class="form-group">
+          <label for="appOwner">App owner (email)</label>
+          <input id="appOwner" name="appOwner" type="text" placeholder="owner@epicgames.com" required>
+        </div>
+        <div class="form-group">
+          <label for="requestedSeats">Current seat count</label>
+          <input id="requestedSeats" name="requestedSeats" type="number" min="1" placeholder="50" required>
+        </div>
+        <div class="form-group">
+          <label for="renewalDeadline">Renewal deadline</label>
+          <input id="renewalDeadline" name="renewalDeadline" type="date" required>
+        </div>
+        <div class="form-group">
+          <label for="demoOutcome">Demo mode</label>
+          <select id="demoOutcome" name="demoOutcome">
+            <option value="renew">High utilization → renew as-is</option>
+            <option value="reduce">Medium utilization → reduce seats</option>
+            <option value="reclaim">Low utilization → reclaim + reduce</option>
+            <option value="conflict">Signal conflict → escalate to human</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          Start renewal
+        </button>
+        <button type="button" class="btn btn-ghost" id="randomizeBtn">Demo Data</button>
+        <a href="/admin.html" class="btn btn-ghost">View dashboard</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="result"></div>
+</main>
+
+<script>
+const SCENARIOS = [
+  {
+    emoji: '🎨', appName: 'Adobe Creative Cloud', vendor: 'Adobe Inc.',
+    appOwner: 'alice@epicgames.com', requestedSeats: 50, demo_outcome: 'renew',
+    badge: 'Renew As-Is', badgeClass: 'badge-success',
+    desc: '92% seat utilization — expected to renew at current count'
+  },
+  {
+    emoji: '💬', appName: 'Slack Enterprise Grid', vendor: 'Salesforce',
+    appOwner: 'bob@epicgames.com', requestedSeats: 200, demo_outcome: 'reclaim',
+    badge: 'Reclaim + Reduce', badgeClass: 'badge-warning',
+    desc: '40% utilization — reclamation + seat reduction recommended'
+  },
+  {
+    emoji: '💻', appName: 'GitHub Enterprise Cloud', vendor: 'GitHub / Microsoft',
+    appOwner: 'carol@epicgames.com', requestedSeats: 150, demo_outcome: 'conflict',
+    badge: 'Signal Conflict', badgeClass: 'badge-error',
+    desc: 'Okta / Flexera data diverges — escalated for human review'
+  },
+  {
+    emoji: '🎥', appName: 'Zoom Enterprise', vendor: 'Zoom Video Communications',
+    appOwner: 'dave@epicgames.com', requestedSeats: 100, demo_outcome: 'reduce',
+    badge: 'Reduce Seats', badgeClass: 'badge-info',
+    desc: '72% utilization — negotiate seat reduction at renewal'
+  }
+];
+
+// Render scenario cards
+const grid = document.getElementById('scenarioGrid');
+SCENARIOS.forEach((s, i) => {
+  const card = document.createElement('div');
+  card.className = 'scenario-card';
+  card.innerHTML = `
+    <div class="sc-top">
+      <div class="sc-name"><span class="sc-emoji">${s.emoji}</span>${s.appName}</div>
+      <span class="badge ${s.badgeClass}">${s.badge}</span>
+    </div>
+    <div class="sc-desc">${s.desc}</div>`;
+  card.addEventListener('click', () => prefill(s, card));
+  grid.appendChild(card);
+});
+
+// Set default renewal deadline (today + 90 days)
+const dl = new Date();
+dl.setDate(dl.getDate() + 90);
+document.getElementById('renewalDeadline').value = dl.toISOString().split('T')[0];
+
+function prefill(s, card) {
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('appName').value        = s.appName;
+  document.getElementById('vendor').value         = s.vendor;
+  document.getElementById('appOwner').value       = s.appOwner;
+  document.getElementById('requestedSeats').value = s.requestedSeats;
+  document.getElementById('demoOutcome').value    = s.demo_outcome;
+}
+
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+document.getElementById('renewalForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Starting…';
+
+  const appName        = document.getElementById('appName').value.trim();
+  const vendor         = document.getElementById('vendor').value.trim();
+  const appOwner       = document.getElementById('appOwner').value.trim();
+  const requestedSeats = parseInt(document.getElementById('requestedSeats').value, 10);
+  const renewalDeadline = document.getElementById('renewalDeadline').value;
+  const demo_outcome   = document.getElementById('demoOutcome').value;
+
+  const variables = {
+    appId: slugify(appName),
+    appName,
+    vendor,
+    appOwner,
+    requestedSeats,
+    renewalDeadline,
+    demo_outcome
+  };
+
+  try {
+    const resp = await fetch('/api/process/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ processId: 'license-renewal', variables })
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) throw new Error(data.error || 'Unknown error');
+
+    // Fetch operate URL
+    let operateUrl = null;
+    try {
+      const cfg = await (await fetch('/api/admin/config')).json();
+      operateUrl = cfg.operateBaseUrl + '/instances/' + data.processInstanceKey;
+    } catch (_) {}
+
+    showResult('success', appName, data.processInstanceKey, operateUrl);
+  } catch (err) {
+    showResult('error', null, null, null, err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Start renewal';
+  }
+});
+
+function showResult(type, appName, piKey, operateUrl, errorMsg) {
+  const el = document.getElementById('result');
+  el.className = type;
+  el.style.display = 'block';
+
+  if (type === 'success') {
+    el.innerHTML = `
+      <div class="result-title">✓ Renewal started for ${escHtml(appName)}</div>
+      <div class="result-meta">Process instance: ${piKey}</div>
+      <div class="result-links">
+        <a href="/tasks.html" class="btn btn-primary" style="font-size:12px;padding:6px 14px">Review tasks →</a>
+        <a href="/admin.html" class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Dashboard</a>
+        ${operateUrl ? `<a href="${operateUrl}" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Operate ↗</a>` : ''}
+      </div>`;
+  } else {
+    el.innerHTML = `
+      <div class="result-title">Failed to start renewal</div>
+      <div class="result-meta">${escHtml(errorMsg)}</div>`;
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Randomize ─────────────────────────────────────────────────────────────
+const DEMO_POOL = {
+  apps: [
+    { name: 'Atlassian Jira',          vendor: 'Atlassian' },
+    { name: 'Atlassian Confluence',     vendor: 'Atlassian' },
+    { name: 'Microsoft 365',            vendor: 'Microsoft' },
+    { name: 'Azure DevOps',             vendor: 'Microsoft' },
+    { name: 'ServiceNow ITSM',          vendor: 'ServiceNow' },
+    { name: 'Figma Professional',       vendor: 'Figma' },
+    { name: 'Tableau Desktop',          vendor: 'Salesforce' },
+    { name: 'Datadog APM',              vendor: 'Datadog' },
+    { name: 'Splunk Enterprise',        vendor: 'Splunk / Cisco' },
+    { name: 'PagerDuty',                vendor: 'PagerDuty' },
+    { name: 'IntelliJ IDEA',            vendor: 'JetBrains' },
+    { name: 'Postman Enterprise',       vendor: 'Postman' },
+    { name: 'DocuSign Enterprise',      vendor: 'DocuSign' },
+    { name: 'Okta Identity Cloud',      vendor: 'Okta' },
+    { name: 'Snowflake Data Cloud',     vendor: 'Snowflake' },
+    { name: 'HashiCorp Terraform',      vendor: 'HashiCorp' },
+    { name: 'New Relic APM',            vendor: 'New Relic' },
+    { name: 'Miro Enterprise',          vendor: 'Miro' },
+    { name: 'Lucidchart Enterprise',    vendor: 'Lucid Software' },
+    { name: 'SonarQube Enterprise',     vendor: 'Sonarsource' },
+  ],
+  owners: [
+    'alice@epicgames.com', 'bob@epicgames.com', 'carol@epicgames.com',
+    'dave@epicgames.com',  'eve@epicgames.com',  'frank@epicgames.com',
+    'grace@epicgames.com', 'henry@epicgames.com',
+  ],
+  seats: [15, 20, 25, 30, 40, 50, 60, 75, 100, 120, 150, 175, 200, 250, 300, 500],
+  // outcomes cycle so each click exercises a different DMN path
+  outcomes: ['renew', 'reduce', 'reclaim', 'conflict'],
+  deadlineDays: [30, 45, 60, 75, 90, 105, 120],
+};
+
+let _lastAppIdx  = -1;
+let _outcomeIdx  = 0;
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function randomize() {
+  // avoid repeating the same app twice in a row
+  let appIdx;
+  do { appIdx = Math.floor(Math.random() * DEMO_POOL.apps.length); }
+  while (appIdx === _lastAppIdx);
+  _lastAppIdx = appIdx;
+
+  const app     = DEMO_POOL.apps[appIdx];
+  const owner   = pick(DEMO_POOL.owners);
+  const seats   = pick(DEMO_POOL.seats);
+  const outcome = DEMO_POOL.outcomes[_outcomeIdx % DEMO_POOL.outcomes.length];
+  _outcomeIdx++;
+
+  const deadline = new Date();
+  deadline.setDate(deadline.getDate() + pick(DEMO_POOL.deadlineDays));
+
+  document.getElementById('appName').value         = app.name;
+  document.getElementById('vendor').value          = app.vendor;
+  document.getElementById('appOwner').value        = owner;
+  document.getElementById('requestedSeats').value  = seats;
+  document.getElementById('renewalDeadline').value = deadline.toISOString().split('T')[0];
+  document.getElementById('demoOutcome').value     = outcome;
+
+  // deselect scenario cards
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+
+  // brief border flash to signal the change
+  const card = document.querySelector('.form-card');
+  card.style.transition = 'border-color .1s';
+  card.style.borderColor = '#0078f2';
+  setTimeout(() => { card.style.borderColor = ''; }, 500);
+}
+
+document.getElementById('randomizeBtn').addEventListener('click', randomize);
+</script>
+</body>
+</html>
