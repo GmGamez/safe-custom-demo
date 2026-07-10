@@ -33,6 +33,26 @@
       padding: 2px 9px; border-radius: 10px; }
     .task-count-badge.zero { background: var(--surface2); color: var(--muted); }
 
+    /* Tabs */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .tab { display: flex; align-items: center; gap: 8px; padding: 10px 22px;
+      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+      border: none; border-bottom: 2px solid transparent; background: none;
+      font-family: inherit; transition: color .15s, border-color .15s; white-space: nowrap; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-badge { background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 1px 7px; font-size: 11px; font-weight: 700; color: var(--muted); }
+    .tab.active .tab-badge { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Role banner */
+    .role-banner { background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
+      display: flex; align-items: flex-start; gap: 12px; }
+    .role-banner-icon { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
+    .role-banner-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .role-banner-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
       font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background .15s; text-decoration: none; }
     .btn-primary { background: var(--accent); color: #fff; }
@@ -60,10 +80,10 @@
     .pill-review { background: rgba(245,158,11,.15); color: #fbbf24; }
     .pill-procurement { background: rgba(139,92,246,.15); color: #a78bfa; }
 
-    .empty-state { text-align: center; padding: 72px 20px; color: var(--muted); }
-    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-    .empty-state h3 { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-    .empty-state p { font-size: 13px; line-height: 1.6; max-width: 420px; margin: 0 auto 20px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 40px; margin-bottom: 14px; }
+    .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; line-height: 1.6; max-width: 420px; margin: 0 auto 18px; }
     .empty-state a { color: var(--accent); text-decoration: none; }
 
     .loading-msg { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
@@ -180,6 +200,22 @@
     <button class="btn btn-ghost" onclick="loadTasks()">Refresh</button>
   </div>
 
+  <!-- Role tabs -->
+  <div class="tabs">
+    <button class="tab active" id="tab-app-owner" onclick="switchTab('app-owner')">
+      👤 App Owner
+      <span class="tab-badge" id="badge-app-owner">—</span>
+    </button>
+    <button class="tab" id="tab-procurement" onclick="switchTab('procurement')">
+      💼 Procurement
+      <span class="tab-badge" id="badge-procurement">—</span>
+    </button>
+  </div>
+
+  <!-- Role context banner -->
+  <div class="role-banner" id="roleBanner"></div>
+
+  <!-- Task list (filtered by active tab) -->
   <div id="taskList">
     <div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>
   </div>
@@ -215,9 +251,32 @@ const TASK_PILLS = {
   Task_ReviewReclamation:   ['App Owner Review', 'pill-review'],
   Task_ProcurementApproval: ['Procurement Approval', 'pill-procurement']
 };
+const TASK_TAB = {
+  Task_ReviewReclamation:   'app-owner',
+  Task_ProcurementApproval: 'procurement'
+};
+const ROLE_META = {
+  'app-owner': {
+    icon: '👤',
+    title: 'App Owner Review',
+    desc: 'Review which licenses are proposed for reclamation from inactive and departed users. Approve or reject the list before any seats are reclaimed.',
+    emptyTitle: 'No app owner review tasks',
+    emptyDesc: "Tasks appear here when a renewal reaches the reclamation review stage. Start a renewal with the 'reclaim' or 'conflict' demo scenario to generate one."
+  },
+  'procurement': {
+    icon: '💼',
+    title: 'Procurement Approval',
+    desc: 'Review the vendor quote and final seat count after reclamation is approved. Approve the PO to submit it to Coupa, or reject to send back for review.',
+    emptyTitle: 'No procurement tasks',
+    emptyDesc: 'Tasks appear here once an app owner has approved reclamation and the renewal is ready for PO submission. Complete an App Owner task first.'
+  }
+};
 
-let currentTaskKey  = null;
-let currentTaskType = null;
+let activeTab = 'app-owner';
+let allTasks  = [];
+
+let currentTaskKey     = null;
+let currentTaskType    = null;
 let currentReclaimable = [];
 
 function escHtml(s) {
@@ -228,8 +287,8 @@ function relativeTime(iso) {
   if (!iso) return '—';
   const diff = Date.now() - new Date(iso).getTime();
   const s = Math.floor(diff / 1000);
-  if (s < 60)   return `${s}s ago`;
-  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 60)    return `${s}s ago`;
+  if (s < 3600)  return `${Math.floor(s / 60)}m ago`;
   if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
   return `${Math.floor(s / 86400)}d ago`;
 }
@@ -238,11 +297,77 @@ function recBadgeClass(rec) {
   return { renew_as_is:'badge-green', reduce_seats:'badge-blue', reclaim_and_reduce:'badge-amber', escalate_to_human:'badge-red' }[rec] || '';
 }
 
-// ─── Load task list ──────────────────────────────────────────────────────────
+// ─── Tab switching ────────────────────────────────────────────────────────────
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-app-owner').classList.toggle('active', tab === 'app-owner');
+  document.getElementById('tab-procurement').classList.toggle('active', tab === 'procurement');
+  updateRoleBanner(tab);
+  renderTaskList(allTasks);
+}
+
+function updateRoleBanner(tab) {
+  const m = ROLE_META[tab];
+  document.getElementById('roleBanner').innerHTML = `
+    <div class="role-banner-icon">${m.icon}</div>
+    <div>
+      <div class="role-banner-title">${m.title}</div>
+      <div class="role-banner-desc">${m.desc}</div>
+    </div>`;
+}
+
+// ─── Render task list (filtered by active tab) ────────────────────────────────
+
+function renderTaskList(tasks) {
+  const list     = document.getElementById('taskList');
+  const filtered = tasks.filter(t => TASK_TAB[t.elementId] === activeTab);
+  const m        = ROLE_META[activeTab];
+
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">${m.icon}</div>
+        <h3>${escHtml(m.emptyTitle)}</h3>
+        <p>${escHtml(m.emptyDesc)}</p>
+        <a href="/start.html">Start a renewal to generate tasks →</a>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(t => {
+    const label    = TASK_LABELS[t.elementId] || t.elementId;
+    const icon     = TASK_ICONS[t.elementId]  || '📋';
+    const [pillTxt, pillCls] = TASK_PILLS[t.elementId] || ['Task', ''];
+    const appName  = t.appName  || '—';
+    const vendor   = t.vendor   || '—';
+    const assignee = t.assignee || (Array.isArray(t.candidateGroups) ? t.candidateGroups.join(', ') : (t.candidateGroups || null));
+    const age      = relativeTime(t.creationDate);
+    return `
+      <div class="task-card" onclick="openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">
+        <div class="task-card-left">
+          <div class="task-icon">${icon}</div>
+          <div>
+            <div class="task-name">${escHtml(label)}</div>
+            <div class="task-app-line">${escHtml(appName)} · ${escHtml(vendor)}</div>
+            <div class="task-meta-line">
+              <span class="task-type-pill ${pillCls}">${escHtml(pillTxt)}</span>
+              ${assignee ? escHtml(assignee) + ' · ' : ''}${age}
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">Review →</button>
+      </div>`;
+  }).join('');
+}
+
+// ─── Load task list ───────────────────────────────────────────────────────────
 
 async function loadTasks() {
-  const list = document.getElementById('taskList');
-  const badge = document.getElementById('taskCountBadge');
+  const list       = document.getElementById('taskList');
+  const badge      = document.getElementById('taskCountBadge');
+  const ownerBadge = document.getElementById('badge-app-owner');
+  const procBadge  = document.getElementById('badge-procurement');
 
   list.innerHTML = '<div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>';
   badge.textContent = '—';
@@ -250,46 +375,18 @@ async function loadTasks() {
 
   try {
     const tasks = await fetch('/api/tasks').then(r => r.json());
+    allTasks = Array.isArray(tasks) ? tasks : [];
 
-    if (!Array.isArray(tasks) || tasks.length === 0) {
-      badge.textContent = '0';
-      list.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📭</div>
-          <h3>No open tasks</h3>
-          <p>Tasks requiring human review will appear here when the license renewal process reaches the App Owner Review or Procurement Approval stages.</p>
-          <a href="/start.html">Start a renewal to generate tasks →</a>
-        </div>`;
-      return;
-    }
+    const ownerCount = allTasks.filter(t => TASK_TAB[t.elementId] === 'app-owner').length;
+    const procCount  = allTasks.filter(t => TASK_TAB[t.elementId] === 'procurement').length;
+    const total      = allTasks.length;
 
-    badge.textContent = tasks.length;
-    badge.className = 'task-count-badge';
+    badge.textContent = total;
+    badge.className   = total > 0 ? 'task-count-badge' : 'task-count-badge zero';
+    ownerBadge.textContent = ownerCount;
+    procBadge.textContent  = procCount;
 
-    list.innerHTML = tasks.map(t => {
-      const label    = TASK_LABELS[t.elementId] || t.elementId;
-      const icon     = TASK_ICONS[t.elementId]  || '📋';
-      const [pillTxt, pillCls] = TASK_PILLS[t.elementId] || ['Task', ''];
-      const appName  = t.appName  || '—';
-      const vendor   = t.vendor   || '—';
-      const assignee = t.assignee || (Array.isArray(t.candidateGroups) ? t.candidateGroups.join(', ') : (t.candidateGroups || null));
-      const age      = relativeTime(t.creationDate);
-      return `
-        <div class="task-card" onclick="openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">
-          <div class="task-card-left">
-            <div class="task-icon">${icon}</div>
-            <div>
-              <div class="task-name">${escHtml(label)}</div>
-              <div class="task-app-line">${escHtml(appName)} · ${escHtml(vendor)}</div>
-              <div class="task-meta-line">
-                <span class="task-type-pill ${pillCls}">${escHtml(pillTxt)}</span>
-                ${assignee ? escHtml(assignee) + ' · ' : ''}${age}
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">Review →</button>
-        </div>`;
-    }).join('');
+    renderTaskList(allTasks);
 
   } catch (err) {
     badge.textContent = '!';
@@ -297,11 +394,11 @@ async function loadTasks() {
   }
 }
 
-// ─── Open drawer ─────────────────────────────────────────────────────────────
+// ─── Open drawer ──────────────────────────────────────────────────────────────
 
 async function openTask(taskKey, elementId, piKey) {
-  currentTaskKey  = taskKey;
-  currentTaskType = elementId;
+  currentTaskKey     = taskKey;
+  currentTaskType    = elementId;
   currentReclaimable = [];
 
   document.getElementById('drawerTitle').textContent = TASK_LABELS[elementId] || elementId;
@@ -312,10 +409,8 @@ async function openTask(taskKey, elementId, piKey) {
   try {
     const ctx = await fetch(`/api/tasks/${taskKey}/context?piKey=${piKey}`).then(r => r.json());
     if (ctx.error) throw new Error(ctx.error);
-
     const vars = ctx.variables || {};
     document.getElementById('drawerBody').innerHTML = renderDrawer(elementId, vars);
-
   } catch (err) {
     document.getElementById('drawerBody').innerHTML = `<div class="drawer-section"><div class="error-msg">${escHtml(err.message)}</div></div>`;
   }
@@ -328,7 +423,7 @@ function closeDrawer() {
   currentTaskType = null;
 }
 
-// ─── Drawer content ──────────────────────────────────────────────────────────
+// ─── Drawer content ───────────────────────────────────────────────────────────
 
 function renderDrawer(elementId, vars) {
   if (elementId === 'Task_ReviewReclamation')   return renderReviewDrawer(vars);
@@ -337,13 +432,13 @@ function renderDrawer(elementId, vars) {
 }
 
 function renderReviewDrawer(vars) {
-  const summary   = vars.usageSummary || {};
-  const score     = vars.usageScore   || {};
+  const summary     = vars.usageSummary || {};
+  const score       = vars.usageScore   || {};
   const reclaimable = Array.isArray(vars.reclaimable) ? vars.reclaimable : [];
   currentReclaimable = reclaimable;
 
-  const rec     = score.recommendation  || '—';
-  const band    = score.utilizationBand || '—';
+  const rec      = score.recommendation  || '—';
+  const band     = score.utilizationBand || '—';
   const conflict = summary.conflictDetected;
   const resolved = summary.resolvedActiveUsers ?? '—';
   const total    = vars.requestedSeats ?? '—';
@@ -474,10 +569,10 @@ function renderProcurementDrawer(vars) {
     </div>`;
 }
 
-// ─── Submit task ─────────────────────────────────────────────────────────────
+// ─── Submit task ──────────────────────────────────────────────────────────────
 
 async function submitTask() {
-  const btn  = document.getElementById('submitBtn');
+  const btn   = document.getElementById('submitBtn');
   const errEl = document.getElementById('submitError');
   errEl.style.display = 'none';
 
@@ -486,24 +581,17 @@ async function submitTask() {
   if (currentTaskType === 'Task_ReviewReclamation') {
     variables.reviewDecision = document.getElementById('reviewDecision').value;
     const notes = document.getElementById('reviewNotes').value.trim();
-    if (!variables.reviewDecision) {
-      return showInlineError('Please select a decision before submitting.');
-    }
-    if (variables.reviewDecision === 'approve') {
-      variables.approvedReclaims = currentReclaimable;
-    }
+    if (!variables.reviewDecision) return showInlineError('Please select a decision before submitting.');
+    if (variables.reviewDecision === 'approve') variables.approvedReclaims = currentReclaimable;
     if (notes) variables.reviewNotes = notes;
 
   } else if (currentTaskType === 'Task_ProcurementApproval') {
     variables.procurementDecision = document.getElementById('procurementDecision').value;
     const seatsVal = document.getElementById('finalSeats').value;
     const notes    = document.getElementById('procurementNotes').value.trim();
-    if (!variables.procurementDecision) {
-      return showInlineError('Please select a decision before submitting.');
-    }
-    if (!seatsVal || isNaN(parseInt(seatsVal, 10)) || parseInt(seatsVal, 10) < 1) {
+    if (!variables.procurementDecision) return showInlineError('Please select a decision before submitting.');
+    if (!seatsVal || isNaN(parseInt(seatsVal, 10)) || parseInt(seatsVal, 10) < 1)
       return showInlineError('Please enter a valid approved seat count.');
-    }
     variables.finalSeats = parseInt(seatsVal, 10);
     if (notes) variables.procurementNotes = notes;
   }
@@ -512,14 +600,13 @@ async function submitTask() {
   btn.textContent = 'Submitting…';
 
   try {
-    const res = await fetch(`/api/tasks/${currentTaskKey}/complete`, {
+    const res  = await fetch(`/api/tasks/${currentTaskKey}/complete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ variables })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-
     closeDrawer();
     showToast('Task completed successfully!');
     loadTasks();
@@ -542,7 +629,9 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// Start
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+updateRoleBanner(activeTab);
 loadTasks();
 setInterval(loadTasks, 30000);
 </script>

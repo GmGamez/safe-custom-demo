@@ -16,11 +16,14 @@ public class TasksController {
 
     private final CamundaRestHelper restHelper;
     private final ProcessController processController;
+    private final ProcessVariableCache variableCache;
     private final CamundaClient client;
 
-    public TasksController(CamundaRestHelper restHelper, ProcessController processController, CamundaClient client) {
+    public TasksController(CamundaRestHelper restHelper, ProcessController processController,
+                           ProcessVariableCache variableCache, CamundaClient client) {
         this.restHelper = restHelper;
         this.processController = processController;
+        this.variableCache = variableCache;
         this.client = client;
     }
 
@@ -61,30 +64,18 @@ public class TasksController {
 
     /**
      * Get process variables for the given task.
-     * piKey (processInstanceKey) is provided by the frontend from the task-list response,
-     * avoiding a second user-task search (the userTaskKey filter is not supported by the v2 API).
+     * Builds the variable map from three sources in priority order:
+     *   1. Initial submission variables (in-memory, always available)
+     *   2. Worker output cache (set by MockJobWorkers as each task completes)
+     *   3. Camunda variables/search API (fallback for variables not in the above)
      */
     @GetMapping("/{taskKey}/context")
     public ResponseEntity<?> getTaskContext(@PathVariable long taskKey,
                                             @RequestParam long piKey) {
         try {
-
-            Map<String, Object> varSearch = restHelper.post("/variables/search",
-                Map.of("filter", Map.of("processInstanceKey", piKey)));
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> varItems = (List<Map<String, Object>>) varSearch.getOrDefault("items", List.of());
-
             Map<String, Object> variables = new LinkedHashMap<>();
-            for (Map<String, Object> v : varItems) {
-                String name = String.valueOf(v.get("name"));
-                Object rawVal = v.get("value");
-                if (rawVal == null) continue;
-                String raw = String.valueOf(rawVal);
-                try { variables.put(name, restHelper.mapper.readValue(raw, Object.class)); }
-                catch (Exception ex) { variables.put(name, raw); }
-            }
 
-            // Fill initial submission variables not yet in Camunda (e.g. appName, vendor)
+            // 1. Initial submission variables (appName, vendor, appOwner, requestedSeats, etc.)
             processController.getRecentInstancesList().stream()
                 .filter(e -> piKey == asLong(e.get("processInstanceKey")))
                 .findFirst()
@@ -92,12 +83,32 @@ public class TasksController {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> initVars = entry.get("variables") instanceof Map<?,?> m
                         ? (Map<String, Object>) m : Map.of();
-                    initVars.forEach((k, val) -> variables.putIfAbsent(String.valueOf(k), val));
+                    variables.putAll(initVars);
                 });
+
+            // 2. Worker output cache — usageSummary, usageScore, reclaimable, vendorQuote, jiraTicket, etc.
+            variables.putAll(variableCache.get(piKey));
+
+            // 3. Camunda REST API fallback (catches variables set by engine-native tasks like DMN)
+            try {
+                Map<String, Object> varSearch = restHelper.post("/variables/search",
+                    Map.of("filter", Map.of("processInstanceKey", piKey)));
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> varItems = (List<Map<String, Object>>) varSearch.getOrDefault("items", List.of());
+                for (Map<String, Object> v : varItems) {
+                    String name = String.valueOf(v.get("name"));
+                    Object rawVal = v.get("value");
+                    if (rawVal == null) continue;
+                    try { variables.putIfAbsent(name, restHelper.mapper.readValue(String.valueOf(rawVal), Object.class)); }
+                    catch (Exception ignored) {}
+                }
+            } catch (Exception ignored) {
+                log.debug("[tasks] variables/search fallback skipped for piKey={}", piKey);
+            }
 
             return ResponseEntity.ok(Map.of("variables", variables));
         } catch (Exception e) {
-            log.error("[tasks] context failed for {}: {}", taskKey, e.getMessage());
+            log.error("[tasks] context failed for piKey={}: {}", piKey, e.getMessage());
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
