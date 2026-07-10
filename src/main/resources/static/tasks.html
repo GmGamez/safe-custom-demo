@@ -506,13 +506,29 @@ function renderReviewDrawer(vars) {
 }
 
 function renderProcurementDrawer(vars) {
-  const quote = vars.vendorQuote  || {};
-  const score = vars.usageScore   || {};
-  const jira  = vars.jiraTicket   || {};
+  const quote   = vars.vendorQuote  || {};
+  const score   = vars.usageScore   || {};
+  const summary = vars.usageSummary || {};
+  const jira    = vars.jiraTicket   || {};
+  const reclaimable = Array.isArray(vars.reclaimable) ? vars.reclaimable : [];
 
-  const rec  = score.recommendation  || '—';
-  const band = score.utilizationBand || '—';
+  const rec      = score.recommendation  || '—';
+  const band     = score.utilizationBand || '—';
+  const conflict = summary.conflictDetected;
+  const resolved = summary.resolvedActiveUsers ?? '—';
+  const origSeats = vars.requestedSeats ?? '—';
   const fmt  = n => n != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n) : '—';
+
+  // Show seats that were actually reclaimed (approved subset)
+  const reclaimedCount = vars.reclaimedCount ?? 0;
+  const reclaimedRows = reclaimable.slice(0, reclaimedCount).length
+    ? reclaimable.slice(0, reclaimedCount).map(r => `
+        <tr>
+          <td>${escHtml(r.userId || '—')}</td>
+          <td><span class="reason-tag">${escHtml(r.reason || '—')}</span></td>
+          <td>${escHtml(r.lastLogin || '—')}</td>
+        </tr>`).join('')
+    : '<tr><td colspan="3" style="text-align:center;padding:14px;color:var(--muted)">No reclamations recorded</td></tr>';
 
   return `
     <div class="drawer-app-bar">
@@ -521,12 +537,18 @@ function renderProcurementDrawer(vars) {
     </div>
 
     <div class="drawer-section">
-      <div class="section-title">Renewal Summary</div>
+      <div class="section-title">Usage Analysis</div>
       <div class="kv-grid">
-        <div class="kv-label">Licenses Reclaimed</div>
-        <div class="kv-value">${vars.reclaimedCount ?? '—'}</div>
-        <div class="kv-label">Legal Ticket</div>
-        <div class="kv-value">${jira.key ? `<span class="jira-key">${escHtml(jira.key)}</span>` : '—'}</div>
+        <div class="kv-label">Resolved Active Users</div>
+        <div class="kv-value"><strong>${resolved}</strong> of ${origSeats} seats</div>
+        <div class="kv-label">Okta Active</div>
+        <div class="kv-value">${summary.oktaActive ?? '—'}</div>
+        <div class="kv-label">Flexera Active</div>
+        <div class="kv-value">${summary.flexeraActive ?? '—'}</div>
+        <div class="kv-label">Conflict Detected</div>
+        <div class="kv-value">
+          ${conflict ? '<span class="badge badge-err">Yes — signals diverge</span>' : '<span class="badge badge-ok">No</span>'}
+        </div>
         <div class="kv-label">Recommendation</div>
         <div class="kv-value"><span class="badge ${recBadgeClass(rec)}">${escHtml(rec)}</span></div>
         <div class="kv-label">Utilization Band</div>
@@ -535,14 +557,37 @@ function renderProcurementDrawer(vars) {
     </div>
 
     <div class="drawer-section">
+      <div class="section-title">Reclaimed Licenses <span class="count-pill">${reclaimedCount}</span></div>
+      <table class="mini-table">
+        <thead><tr><th>User ID</th><th>Reason</th><th>Last Login</th></tr></thead>
+        <tbody>${reclaimedRows}</tbody>
+      </table>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-title">Legal</div>
+      <div class="kv-grid">
+        <div class="kv-label">Jira Ticket</div>
+        <div class="kv-value">${jira.key ? `<span class="jira-key">${escHtml(jira.key)}</span>` : '—'}</div>
+        <div class="kv-label">Status</div>
+        <div class="kv-value">${jira.status ? `<span class="badge badge-blue">${escHtml(jira.status)}</span>` : '—'}</div>
+        <div class="kv-label">Summary</div>
+        <div class="kv-value" style="font-size:12px;color:var(--muted)">${escHtml(jira.summary || '—')}</div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
       <div class="section-title">Vendor Quote</div>
       <div class="kv-grid">
-        <div class="kv-label">Seats</div>
-        <div class="kv-value">${quote.seats ?? '—'}</div>
+        <div class="kv-label">Original Seats</div>
+        <div class="kv-value">${origSeats}</div>
+        <div class="kv-label">Seats After Reclamation</div>
+        <div class="kv-value"><strong>${quote.seats ?? '—'}</strong></div>
         <div class="kv-label">Price / Seat</div>
         <div class="kv-value">${fmt(quote.pricePerSeat)}</div>
         <div class="kv-label">Total Price</div>
         <div class="kv-value kv-total">${fmt(quote.totalPrice)}</div>
+        ${quote.quoteRef ? `<div class="kv-label">Quote Ref</div><div class="kv-value" style="font-family:monospace;font-size:12px">${escHtml(quote.quoteRef)}</div>` : ''}
       </div>
     </div>
 
