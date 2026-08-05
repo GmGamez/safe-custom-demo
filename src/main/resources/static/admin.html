@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Epic Games IT</title>
+  <title>Dashboard</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
       --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
-      --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+      --success: #22c55e; --warning: #f59e0b; --info: #3b82f6; --error: #ef4444;
       --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
@@ -17,36 +17,35 @@
     .nav { display: flex; align-items: center; justify-content: space-between;
       padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
     .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
-    .brand-e { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
       display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
     .nav-links { display: flex; gap: 4px; }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
     .nav-link:hover { color: var(--text); background: var(--surface2); }
     .nav-link.active { color: #fff; }
 
-    main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
-
+    main { max-width: 1150px; margin: 0 auto; padding: 40px 24px 80px; }
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
     .page-header h1 { font-size: 26px; font-weight: 700; }
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
-      font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background .15s; text-decoration: none; }
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { background: var(--accent-hover); }
     .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
     .btn-ghost:hover { background: #2a2a2a; }
+    .btn-warn { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+    .btn-warn:hover { background: rgba(239,68,68,.2); }
     .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-    /* Stats row */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
     .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
     .stat-label { font-size: 11px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
     .stat-value { font-size: 28px; font-weight: 700; }
-    .stat-value.blue   { color: var(--accent); }
-    .stat-value.amber  { color: var(--warning); }
-    .stat-value.green  { color: var(--success); }
+    .stat-value.blue  { color: var(--accent); }
+    .stat-value.amber { color: var(--warning); }
+    .stat-value.green { color: var(--success); }
 
-    /* Table */
     .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     .table-toolbar { display: flex; align-items: center; justify-content: space-between;
       padding: 14px 20px; border-bottom: 1px solid var(--border); }
@@ -59,29 +58,23 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(255,255,255,.02); }
 
-    .app-cell { display: flex; align-items: center; gap: 10px; }
-    .app-icon { width: 30px; height: 30px; border-radius: 7px; background: var(--surface2);
-      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
-    .app-name { font-weight: 600; font-size: 13px; }
-    .app-vendor { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .use-case-name { font-weight: 600; font-size: 13px; }
+    .pi-key { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); margin-top: 1px; }
 
-    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+    .badge, .category-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
       padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
-    .badge-active   { background: rgba(59,130,246,.15);  color: #60a5fa; }
-    .badge-review   { background: rgba(245,158,11,.15);  color: #fbbf24; }
-    .badge-done     { background: rgba(34,197,94,.15);   color: #4ade80; }
-    .badge-unknown  { background: rgba(136,136,136,.12); color: var(--muted); }
+    .badge-active  { background: rgba(59,130,246,.15);  color: #60a5fa; }
+    .badge-review  { background: rgba(245,158,11,.15);  color: #fbbf24; }
+    .badge-done    { background: rgba(34,197,94,.15);   color: #4ade80; }
+    .badge-unknown { background: rgba(136,136,136,.12); color: var(--muted); }
+    .cat-Minimal  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .cat-Limited  { background: rgba(59,130,246,.15); color: #60a5fa; }
+    .cat-High     { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .cat-Critical { background: rgba(239,68,68,.15);  color: #f87171; }
 
     .step-text { font-size: 12px; }
-    .step-text.waiting { color: var(--warning); font-weight: 600; }
-    .step-text.active  { color: var(--info); }
-    .step-text.done    { color: var(--success); }
-    .step-text.unknown { color: var(--muted); }
-
-    .pi-key { font-family: monospace; font-size: 11px; color: var(--muted); }
     .time-cell { font-size: 12px; color: var(--muted); }
-
-    .actions-cell { display: flex; gap: 6px; }
+    .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
     .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-state p { margin-top: 10px; font-size: 13px; }
     .empty-state a { color: var(--accent); text-decoration: none; }
@@ -95,17 +88,24 @@
     .spinner-sm { display: inline-block; width: 10px; height: 10px; border: 1.5px solid rgba(255,255,255,.15);
       border-top-color: var(--muted); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: #1a1a1a; border: 1px solid var(--success); color: var(--success);
+      padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      opacity: 0; transition: opacity .2s, transform .2s; z-index: 300; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { border-color: var(--error); color: #f87171; }
   </style>
 </head>
 <body>
 
 <nav class="nav">
   <a href="/index.html" class="nav-brand">
-    <span class="brand-e">E</span>
-    Epic Games IT
+    <span class="brand-mark">G</span>
+    AI Governance
   </a>
   <div class="nav-links">
-    <a href="/start.html" class="nav-link">New Renewal</a>
+    <a href="/start.html" class="nav-link">Register</a>
     <a href="/tasks.html" class="nav-link">Tasks</a>
     <a href="/admin.html" class="nav-link active">Dashboard</a>
   </div>
@@ -113,17 +113,16 @@
 
 <main>
   <div class="page-header">
-    <h1>License Renewal Dashboard</h1>
+    <h1>Dashboard</h1>
     <div class="header-actions">
-      <a href="/start.html" class="btn btn-primary">+ New Renewal</a>
+      <a href="/start.html" class="btn btn-primary">+ Register Use Case</a>
       <button class="btn btn-ghost" id="refreshBtn" onclick="loadInstances()">Refresh</button>
     </div>
   </div>
 
-  <!-- Stats -->
   <div class="stats">
     <div class="stat-card">
-      <div class="stat-label">Total Started</div>
+      <div class="stat-label">Total Registered</div>
       <div class="stat-value" id="stat-total">—</div>
     </div>
     <div class="stat-card">
@@ -131,75 +130,41 @@
       <div class="stat-value blue" id="stat-active">—</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Awaiting Review</div>
-      <div class="stat-value amber" id="stat-review">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Completed</div>
+      <div class="stat-label">Closed</div>
       <div class="stat-value green" id="stat-done">—</div>
     </div>
   </div>
 
-  <!-- Table -->
   <div class="table-card">
     <div class="table-toolbar">
-      <span class="table-toolbar-title">Renewal Instances</span>
+      <span class="table-toolbar-title">AI Use Cases</span>
       <span class="last-updated" id="lastUpdated"></span>
     </div>
     <div id="tableContainer">
       <table>
         <thead>
           <tr>
-            <th>Application</th>
-            <th>Seats</th>
-            <th>Deadline</th>
-            <th>Started</th>
+            <th>Use Case</th>
+            <th>Category</th>
+            <th>Registered</th>
             <th>Current Step</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody">
-          <tr><td colspan="7"><div class="empty-state">Loading…</div></td></tr>
+          <tr><td colspan="6"><div class="empty-state">Loading…</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </main>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const STEP_LABELS = {
-  Gateway_Fork:             'Forking parallel fetch',
-  Task_FetchOkta:           'Fetching Okta SSO data',
-  Task_FetchFlexera:        'Fetching Flexera metering',
-  Task_FetchVendorQuote:    'Fetching vendor quote',
-  Gateway_Join:             'Joining signals',
-  Task_AggregateUsage:      'Aggregating usage signals',
-  Task_UsageScoring:        'Scoring license utilization',
-  Task_IdentifyReclaimable: 'Identifying reclaimable seats',
-  Task_ReviewReclamation:   '⏳ App Owner Review',
-  Task_ReclaimLicenses:     'Reclaiming licenses',
-  Task_CreateJiraTicket:    'Creating Jira legal ticket',
-  Task_ProcurementApproval: '⏳ Procurement Approval',
-  Task_SubmitCoupaPO:       'Submitting Coupa PO',
-  Task_NotifyAppOwnerReject:'Notifying app owner',
-  Task_NotifyAppOwnerCancel:'Notifying app owner',
-};
-
-const USER_TASK_STEPS = new Set(['Task_ReviewReclamation', 'Task_ProcurementApproval']);
-const APP_EMOJIS = { 'adobe': '🎨', 'slack': '💬', 'github': '💻', 'zoom': '🎥', 'microsoft': '🪟', 'salesforce': '☁️' };
-
 let operateBaseUrl = '';
 let tasklistBaseUrl = '';
-let refreshTimer = null;
-
-function getAppEmoji(appName) {
-  const lower = (appName || '').toLowerCase();
-  for (const [key, emoji] of Object.entries(APP_EMOJIS)) {
-    if (lower.includes(key)) return emoji;
-  }
-  return '📦';
-}
 
 function relativeTime(iso) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -210,71 +175,54 @@ function relativeTime(iso) {
   return `${Math.floor(s/86400)}d ago`;
 }
 
-function formatDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
 function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function stepStatus(stepId) {
-  if (!stepId) return 'done';
-  if (USER_TASK_STEPS.has(stepId)) return 'waiting';
-  return 'active';
-}
-
 function stepBadge(stepId, state) {
-  if (state === 'completed' || (!stepId && state !== 'active')) return '<span class="badge badge-done">Completed</span>';
+  if (state === 'completed' || (!stepId && state !== 'active')) return '<span class="badge badge-done">Closed</span>';
   if (state === 'unknown') return '<span class="badge badge-unknown">Unknown</span>';
   if (!stepId) return '<span class="badge badge-unknown">—</span>';
-  if (USER_TASK_STEPS.has(stepId)) return '<span class="badge badge-review">Awaiting Review</span>';
   return '<span class="badge badge-active">Active</span>';
 }
 
 async function loadInstances() {
   try {
     const instances = await (await fetch('/api/process/recent')).json();
-
     const tbody = document.getElementById('tableBody');
+
     if (!instances || instances.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
         <div style="font-size:32px">📋</div>
-        <p>No renewals started yet. <a href="/start.html">Start your first renewal →</a></p>
+        <p>No use cases registered yet. <a href="/start.html">Register one →</a></p>
       </div></td></tr>`;
       updateStats([], []);
       return;
     }
 
-    // Render rows immediately with loading spinner for current step
-    tbody.innerHTML = instances.map((inst, i) => {
-      const v = inst.variables || {};
+    tbody.innerHTML = instances.map(inst => {
       const piKey = inst.processInstanceKey;
-      const emoji = getAppEmoji(v.appName);
+      const v = inst.variables || {};
+      const category = v.aiCategory
+        ? `<span class="category-pill cat-${escHtml(v.aiCategory)}">${escHtml(v.aiCategory)}</span>`
+        : '<span class="category-pill badge-unknown">Pending</span>';
       return `<tr id="row-${piKey}">
         <td>
-          <div class="app-cell">
-            <div class="app-icon">${emoji}</div>
-            <div>
-              <div class="app-name">${escHtml(v.appName || '—')}</div>
-              <div class="app-vendor">${escHtml(v.vendor || '—')}</div>
-            </div>
-          </div>
+          <div class="use-case-name">${escHtml(v.useCaseName || '—')}</div>
+          <div class="pi-key">pi ${piKey}</div>
         </td>
-        <td>${v.requestedSeats ?? '—'}</td>
-        <td class="time-cell">${formatDate(v.renewalDeadline)}</td>
+        <td id="cat-${piKey}">${category}</td>
         <td class="time-cell">${relativeTime(inst.startedAt)}</td>
         <td id="step-${piKey}"><span class="spinner-sm"></span></td>
         <td id="status-${piKey}"><span class="badge badge-unknown">—</span></td>
         <td class="actions-cell" id="actions-${piKey}">
+          <a href="/audit.html?piKey=${piKey}" class="btn btn-ghost btn-sm">Trace →</a>
           ${operateBaseUrl ? `<a href="${operateBaseUrl}/instances/${piKey}" target="_blank" class="btn btn-ghost btn-sm">Operate ↗</a>` : ''}
+          <button class="btn btn-warn btn-sm" onclick="reportIncident('${piKey}', '${escHtml(v.useCaseId || '')}', '${escHtml(v.useCaseName || '')}')">Report Incident</button>
         </td>
       </tr>`;
     }).join('');
 
-    // Async fetch step for each instance
     const stepResults = await Promise.allSettled(
       instances.map(inst =>
         fetch(`/api/admin/instance-step/${inst.processInstanceKey}`)
@@ -288,30 +236,17 @@ async function loadInstances() {
       return { piKey: instances[i].processInstanceKey, currentStep: '', state: 'unknown' };
     });
 
-    // Update step, status, and action cells
     enriched.forEach(({ piKey, currentStep, state }) => {
-      const stepCell    = document.getElementById(`step-${piKey}`);
-      const statusCell  = document.getElementById(`status-${piKey}`);
-      const actionsCell = document.getElementById(`actions-${piKey}`);
+      const stepCell = document.getElementById(`step-${piKey}`);
+      const statusCell = document.getElementById(`status-${piKey}`);
       if (!stepCell) return;
 
-      const label = STEP_LABELS[currentStep] || (currentStep || (state === 'completed' ? 'Completed' : '—'));
-      const status = stepStatus(currentStep);
-      const dotClass = status === 'waiting' ? 'dot-amber' : status === 'active' ? 'dot-blue' : 'dot-green';
-
+      const dotClass = state === 'active' ? 'dot-blue' : state === 'completed' ? 'dot-green' : 'dot-amber';
       stepCell.innerHTML = state === 'completed' || !currentStep
-        ? `<span class="step-text done">Completed</span>`
-        : `<span class="dot ${dotClass}"></span><span class="step-text ${status}">${escHtml(label)}</span>`;
+        ? `<span class="step-text">Closed</span>`
+        : `<span class="dot ${dotClass}"></span><span class="step-text">${escHtml(currentStep)}</span>`;
 
       statusCell.innerHTML = stepBadge(currentStep, state);
-
-      // Add Review button for rows awaiting human input
-      if (actionsCell && USER_TASK_STEPS.has(currentStep)) {
-        const operateLink = operateBaseUrl
-          ? `<a href="${operateBaseUrl}/instances/${piKey}" target="_blank" class="btn btn-ghost btn-sm">Operate ↗</a>`
-          : '';
-        actionsCell.innerHTML = operateLink + `<a href="/tasks.html" class="btn btn-primary btn-sm">Review →</a>`;
-      }
     });
 
     updateStats(instances, enriched);
@@ -319,24 +254,52 @@ async function loadInstances() {
 
   } catch (err) {
     document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="7"><div class="empty-state"><p>Could not load instances: ${escHtml(err.message)}</p></div></td></tr>`;
+      `<tr><td colspan="6"><div class="empty-state"><p>Could not load instances: ${escHtml(err.message)}</p></div></td></tr>`;
   }
 }
 
 function updateStats(instances, enriched) {
-  const total   = instances.length;
-  const done    = enriched.filter(e => e.state === 'completed' || (!e.currentStep && e.state !== 'active')).length;
-  const waiting = enriched.filter(e => e.currentStep && USER_TASK_STEPS.has(e.currentStep)).length;
-  const active  = total - done;
+  const total = instances.length;
+  const done  = enriched.filter(e => e.state === 'completed' || (!e.currentStep && e.state !== 'active')).length;
+  const active = total - done;
 
   document.getElementById('stat-total').textContent  = total;
   document.getElementById('stat-active').textContent = active;
-  document.getElementById('stat-review').textContent = waiting;
   document.getElementById('stat-done').textContent   = done;
 }
 
+async function reportIncident(piKey, useCaseId, useCaseName) {
+  if (!useCaseId) { showToast('This use case has no useCaseId to correlate on.', true); return; }
+  const reason = window.prompt(`Report a material change or incident for "${useCaseName}":`);
+  if (reason === null) return;
+
+  try {
+    const res = await fetch('/api/process/message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messageName: 'IncidentReported',
+        correlationKey: useCaseId,
+        variables: { incidentReason: reason, incidentReportedAt: new Date().toISOString() }
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    showToast('Incident reported — reassessment task created.');
+    loadInstances();
+  } catch (err) {
+    showToast('Failed to report incident: ' + err.message, true);
+  }
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
 async function init() {
-  // Load cluster config first
   try {
     const cfg = await (await fetch('/api/admin/config')).json();
     operateBaseUrl  = cfg.operateBaseUrl  || '';
@@ -344,7 +307,7 @@ async function init() {
   } catch (_) {}
 
   await loadInstances();
-  refreshTimer = setInterval(loadInstances, 15000);
+  setInterval(loadInstances, 15000);
 }
 
 init();

@@ -1,0 +1,51 @@
+{
+  "id": "recertification-review",
+  "type": "default",
+  "schemaVersion": 18,
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "components": [
+    {
+      "type": "text",
+      "id": "text_header",
+      "text": "## Recertification Review"
+    },
+    {
+      "type": "textfield",
+      "id": "tf_useCaseName",
+      "label": "Use Case",
+      "key": "useCaseName",
+      "readonly": true,
+      "disabled": true
+    },
+    {
+      "type": "textfield",
+      "id": "tf_aiCategory",
+      "label": "AI Category",
+      "key": "aiCategory",
+      "readonly": true,
+      "disabled": true
+    },
+    {
+      "type": "separator",
+      "id": "sep_1"
+    },
+    {
+      "type": "select",
+      "id": "select_recertificationDecision",
+      "label": "Decision",
+      "key": "recertificationDecision",
+      "validate": { "required": true },
+      "values": [
+        { "label": "Approve — continue in production", "value": "approve" },
+        { "label": "Reject — decommission", "value": "reject" }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "ta_recertificationNotes",
+      "label": "Notes",
+      "key": "recertificationNotes"
+    }
+  ]
+}

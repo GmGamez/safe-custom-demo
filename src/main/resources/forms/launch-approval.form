@@ -1,0 +1,54 @@
+{
+  "id": "launch-approval",
+  "type": "default",
+  "schemaVersion": 18,
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "components": [
+    {
+      "type": "text",
+      "id": "text_header",
+      "text": "## Launch Approval & Residual Risk Acceptance"
+    },
+    {
+      "type": "textfield",
+      "id": "tf_useCaseName",
+      "label": "Use Case",
+      "key": "useCaseName",
+      "readonly": true,
+      "disabled": true
+    },
+    {
+      "type": "textfield",
+      "id": "tf_aiCategory",
+      "label": "AI Category",
+      "key": "aiCategory",
+      "readonly": true,
+      "disabled": true
+    },
+    {
+      "type": "separator",
+      "id": "sep_1"
+    },
+    {
+      "type": "textfield",
+      "id": "tf_launchApprover",
+      "label": "Approver (email)",
+      "key": "launchApprover",
+      "validate": { "required": true }
+    },
+    {
+      "type": "checkbox",
+      "id": "cb_residualRiskAccepted",
+      "label": "I accept the residual risk of launching this use case",
+      "key": "residualRiskAccepted",
+      "validate": { "required": true }
+    },
+    {
+      "type": "textarea",
+      "id": "ta_riskAcceptanceNotes",
+      "label": "Risk Acceptance Notes",
+      "key": "riskAcceptanceNotes"
+    }
+  ]
+}

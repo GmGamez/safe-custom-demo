@@ -64,9 +64,36 @@ public class ProcessController {
         return ResponseEntity.ok(recentInstances);
     }
 
+    /**
+     * Publishes a message to correlate with a running process instance — e.g. the
+     * "IncidentReported" message that triggers reassessment for an in-production use case.
+     */
+    @PostMapping("/message")
+    public ResponseEntity<?> publishMessage(@RequestBody PublishMessageRequest request) {
+        try {
+            var result = client.newPublishMessageCommand()
+                    .messageName(request.messageName())
+                    .correlationKey(request.correlationKey())
+                    .variables(request.variables() != null ? request.variables() : Map.of())
+                    .send()
+                    .join();
+
+            log.info("Published message '{}' correlationKey={} messageKey={}",
+                    request.messageName(), request.correlationKey(), result.getMessageKey());
+
+            return ResponseEntity.ok(Map.of("messageKey", result.getMessageKey()));
+        } catch (Exception e) {
+            String message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+            if (message == null) message = e.getClass().getSimpleName();
+            log.error("Failed to publish message '{}': {}", request.messageName(), message, e);
+            return ResponseEntity.status(500).body(Map.of("error", message));
+        }
+    }
+
     List<Map<String, Object>> getRecentInstancesList() {
         return Collections.unmodifiableList(recentInstances);
     }
 
     public record StartRequest(String processId, Map<String, Object> variables) {}
+    public record PublishMessageRequest(String messageName, String correlationKey, Map<String, Object> variables) {}
 }

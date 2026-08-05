@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Inbox — Epic Games IT</title>
+  <title>Task Inbox</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
       --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
-      --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+      --success: #22c55e; --error: #ef4444;
       --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
@@ -17,15 +17,14 @@
     .nav { display: flex; align-items: center; justify-content: space-between;
       padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
     .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
-    .brand-e { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
       display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
     .nav-links { display: flex; gap: 4px; }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; transition: color .15s, background .15s; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
     .nav-link:hover { color: var(--text); background: var(--surface2); }
     .nav-link.active { color: #fff; }
 
     main { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
-
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .page-header-left { display: flex; align-items: center; gap: 12px; }
     .page-header h1 { font-size: 24px; font-weight: 700; }
@@ -33,28 +32,8 @@
       padding: 2px 9px; border-radius: 10px; }
     .task-count-badge.zero { background: var(--surface2); color: var(--muted); }
 
-    /* Tabs */
-    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-    .tab { display: flex; align-items: center; gap: 8px; padding: 10px 22px;
-      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
-      border: none; border-bottom: 2px solid transparent; background: none;
-      font-family: inherit; transition: color .15s, border-color .15s; white-space: nowrap; }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
-    .tab-badge { background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 9px; padding: 1px 7px; font-size: 11px; font-weight: 700; color: var(--muted); }
-    .tab.active .tab-badge { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    /* Role banner */
-    .role-banner { background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
-      display: flex; align-items: flex-start; gap: 12px; }
-    .role-banner-icon { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
-    .role-banner-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
-    .role-banner-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
-      font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background .15s; text-decoration: none; }
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { background: var(--accent-hover); }
     .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
@@ -63,22 +42,22 @@
     .btn-full { width: 100%; justify-content: center; padding: 10px 16px; }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* Task cards */
     .task-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
       padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center;
-      justify-content: space-between; cursor: pointer; transition: border-color .15s, background .15s; gap: 16px; }
+      justify-content: space-between; cursor: pointer; gap: 16px; }
     .task-card:hover { border-color: var(--accent); background: #1d1d1d; }
     .task-card-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
     .task-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--surface2);
       border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
       font-size: 18px; flex-shrink: 0; }
     .task-name { font-weight: 600; font-size: 14px; }
-    .task-app-line { font-size: 12px; color: var(--muted); margin-top: 3px; }
-    .task-meta-line { font-size: 11px; color: #666; margin-top: 2px; }
-    .task-type-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+    .task-meta-line { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .category-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
       padding: 2px 7px; border-radius: 5px; margin-right: 6px; }
-    .pill-review { background: rgba(245,158,11,.15); color: #fbbf24; }
-    .pill-procurement { background: rgba(139,92,246,.15); color: #a78bfa; }
+    .cat-Minimal  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .cat-Limited  { background: rgba(59,130,246,.15); color: #60a5fa; }
+    .cat-High     { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .cat-Critical { background: rgba(239,68,68,.15);  color: #f87171; }
 
     .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-state .icon { font-size: 40px; margin-bottom: 14px; }
@@ -90,7 +69,6 @@
     .error-msg { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
       border-radius: 8px; padding: 12px 16px; color: var(--error); font-size: 13px; margin-bottom: 12px; }
 
-    /* Drawer */
     .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5);
       opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 199; }
     .drawer-overlay.show { opacity: 1; pointer-events: all; }
@@ -110,62 +88,48 @@
 
     .drawer-app-bar { padding: 14px 24px; background: var(--surface2); border-bottom: 1px solid var(--border); }
     .drawer-app-name { font-weight: 700; font-size: 16px; }
-    .drawer-app-vendor { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .drawer-app-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
     .drawer-section { padding: 18px 24px; border-bottom: 1px solid var(--border); }
     .section-title { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .count-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px;
-      padding: 1px 7px; font-size: 11px; font-weight: 600; color: var(--text); text-transform: none; letter-spacing: 0; }
+      color: var(--muted); margin-bottom: 12px; }
 
     .kv-grid { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; align-items: center; }
     .kv-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
     .kv-value { font-size: 13px; font-weight: 500; }
-    .kv-total { font-size: 16px; font-weight: 700; }
 
-    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
-      padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
-    .badge-ok    { background: rgba(34,197,94,.15);   color: #4ade80; }
-    .badge-err   { background: rgba(239,68,68,.15);   color: #f87171; }
-    .badge-green { background: rgba(34,197,94,.15);   color: #4ade80; }
-    .badge-blue  { background: rgba(59,130,246,.15);  color: #60a5fa; }
-    .badge-amber { background: rgba(245,158,11,.15);  color: #fbbf24; }
-    .badge-red   { background: rgba(239,68,68,.15);   color: #f87171; }
+    pre.vars { background: #111; border: 1px solid var(--border); border-radius: 7px; padding: 14px;
+      font-family: ui-monospace, monospace; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
 
-    .band-text.high     { color: var(--success); font-weight: 600; }
-    .band-text.medium   { color: var(--info); font-weight: 600; }
-    .band-text.low      { color: var(--warning); font-weight: 600; }
-    .band-text.conflict { color: var(--error); font-weight: 600; }
-
-    .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .mini-table th { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
-      color: var(--muted); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border);
-      background: var(--surface2); }
-    .mini-table td { padding: 8px 10px; border-bottom: 1px solid #1f1f1f; color: var(--text); }
-    .mini-table tr:last-child td { border-bottom: none; }
-    .reason-tag { display: inline-block; font-size: 10px; background: rgba(239,68,68,.1);
-      border: 1px solid rgba(239,68,68,.2); color: #f87171; border-radius: 4px; padding: 1px 6px; }
-
-    .jira-key { font-family: monospace; font-size: 12px; background: rgba(0,120,242,.1);
-      border: 1px solid rgba(0,120,242,.25); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+    .triage-section { background: #14181f; }
+    .pill-advisory { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      text-transform: none; background: rgba(0,120,242,.15); color: #60a5fa; padding: 2px 8px;
+      border-radius: 5px; margin-left: 8px; }
+    .triage-summary { font-family: var(--font); white-space: pre-wrap; margin-bottom: 12px; }
+    .tool-calls-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px; }
+    .tool-call { background: #111; border: 1px solid var(--border); border-radius: 7px;
+      padding: 10px 12px; margin-bottom: 8px; }
+    .tool-call:last-child { margin-bottom: 0; }
+    .tool-call-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+    .tool-call-content { font-size: 12px; color: var(--muted); white-space: pre-wrap; line-height: 1.5; }
 
     .form-section { background: #161616; }
     .field { margin-bottom: 14px; }
     .field:last-child { margin-bottom: 0; }
     .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
-    .req { color: var(--error); margin-left: 1px; }
-    .opt { color: #666; font-weight: 400; font-size: 11px; }
-    .select-input, .num-input, .textarea-input {
+    .select-input, .text-input, .textarea-input {
       width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
-      color: var(--text); font-size: 13px; padding: 8px 12px; outline: none; transition: border-color .15s;
+      color: var(--text); font-size: 13px; padding: 8px 12px; outline: none;
       font-family: inherit; }
-    .select-input:focus, .num-input:focus, .textarea-input:focus { border-color: var(--accent); }
+    .select-input:focus, .text-input:focus, .textarea-input:focus { border-color: var(--accent); }
     .select-input option { background: #1a1a1a; }
     .textarea-input { resize: vertical; }
+    .checkbox-field { display: flex; align-items: center; gap: 8px; }
+    .checkbox-field input { width: auto; }
     .error-inline { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
       border-radius: 6px; padding: 8px 12px; color: var(--error); font-size: 12px; margin-bottom: 12px; }
 
-    /* Toast */
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(12px);
       background: #1a1a1a; border: 1px solid var(--success); color: var(--success);
       padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
@@ -181,11 +145,11 @@
 
 <nav class="nav">
   <a href="/index.html" class="nav-brand">
-    <span class="brand-e">E</span>
-    Epic Games IT
+    <span class="brand-mark">G</span>
+    AI Governance
   </a>
   <div class="nav-links">
-    <a href="/start.html" class="nav-link">New Renewal</a>
+    <a href="/start.html" class="nav-link">Register</a>
     <a href="/tasks.html" class="nav-link active">Tasks</a>
     <a href="/admin.html" class="nav-link">Dashboard</a>
   </div>
@@ -200,31 +164,13 @@
     <button class="btn btn-ghost" onclick="loadTasks()">Refresh</button>
   </div>
 
-  <!-- Role tabs -->
-  <div class="tabs">
-    <button class="tab active" id="tab-app-owner" onclick="switchTab('app-owner')">
-      👤 App Owner
-      <span class="tab-badge" id="badge-app-owner">—</span>
-    </button>
-    <button class="tab" id="tab-procurement" onclick="switchTab('procurement')">
-      💼 Procurement
-      <span class="tab-badge" id="badge-procurement">—</span>
-    </button>
-  </div>
-
-  <!-- Role context banner -->
-  <div class="role-banner" id="roleBanner"></div>
-
-  <!-- Task list (filtered by active tab) -->
   <div id="taskList">
     <div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>
   </div>
 </main>
 
-<!-- Drawer overlay -->
 <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
 
-<!-- Task detail drawer -->
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <div class="drawer-header-title" id="drawerTitle">Task Detail</div>
@@ -235,49 +181,39 @@
   </div>
 </div>
 
-<!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
 <script>
 const TASK_LABELS = {
-  Task_ReviewReclamation:   'App Owner: Review License Reclamation',
-  Task_ProcurementApproval: 'Procurement: Approve License Renewal PO'
+  Task_AssignOwners:          'Assign accountable owners',
+  Task_SecurityReview:        'Review security posture',
+  Task_PrivacyReview:         'Review privacy impact',
+  Task_LegalReview:           'Review legal implications',
+  Task_ComplianceReview:      'Review regulatory compliance',
+  Task_ArchitectureReview:    'Review technical architecture',
+  Task_RaiReview:             'Review responsible AI alignment',
+  Task_ModelEvaluationGate:   'Complete model evaluation',
+  Task_DesignConsultationGate:'Confirm design consultation',
+  Task_PreBuildGate:          'Complete pre-build checkpoint',
+  Task_PreProductionGate:     'Complete pre-production checkpoint',
+  Task_LaunchApproval:        'Accept launch approval & residual risk',
+  Task_MonitorInProduction:   'Monitor system in production',
+  Task_RecertificationReview: 'Complete recertification review',
+  Task_ReassessmentReview:    'Complete reassessment review',
+  Task_Decommission:          'Decommission system & revoke access'
 };
-const TASK_ICONS = {
-  Task_ReviewReclamation:   '🔍',
-  Task_ProcurementApproval: '💰'
-};
-const TASK_PILLS = {
-  Task_ReviewReclamation:   ['App Owner Review', 'pill-review'],
-  Task_ProcurementApproval: ['Procurement Approval', 'pill-procurement']
-};
-const TASK_TAB = {
-  Task_ReviewReclamation:   'app-owner',
-  Task_ProcurementApproval: 'procurement'
-};
-const ROLE_META = {
-  'app-owner': {
-    icon: '👤',
-    title: 'App Owner Review',
-    desc: 'Review which licenses are proposed for reclamation from inactive and departed users. Approve or reject the list before any seats are reclaimed.',
-    emptyTitle: 'No app owner review tasks',
-    emptyDesc: "Tasks appear here when a renewal reaches the reclamation review stage. Start a renewal with the 'reclaim' or 'conflict' demo scenario to generate one."
-  },
-  'procurement': {
-    icon: '💼',
-    title: 'Procurement Approval',
-    desc: 'Review the vendor quote and final seat count after reclamation is approved. Approve the PO to submit it to Coupa, or reject to send back for review.',
-    emptyTitle: 'No procurement tasks',
-    emptyDesc: 'Tasks appear here once an app owner has approved reclamation and the renewal is ready for PO submission. Complete an App Owner task first.'
-  }
-};
+const REVIEW_TASKS = new Set([
+  'Task_SecurityReview', 'Task_PrivacyReview', 'Task_LegalReview',
+  'Task_ComplianceReview', 'Task_ArchitectureReview', 'Task_RaiReview'
+]);
+const GATE_TASKS = new Set([
+  'Task_ModelEvaluationGate', 'Task_DesignConsultationGate',
+  'Task_PreBuildGate', 'Task_PreProductionGate'
+]);
 
-let activeTab = 'app-owner';
-let allTasks  = [];
-
-let currentTaskKey     = null;
-let currentTaskType    = null;
-let currentReclaimable = [];
+let allTasks = [];
+let currentTaskKey  = null;
+let currentTaskType = null;
 
 function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -293,81 +229,42 @@ function relativeTime(iso) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
-function recBadgeClass(rec) {
-  return { renew_as_is:'badge-green', reduce_seats:'badge-blue', reclaim_and_reduce:'badge-amber', escalate_to_human:'badge-red' }[rec] || '';
-}
-
-// ─── Tab switching ────────────────────────────────────────────────────────────
-
-function switchTab(tab) {
-  activeTab = tab;
-  document.getElementById('tab-app-owner').classList.toggle('active', tab === 'app-owner');
-  document.getElementById('tab-procurement').classList.toggle('active', tab === 'procurement');
-  updateRoleBanner(tab);
-  renderTaskList(allTasks);
-}
-
-function updateRoleBanner(tab) {
-  const m = ROLE_META[tab];
-  document.getElementById('roleBanner').innerHTML = `
-    <div class="role-banner-icon">${m.icon}</div>
-    <div>
-      <div class="role-banner-title">${m.title}</div>
-      <div class="role-banner-desc">${m.desc}</div>
-    </div>`;
-}
-
-// ─── Render task list (filtered by active tab) ────────────────────────────────
-
 function renderTaskList(tasks) {
-  const list     = document.getElementById('taskList');
-  const filtered = tasks.filter(t => TASK_TAB[t.elementId] === activeTab);
-  const m        = ROLE_META[activeTab];
+  const list = document.getElementById('taskList');
 
-  if (filtered.length === 0) {
+  if (tasks.length === 0) {
     list.innerHTML = `
       <div class="empty-state">
-        <div class="icon">${m.icon}</div>
-        <h3>${escHtml(m.emptyTitle)}</h3>
-        <p>${escHtml(m.emptyDesc)}</p>
-        <a href="/start.html">Start a renewal to generate tasks →</a>
+        <div class="icon">✅</div>
+        <h3>No open tasks</h3>
+        <p>Tasks appear here once a registered use case reaches a review, gate, or monitoring step.</p>
+        <a href="/start.html">Register a use case →</a>
       </div>`;
     return;
   }
 
-  list.innerHTML = filtered.map(t => {
-    const label    = TASK_LABELS[t.elementId] || t.elementId;
-    const icon     = TASK_ICONS[t.elementId]  || '📋';
-    const [pillTxt, pillCls] = TASK_PILLS[t.elementId] || ['Task', ''];
-    const appName  = t.appName  || '—';
-    const vendor   = t.vendor   || '—';
-    const assignee = t.assignee || (Array.isArray(t.candidateGroups) ? t.candidateGroups.join(', ') : (t.candidateGroups || null));
-    const age      = relativeTime(t.creationDate);
+  list.innerHTML = tasks.map(t => {
+    const vars = t.variables || {};
+    const label = TASK_LABELS[t.elementId] || t.elementId || 'Task';
+    const age = relativeTime(t.creationDate);
+    const category = vars.aiCategory ? `<span class="category-pill cat-${escHtml(vars.aiCategory)}">${escHtml(vars.aiCategory)}</span>` : '';
     return `
-      <div class="task-card" onclick="openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">
+      <div class="task-card" onclick="openTask('${t.userTaskKey}', '${t.processInstanceKey}', '${t.elementId}')">
         <div class="task-card-left">
-          <div class="task-icon">${icon}</div>
+          <div class="task-icon">📋</div>
           <div>
             <div class="task-name">${escHtml(label)}</div>
-            <div class="task-app-line">${escHtml(appName)} · ${escHtml(vendor)}</div>
-            <div class="task-meta-line">
-              <span class="task-type-pill ${pillCls}">${escHtml(pillTxt)}</span>
-              ${assignee ? escHtml(assignee) + ' · ' : ''}${age}
-            </div>
+            <div class="task-meta-line">${category}${escHtml(vars.useCaseName || 'Use case pi ' + t.processInstanceKey)} · ${age}</div>
           </div>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openTask('${t.userTaskKey}', '${escHtml(t.elementId)}', '${t.processInstanceKey}')">Review →</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openTask('${t.userTaskKey}', '${t.processInstanceKey}', '${t.elementId}')">Open →</button>
       </div>`;
   }).join('');
 }
 
-// ─── Load task list ───────────────────────────────────────────────────────────
-
 async function loadTasks() {
-  const list       = document.getElementById('taskList');
-  const badge      = document.getElementById('taskCountBadge');
-  const ownerBadge = document.getElementById('badge-app-owner');
-  const procBadge  = document.getElementById('badge-procurement');
+  const list = document.getElementById('taskList');
+  const badge = document.getElementById('taskCountBadge');
 
   list.innerHTML = '<div class="loading-msg"><span class="spinner-sm"></span> Loading tasks…</div>';
   badge.textContent = '—';
@@ -376,31 +273,18 @@ async function loadTasks() {
   try {
     const tasks = await fetch('/api/tasks').then(r => r.json());
     allTasks = Array.isArray(tasks) ? tasks : [];
-
-    const ownerCount = allTasks.filter(t => TASK_TAB[t.elementId] === 'app-owner').length;
-    const procCount  = allTasks.filter(t => TASK_TAB[t.elementId] === 'procurement').length;
-    const total      = allTasks.length;
-
-    badge.textContent = total;
-    badge.className   = total > 0 ? 'task-count-badge' : 'task-count-badge zero';
-    ownerBadge.textContent = ownerCount;
-    procBadge.textContent  = procCount;
-
+    badge.textContent = allTasks.length;
+    badge.className = allTasks.length > 0 ? 'task-count-badge' : 'task-count-badge zero';
     renderTaskList(allTasks);
-
   } catch (err) {
     badge.textContent = '!';
     list.innerHTML = `<div class="error-msg">Could not load tasks: ${escHtml(err.message)}</div>`;
   }
 }
 
-// ─── Open drawer ──────────────────────────────────────────────────────────────
-
-async function openTask(taskKey, elementId, piKey) {
-  currentTaskKey     = taskKey;
-  currentTaskType    = elementId;
-  currentReclaimable = [];
-
+async function openTask(taskKey, piKey, elementId) {
+  currentTaskKey  = taskKey;
+  currentTaskType = elementId;
   document.getElementById('drawerTitle').textContent = TASK_LABELS[elementId] || elementId;
   document.getElementById('drawerBody').innerHTML = '<div class="loading-msg"><span class="spinner-sm"></span> Loading task details…</div>';
   document.getElementById('drawer').classList.add('open');
@@ -409,8 +293,7 @@ async function openTask(taskKey, elementId, piKey) {
   try {
     const ctx = await fetch(`/api/tasks/${taskKey}/context?piKey=${piKey}`).then(r => r.json());
     if (ctx.error) throw new Error(ctx.error);
-    const vars = ctx.variables || {};
-    document.getElementById('drawerBody').innerHTML = renderDrawer(elementId, vars);
+    document.getElementById('drawerBody').innerHTML = renderDrawer(elementId, ctx.variables || {});
   } catch (err) {
     document.getElementById('drawerBody').innerHTML = `<div class="drawer-section"><div class="error-msg">${escHtml(err.message)}</div></div>`;
   }
@@ -423,229 +306,243 @@ function closeDrawer() {
   currentTaskType = null;
 }
 
-// ─── Drawer content ───────────────────────────────────────────────────────────
+// ─── Shared context header + decision panel ──────────────────────────────────
+
+const TOOL_LABELS = {
+  Tool_SearchPolicyDocs: '📄 Searched policy documents',
+  Tool_ScanSensitiveData: '🔍 Scanned for sensitive data',
+  Tool_FindSimilarUseCases: '📚 Found similar use cases'
+};
+
+function renderTriageSection(vars) {
+  if (!vars.triageSummary && !(Array.isArray(vars.triageToolCalls) && vars.triageToolCalls.length)) return '';
+
+  const toolCalls = Array.isArray(vars.triageToolCalls) ? vars.triageToolCalls : [];
+  const toolCallsHtml = toolCalls.map(tc => `
+    <div class="tool-call">
+      <div class="tool-call-name">${escHtml(TOOL_LABELS[tc.name] || tc.name)}</div>
+      <div class="tool-call-content">${escHtml(tc.content)}</div>
+    </div>`).join('');
+
+  return `
+    <div class="drawer-section triage-section">
+      <div class="section-title">🤖 AI Risk Triage Agent <span class="pill-advisory">Advisory — not a decision</span></div>
+      ${vars.triageSummary ? `<pre class="vars triage-summary">${escHtml(vars.triageSummary)}</pre>` : ''}
+      ${toolCallsHtml ? `<div class="tool-calls-label">Tool calls (${toolCalls.length})</div>${toolCallsHtml}` : ''}
+    </div>`;
+}
+
+function contextHeader(vars) {
+  return `
+    <div class="drawer-app-bar">
+      <div class="drawer-app-name">${escHtml(vars.useCaseName || '—')}</div>
+      <div class="drawer-app-meta">${escHtml(vars.aiCategory ? vars.aiCategory + ' category' : '')} · submitted by ${escHtml(vars.submittedBy || '—')}</div>
+    </div>
+    <div class="drawer-section">
+      <div class="section-title">Use Case</div>
+      <div class="kv-grid">
+        <div class="kv-label">Description</div><div class="kv-value">${escHtml(vars.description || '—')}</div>
+        <div class="kv-label">Data sensitivity</div><div class="kv-value">${escHtml(vars.dataSensitivity || '—')}</div>
+        <div class="kv-label">Autonomy level</div><div class="kv-value">${escHtml(vars.autonomyLevel || '—')}</div>
+        <div class="kv-label">Business owner</div><div class="kv-value">${escHtml(vars.businessOwner || '—')}</div>
+        <div class="kv-label">Technology owner</div><div class="kv-value">${escHtml(vars.technologyOwner || '—')}</div>
+      </div>
+    </div>
+    ${renderTriageSection(vars)}`;
+}
+
+function decisionPanel(bodyHtml) {
+  return `
+    <div class="drawer-section form-section">
+      <div class="section-title">Decision</div>
+      ${bodyHtml}
+      <div id="submitError" class="error-inline" style="display:none"></div>
+      <button class="btn btn-primary btn-full" id="submitBtn" onclick="submitTask()" style="margin-top:14px">Submit</button>
+    </div>`;
+}
+
+// ─── Per-task-type drawers ────────────────────────────────────────────────────
 
 function renderDrawer(elementId, vars) {
-  if (elementId === 'Task_ReviewReclamation')   return renderReviewDrawer(vars);
-  if (elementId === 'Task_ProcurementApproval') return renderProcurementDrawer(vars);
+  if (elementId === 'Task_AssignOwners') return renderAssignOwners(vars);
+  if (REVIEW_TASKS.has(elementId)) return renderReview(vars);
+  if (GATE_TASKS.has(elementId)) return renderGate(vars);
+  if (elementId === 'Task_LaunchApproval') return renderLaunchApproval(vars);
+  if (elementId === 'Task_MonitorInProduction') return renderMonitor(vars);
+  if (elementId === 'Task_RecertificationReview') return renderRecertification(vars);
+  if (elementId === 'Task_ReassessmentReview') return renderReassessment(vars);
+  if (elementId === 'Task_Decommission') return renderDecommission(vars);
   return `<div class="drawer-section"><div class="error-msg">Unknown task type: ${escHtml(elementId)}</div></div>`;
 }
 
-function renderReviewDrawer(vars) {
-  const summary     = vars.usageSummary || {};
-  const score       = vars.usageScore   || {};
-  const reclaimable = Array.isArray(vars.reclaimable) ? vars.reclaimable : [];
-  currentReclaimable = reclaimable;
-
-  const rec      = score.recommendation  || '—';
-  const band     = score.utilizationBand || '—';
-  const conflict = summary.conflictDetected;
-  const resolved = summary.resolvedActiveUsers ?? '—';
-  const total    = vars.requestedSeats ?? '—';
-
-  const reclaimRows = reclaimable.length
-    ? reclaimable.map(r => `
-        <tr>
-          <td>${escHtml(r.userId || '—')}</td>
-          <td><span class="reason-tag">${escHtml(r.reason || '—')}</span></td>
-          <td>${escHtml(r.lastLogin || '—')}</td>
-        </tr>`).join('')
-    : '<tr><td colspan="3" style="text-align:center;padding:14px;color:var(--muted)">None identified</td></tr>';
-
-  return `
-    <div class="drawer-app-bar">
-      <div class="drawer-app-name">${escHtml(vars.appName || '—')}</div>
-      <div class="drawer-app-vendor">${escHtml(vars.vendor || '—')}</div>
+function renderAssignOwners(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Business owner (email)</label>
+      <input type="text" id="in_businessOwner" class="text-input" placeholder="owner@company.com">
     </div>
+    <div class="field">
+      <label>Technology owner (email)</label>
+      <input type="text" id="in_technologyOwner" class="text-input" placeholder="tech-owner@company.com">
+    </div>`);
+}
 
-    <div class="drawer-section">
-      <div class="section-title">Usage Summary</div>
-      <div class="kv-grid">
-        <div class="kv-label">Resolved Active Users</div>
-        <div class="kv-value"><strong>${resolved}</strong> of ${total} seats</div>
-        <div class="kv-label">Okta Active</div>
-        <div class="kv-value">${summary.oktaActive ?? '—'}</div>
-        <div class="kv-label">Flexera Active</div>
-        <div class="kv-value">${summary.flexeraActive ?? '—'}</div>
-        <div class="kv-label">Conflict Detected</div>
-        <div class="kv-value">
-          ${conflict ? '<span class="badge badge-err">Yes — signals diverge</span>' : '<span class="badge badge-ok">No</span>'}
-        </div>
-        <div class="kv-label">Recommendation</div>
-        <div class="kv-value"><span class="badge ${recBadgeClass(rec)}">${escHtml(rec)}</span></div>
-        <div class="kv-label">Utilization Band</div>
-        <div class="kv-value"><span class="band-text ${band}">${escHtml(band)}</span></div>
-      </div>
+function renderReview(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Decision</label>
+      <select id="in_reviewDecision" class="select-input">
+        <option value="">Select…</option>
+        <option value="approve">Approve</option>
+        <option value="reject">Reject</option>
+      </select>
     </div>
+    <div class="field">
+      <label>Comments</label>
+      <textarea id="in_reviewComments" class="textarea-input" rows="3"></textarea>
+    </div>`);
+}
 
-    <div class="drawer-section">
-      <div class="section-title">Proposed Reclamations <span class="count-pill">${reclaimable.length}</span></div>
-      <table class="mini-table">
-        <thead><tr><th>User ID</th><th>Reason</th><th>Last Login</th></tr></thead>
-        <tbody>${reclaimRows}</tbody>
-      </table>
+function renderGate(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Result</label>
+      <select id="in_gateResult" class="select-input">
+        <option value="">Select…</option>
+        <option value="pass">Pass</option>
+        <option value="fail">Fail</option>
+      </select>
     </div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="in_gateNotes" class="textarea-input" rows="3"></textarea>
+    </div>`);
+}
 
+function renderLaunchApproval(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Approver (email)</label>
+      <input type="text" id="in_launchApprover" class="text-input" placeholder="approver@company.com">
+    </div>
+    <div class="field checkbox-field">
+      <input type="checkbox" id="in_residualRiskAccepted">
+      <label style="margin:0">I accept the residual risk of launching this use case</label>
+    </div>
+    <div class="field">
+      <label>Risk acceptance notes</label>
+      <textarea id="in_riskAcceptanceNotes" class="textarea-input" rows="3"></textarea>
+    </div>`);
+}
+
+function renderMonitor(vars) {
+  return contextHeader(vars) + `
     <div class="drawer-section form-section">
-      <div class="section-title">Decision</div>
-      <div class="field">
-        <label>Decision<span class="req">*</span></label>
-        <select id="reviewDecision" class="select-input">
-          <option value="">Select a decision…</option>
-          <option value="approve">Approve Reclamation</option>
-          <option value="reject">Reject Reclamation</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Notes <span class="opt">(optional)</span></label>
-        <textarea id="reviewNotes" class="textarea-input" rows="3" placeholder="Add notes for the record…"></textarea>
-      </div>
-      <div id="submitError" class="error-inline" style="display:none"></div>
-      <button class="btn btn-primary btn-full" id="submitBtn" onclick="submitTask()">Submit Decision</button>
+      <div class="section-title">Voluntary Decommission</div>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px">
+        This use case is live in production. Recertification runs automatically on the configured
+        cycle, and an incident can be reported at any time from the Dashboard to trigger a
+        reassessment. Completing this task directly begins a voluntary decommission.
+      </p>
+      <button class="btn btn-primary btn-full" onclick="submitTask()">Begin decommission</button>
     </div>`;
 }
 
-function renderProcurementDrawer(vars) {
-  const quote   = vars.vendorQuote  || {};
-  const score   = vars.usageScore   || {};
-  const summary = vars.usageSummary || {};
-  const jira    = vars.jiraTicket   || {};
-  const reclaimable = Array.isArray(vars.reclaimable) ? vars.reclaimable : [];
-
-  const rec      = score.recommendation  || '—';
-  const band     = score.utilizationBand || '—';
-  const conflict = summary.conflictDetected;
-  const resolved = summary.resolvedActiveUsers ?? '—';
-  const origSeats = vars.requestedSeats ?? '—';
-  const fmt  = n => n != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n) : '—';
-
-  // Show seats that were actually reclaimed (approved subset)
-  const reclaimedCount = vars.reclaimedCount ?? 0;
-  const reclaimedRows = reclaimable.slice(0, reclaimedCount).length
-    ? reclaimable.slice(0, reclaimedCount).map(r => `
-        <tr>
-          <td>${escHtml(r.userId || '—')}</td>
-          <td><span class="reason-tag">${escHtml(r.reason || '—')}</span></td>
-          <td>${escHtml(r.lastLogin || '—')}</td>
-        </tr>`).join('')
-    : '<tr><td colspan="3" style="text-align:center;padding:14px;color:var(--muted)">No reclamations recorded</td></tr>';
-
-  return `
-    <div class="drawer-app-bar">
-      <div class="drawer-app-name">${escHtml(vars.appName || '—')}</div>
-      <div class="drawer-app-vendor">${escHtml(vars.vendor || '—')}</div>
+function renderRecertification(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Decision</label>
+      <select id="in_recertificationDecision" class="select-input">
+        <option value="">Select…</option>
+        <option value="approve">Approve — continue in production</option>
+        <option value="reject">Reject — decommission</option>
+      </select>
     </div>
-
-    <div class="drawer-section">
-      <div class="section-title">Usage Analysis</div>
-      <div class="kv-grid">
-        <div class="kv-label">Resolved Active Users</div>
-        <div class="kv-value"><strong>${resolved}</strong> of ${origSeats} seats</div>
-        <div class="kv-label">Okta Active</div>
-        <div class="kv-value">${summary.oktaActive ?? '—'}</div>
-        <div class="kv-label">Flexera Active</div>
-        <div class="kv-value">${summary.flexeraActive ?? '—'}</div>
-        <div class="kv-label">Conflict Detected</div>
-        <div class="kv-value">
-          ${conflict ? '<span class="badge badge-err">Yes — signals diverge</span>' : '<span class="badge badge-ok">No</span>'}
-        </div>
-        <div class="kv-label">Recommendation</div>
-        <div class="kv-value"><span class="badge ${recBadgeClass(rec)}">${escHtml(rec)}</span></div>
-        <div class="kv-label">Utilization Band</div>
-        <div class="kv-value"><span class="band-text ${band}">${escHtml(band)}</span></div>
-      </div>
-    </div>
-
-    <div class="drawer-section">
-      <div class="section-title">Reclaimed Licenses <span class="count-pill">${reclaimedCount}</span></div>
-      <table class="mini-table">
-        <thead><tr><th>User ID</th><th>Reason</th><th>Last Login</th></tr></thead>
-        <tbody>${reclaimedRows}</tbody>
-      </table>
-    </div>
-
-    <div class="drawer-section">
-      <div class="section-title">Legal</div>
-      <div class="kv-grid">
-        <div class="kv-label">Jira Ticket</div>
-        <div class="kv-value">${jira.key ? `<span class="jira-key">${escHtml(jira.key)}</span>` : '—'}</div>
-        <div class="kv-label">Status</div>
-        <div class="kv-value">${jira.status ? `<span class="badge badge-blue">${escHtml(jira.status)}</span>` : '—'}</div>
-        <div class="kv-label">Summary</div>
-        <div class="kv-value" style="font-size:12px;color:var(--muted)">${escHtml(jira.summary || '—')}</div>
-      </div>
-    </div>
-
-    <div class="drawer-section">
-      <div class="section-title">Vendor Quote</div>
-      <div class="kv-grid">
-        <div class="kv-label">Original Seats</div>
-        <div class="kv-value">${origSeats}</div>
-        <div class="kv-label">Seats After Reclamation</div>
-        <div class="kv-value"><strong>${quote.seats ?? '—'}</strong></div>
-        <div class="kv-label">Price / Seat</div>
-        <div class="kv-value">${fmt(quote.pricePerSeat)}</div>
-        <div class="kv-label">Total Price</div>
-        <div class="kv-value kv-total">${fmt(quote.totalPrice)}</div>
-        ${quote.quoteRef ? `<div class="kv-label">Quote Ref</div><div class="kv-value" style="font-family:monospace;font-size:12px">${escHtml(quote.quoteRef)}</div>` : ''}
-      </div>
-    </div>
-
-    <div class="drawer-section form-section">
-      <div class="section-title">Decision</div>
-      <div class="field">
-        <label>Approved Seat Count<span class="req">*</span></label>
-        <input type="number" id="finalSeats" class="num-input" value="${quote.seats || ''}" min="1" placeholder="Enter approved seat count">
-      </div>
-      <div class="field">
-        <label>Decision<span class="req">*</span></label>
-        <select id="procurementDecision" class="select-input">
-          <option value="">Select a decision…</option>
-          <option value="approve">Approve PO</option>
-          <option value="reject">Reject PO</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Notes <span class="opt">(optional)</span></label>
-        <textarea id="procurementNotes" class="textarea-input" rows="3" placeholder="Add notes for the record…"></textarea>
-      </div>
-      <div id="submitError" class="error-inline" style="display:none"></div>
-      <button class="btn btn-primary btn-full" id="submitBtn" onclick="submitTask()">Submit Decision</button>
-    </div>`;
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="in_recertificationNotes" class="textarea-input" rows="3"></textarea>
+    </div>`);
 }
 
-// ─── Submit task ──────────────────────────────────────────────────────────────
+function renderReassessment(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Outcome</label>
+      <select id="in_reassessmentOutcome" class="select-input">
+        <option value="">Select…</option>
+        <option value="no_material_impact">No material impact — resume monitoring</option>
+        <option value="requires_full_rereview">Requires full re-review</option>
+        <option value="recommend_decommission">Recommend decommission</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="in_reassessmentNotes" class="textarea-input" rows="3"></textarea>
+    </div>`);
+}
+
+function renderDecommission(vars) {
+  return contextHeader(vars) + decisionPanel(`
+    <div class="field">
+      <label>Reason</label>
+      <textarea id="in_decommissionReason" class="textarea-input" rows="3"></textarea>
+    </div>
+    <div class="field">
+      <label>Decommissioned by (email)</label>
+      <input type="text" id="in_decommissionedBy" class="text-input" placeholder="you@company.com">
+    </div>
+    <div class="field checkbox-field">
+      <input type="checkbox" id="in_accessRevoked">
+      <label style="margin:0">Access has been revoked for all users/devices</label>
+    </div>`);
+}
+
+// ─── Build the completion payload per task type ───────────────────────────────
+
+function collectVariables() {
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : undefined; };
+  const checked = id => { const el = document.getElementById(id); return el ? el.checked : undefined; };
+
+  switch (currentTaskType) {
+    case 'Task_AssignOwners':
+      return { businessOwner: val('in_businessOwner'), technologyOwner: val('in_technologyOwner') };
+    case 'Task_SecurityReview': case 'Task_PrivacyReview': case 'Task_LegalReview':
+    case 'Task_ComplianceReview': case 'Task_ArchitectureReview': case 'Task_RaiReview':
+      return { reviewDecision: val('in_reviewDecision'), reviewComments: val('in_reviewComments') };
+    case 'Task_ModelEvaluationGate': case 'Task_DesignConsultationGate':
+    case 'Task_PreBuildGate': case 'Task_PreProductionGate':
+      return { gateResult: val('in_gateResult'), gateNotes: val('in_gateNotes') };
+    case 'Task_LaunchApproval':
+      return {
+        launchApprover: val('in_launchApprover'),
+        residualRiskAccepted: checked('in_residualRiskAccepted'),
+        riskAcceptanceNotes: val('in_riskAcceptanceNotes')
+      };
+    case 'Task_MonitorInProduction':
+      return {};
+    case 'Task_RecertificationReview':
+      return { recertificationDecision: val('in_recertificationDecision'), recertificationNotes: val('in_recertificationNotes') };
+    case 'Task_ReassessmentReview':
+      return { reassessmentOutcome: val('in_reassessmentOutcome'), reassessmentNotes: val('in_reassessmentNotes') };
+    case 'Task_Decommission':
+      return {
+        decommissionReason: val('in_decommissionReason'),
+        decommissionedBy: val('in_decommissionedBy'),
+        accessRevoked: checked('in_accessRevoked')
+      };
+    default:
+      return {};
+  }
+}
 
 async function submitTask() {
-  const btn   = document.getElementById('submitBtn');
-  const errEl = document.getElementById('submitError');
-  errEl.style.display = 'none';
+  const btn = document.getElementById('submitBtn');
+  const variables = collectVariables();
 
-  const variables = {};
-
-  if (currentTaskType === 'Task_ReviewReclamation') {
-    variables.reviewDecision = document.getElementById('reviewDecision').value;
-    const notes = document.getElementById('reviewNotes').value.trim();
-    if (!variables.reviewDecision) return showInlineError('Please select a decision before submitting.');
-    if (variables.reviewDecision === 'approve') variables.approvedReclaims = currentReclaimable;
-    if (notes) variables.reviewNotes = notes;
-
-  } else if (currentTaskType === 'Task_ProcurementApproval') {
-    variables.procurementDecision = document.getElementById('procurementDecision').value;
-    const seatsVal = document.getElementById('finalSeats').value;
-    const notes    = document.getElementById('procurementNotes').value.trim();
-    if (!variables.procurementDecision) return showInlineError('Please select a decision before submitting.');
-    if (!seatsVal || isNaN(parseInt(seatsVal, 10)) || parseInt(seatsVal, 10) < 1)
-      return showInlineError('Please enter a valid approved seat count.');
-    variables.finalSeats = parseInt(seatsVal, 10);
-    if (notes) variables.procurementNotes = notes;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
 
   try {
-    const res  = await fetch(`/api/tasks/${currentTaskKey}/complete`, {
+    const res = await fetch(`/api/tasks/${currentTaskKey}/complete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ variables })
@@ -657,8 +554,7 @@ async function submitTask() {
     loadTasks();
   } catch (err) {
     showInlineError('Error: ' + err.message);
-    btn.disabled = false;
-    btn.textContent = 'Submit Decision';
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit'; }
   }
 }
 
@@ -674,9 +570,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-
-updateRoleBanner(activeTab);
 loadTasks();
 setInterval(loadTasks, 30000);
 </script>

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.camunda</groupId>
-    <artifactId>epic-games-license-renewal</artifactId>
+    <artifactId>camunda-process-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>epic-games-license-renewal</name>
-    <description>Epic Games — software license optimization and renewal orchestration demo</description>
+    <name>camunda-process-demo</name>
+    <description>Camunda 8 process orchestration demo scaffold</description>
     <url/>
     <licenses>
         <license/>

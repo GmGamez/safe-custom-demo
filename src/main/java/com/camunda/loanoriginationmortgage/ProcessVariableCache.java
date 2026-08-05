@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * In-memory cache of process variables written by mock job workers.
+ * In-memory cache of process variables written by job workers as they complete.
  * Lets the task inbox read full variable context without relying on the
  * Camunda variables/search API, which has inconsistent availability for
  * recently-set variables in SaaS environments.

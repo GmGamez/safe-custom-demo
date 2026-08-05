@@ -156,6 +156,7 @@ public class CamundaRestHelper {
         try {
             return post(path, mapper.writeValueAsString(bodyObj));
         } catch (Exception e) {
+            log.warn("[rest] POST {} failed: {}", path, e.getMessage());
             return Map.of();
         }
     }

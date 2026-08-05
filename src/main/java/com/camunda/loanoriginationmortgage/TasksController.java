@@ -27,12 +27,12 @@ public class TasksController {
         this.client = client;
     }
 
-    /** List open user tasks in the license-renewal process, enriched with in-memory app context. */
+    /** List all open user tasks, enriched with the variables the process instance was started with. */
     @GetMapping
     public ResponseEntity<?> listTasks() {
         try {
             Map<String, Object> res = restHelper.post("/user-tasks/search",
-                Map.of("filter", Map.of("processDefinitionId", "license-renewal", "state", "CREATED")));
+                Map.of("filter", Map.of("state", "CREATED")));
 
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> items = (List<Map<String, Object>>) res.getOrDefault("items", List.of());
@@ -44,15 +44,7 @@ public class TasksController {
                 processController.getRecentInstancesList().stream()
                     .filter(e -> piKey == asLong(e.get("processInstanceKey")))
                     .findFirst()
-                    .ifPresent(entry -> {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> vars = entry.get("variables") instanceof Map<?,?> m
-                            ? (Map<String, Object>) m : Map.of();
-                        t.put("appName",        vars.get("appName"));
-                        t.put("vendor",         vars.get("vendor"));
-                        t.put("appOwner",       vars.get("appOwner"));
-                        t.put("requestedSeats", vars.get("requestedSeats"));
-                    });
+                    .ifPresent(entry -> t.put("variables", entry.get("variables")));
                 enriched.add(t);
             }
             return ResponseEntity.ok(enriched);
@@ -66,7 +58,7 @@ public class TasksController {
      * Get process variables for the given task.
      * Builds the variable map from three sources in priority order:
      *   1. Initial submission variables (in-memory, always available)
-     *   2. Worker output cache (set by MockJobWorkers as each task completes)
+     *   2. Job worker output cache (set as service tasks complete)
      *   3. Camunda variables/search API (fallback for variables not in the above)
      */
     @GetMapping("/{taskKey}/context")
@@ -89,10 +81,11 @@ public class TasksController {
             // 2. Worker output cache — usageSummary, usageScore, reclaimable, vendorQuote, jiraTicket, etc.
             variables.putAll(variableCache.get(piKey));
 
-            // 3. Camunda REST API fallback (catches variables set by engine-native tasks like DMN)
+            // 3. Camunda REST API fallback (catches variables set by engine-native tasks like DMN).
+            // processInstanceKey must be sent as a string — the v2 API rejects it as a JSON number.
             try {
                 Map<String, Object> varSearch = restHelper.post("/variables/search",
-                    Map.of("filter", Map.of("processInstanceKey", piKey)));
+                    Map.of("filter", Map.of("processInstanceKey", String.valueOf(piKey))));
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> varItems = (List<Map<String, Object>>) varSearch.getOrDefault("items", List.of());
                 for (Map<String, Object> v : varItems) {

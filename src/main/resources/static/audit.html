@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Trail</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
+      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
+      --success: #22c55e; --warning: #f59e0b; --info: #3b82f6; --error: #ef4444; --agent: #a78bfa;
+      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+    .nav { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
+    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+
+    main { max-width: 880px; margin: 0 auto; padding: 40px 24px 100px; }
+
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 16px; }
+    .page-header h1 { font-size: 24px; font-weight: 700; }
+    .page-header-meta { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: ui-monospace, monospace; }
+    .header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: #2a2a2a; }
+    .btn-sm { padding: 5px 11px; font-size: 12px; }
+
+    .category-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      padding: 3px 8px; border-radius: 5px; margin-top: 10px; }
+    .cat-Minimal  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .cat-Limited  { background: rgba(59,130,246,.15); color: #60a5fa; }
+    .cat-High     { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .cat-Critical { background: rgba(239,68,68,.15);  color: #f87171; }
+
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0 28px; font-size: 12px; color: var(--muted); }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .loading-msg, .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+
+    .tl-entry { position: relative; margin-bottom: 14px; }
+    .tl-dot { position: absolute; left: -28px; top: 4px; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--surface2); border: 2px solid var(--border); display: flex; align-items: center;
+      justify-content: center; font-size: 10px; z-index: 1; }
+    .tl-dot.completed { border-color: var(--success); }
+    .tl-dot.active { border-color: var(--info); }
+    .tl-dot.terminated { border-color: var(--error); }
+    .tl-dot.agent { border-color: var(--agent); background: rgba(167,139,250,.15); }
+
+    .tl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+      padding: 12px 16px; }
+    .tl-card.agent { border-color: rgba(167,139,250,.4); background: #17131f; }
+    .tl-card.tool { margin-left: 20px; border-style: dashed; }
+    .tl-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .tl-name { font-weight: 600; font-size: 13px; }
+    .tl-type { font-size: 10px; color: var(--muted); font-family: ui-monospace, monospace; margin-top: 2px; }
+    .tl-badges { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+    .badge-completed  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .badge-active     { background: rgba(59,130,246,.15); color: #60a5fa; }
+    .badge-terminated { background: rgba(239,68,68,.15);  color: #f87171; }
+    .badge-agent      { background: rgba(167,139,250,.18); color: #c4b5fd; }
+    .badge-tool       { background: rgba(167,139,250,.12); color: #a78bfa; }
+
+    .tl-meta { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: ui-monospace, monospace; }
+    .tl-assignee { font-size: 12px; color: var(--text); margin-top: 6px; }
+
+    .tl-vars { margin-top: 10px; }
+    .tl-vars-toggle { font-size: 11px; color: var(--accent); cursor: pointer; background: none; border: none;
+      padding: 0; font-family: inherit; }
+    .tl-vars-body { display: none; margin-top: 8px; }
+    .tl-vars-body.open { display: block; }
+    .tl-var-row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 12px;
+      padding: 4px 0; border-bottom: 1px solid #1f1f1f; }
+    .tl-var-row:last-child { border-bottom: none; }
+    .tl-var-name { color: var(--muted); font-family: ui-monospace, monospace; }
+    .tl-var-value { font-family: ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; }
+
+    .spinner-sm { display: inline-block; width: 10px; height: 10px; border: 1.5px solid rgba(255,255,255,.15);
+      border-top-color: var(--muted); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/index.html" class="nav-brand">
+    <span class="brand-mark">G</span>
+    AI Governance
+  </a>
+  <div class="nav-links">
+    <a href="/start.html" class="nav-link">Register</a>
+    <a href="/tasks.html" class="nav-link">Tasks</a>
+    <a href="/admin.html" class="nav-link active">Dashboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div>
+      <h1 id="useCaseName">Audit Trail</h1>
+      <div class="page-header-meta" id="piKeyLabel"></div>
+      <span class="category-pill" id="categoryPill" style="display:none"></span>
+    </div>
+    <div class="header-actions">
+      <a href="/admin.html" class="btn btn-ghost">← Dashboard</a>
+      <a href="#" id="operateLink" class="btn btn-ghost" target="_blank" style="display:none">Operate ↗</a>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span> Completed</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--info)"></span> Active</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--error)"></span> Terminated (cancelled)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--agent)"></span> AI agent</div>
+  </div>
+
+  <div id="content">
+    <div class="loading-msg"><span class="spinner-sm"></span> Loading audit trail…</div>
+  </div>
+</main>
+
+<script>
+const params = new URLSearchParams(location.search);
+const piKey = params.get('piKey');
+
+const TYPE_ICONS = {
+  START_EVENT: '▶', END_EVENT: '■', USER_TASK: '👤', BUSINESS_RULE_TASK: '📐',
+  SERVICE_TASK: '⚙', SUB_PROCESS: '📦', AD_HOC_SUB_PROCESS: '🤖',
+  EXCLUSIVE_GATEWAY: '◆', INCLUSIVE_GATEWAY: '◈', PARALLEL_GATEWAY: '➕', BOUNDARY_EVENT: '⏱'
+};
+
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtTime(iso) {
+  if (!iso) return null;
+  return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' });
+}
+
+function fmtDuration(startIso, endIso) {
+  if (!startIso || !endIso) return null;
+  const ms = new Date(endIso) - new Date(startIso);
+  if (ms < 0) return null;
+  if (ms < 1000) return ms + 'ms';
+  if (ms < 60000) return (ms / 1000).toFixed(1) + 's';
+  return Math.round(ms / 60000) + 'm';
+}
+
+function stateClass(state) {
+  if (state === 'COMPLETED') return 'completed';
+  if (state === 'ACTIVE') return 'active';
+  if (state === 'TERMINATED' || state === 'CANCELED') return 'terminated';
+  return '';
+}
+
+function formatValue(v) {
+  if (v === null || v === undefined) return '—';
+  if (typeof v === 'object') return JSON.stringify(v, null, 2);
+  return String(v);
+}
+
+let toggleCounter = 0;
+
+function renderVars(vars) {
+  if (!vars || vars.length === 0) return '';
+  const id = 'vars-' + (toggleCounter++);
+  const rows = vars.map(v => `
+    <div class="tl-var-row">
+      <div class="tl-var-name">${escHtml(v.name)}</div>
+      <div class="tl-var-value">${escHtml(formatValue(v.value))}</div>
+    </div>`).join('');
+  return `
+    <div class="tl-vars">
+      <button class="tl-vars-toggle" onclick="document.getElementById('${id}').classList.toggle('open')">
+        ▸ ${vars.length} variable${vars.length === 1 ? '' : 's'} set here
+      </button>
+      <div class="tl-vars-body" id="${id}">${rows}</div>
+    </div>`;
+}
+
+function renderEntry(entry) {
+  const sc = stateClass(entry.state);
+  const isAgent = entry.isAgent;
+  const isTool = entry.isAgentTool;
+  const icon = isAgent ? '🤖' : isTool ? '🔧' : (TYPE_ICONS[entry.type] || '▫');
+  const duration = fmtDuration(entry.startDate, entry.endDate);
+
+  const badges = [`<span class="badge badge-${sc || 'unknown'}">${escHtml(entry.state)}</span>`];
+  if (isAgent) badges.unshift('<span class="badge badge-agent">AI AGENT</span>');
+  if (isTool) badges.unshift('<span class="badge badge-tool">TOOL CALL</span>');
+
+  let assigneeHtml = '';
+  if (entry.assignee || entry.completionDate) {
+    const who = entry.assignee || (Array.isArray(entry.candidateGroups) ? entry.candidateGroups.join(', ') : entry.candidateGroups);
+    assigneeHtml = `<div class="tl-assignee">${who ? '👤 ' + escHtml(who) : ''}${entry.completionDate ? ' · completed ' + escHtml(fmtTime(entry.completionDate)) : ''}</div>`;
+  }
+
+  return `
+    <div class="tl-entry">
+      <div class="tl-dot ${sc}${isAgent ? ' agent' : ''}">${isAgent || isTool ? '' : ''}</div>
+      <div class="tl-card${isAgent ? ' agent' : ''}${isTool ? ' tool' : ''}">
+        <div class="tl-top">
+          <div>
+            <div class="tl-name">${icon} ${escHtml(entry.elementName || entry.elementId)}</div>
+            <div class="tl-type">${escHtml(entry.elementId)} · ${escHtml(entry.type)}</div>
+          </div>
+          <div class="tl-badges">${badges.join('')}</div>
+        </div>
+        <div class="tl-meta">${entry.startDate ? escHtml(fmtTime(entry.startDate)) : ''}${duration ? ' · took ' + duration : ''}</div>
+        ${assigneeHtml}
+        ${renderVars(entry.variablesSet)}
+      </div>
+    </div>`;
+}
+
+async function load() {
+  const content = document.getElementById('content');
+  if (!piKey) {
+    content.innerHTML = '<div class="empty-state">No process instance specified. Open this page from the Dashboard\'s "Trace" button.</div>';
+    return;
+  }
+  document.getElementById('piKeyLabel').textContent = 'Process instance ' + piKey;
+
+  try {
+    const [trailResp, recentResp, cfgResp] = await Promise.all([
+      fetch(`/api/admin/audit-trail/${piKey}`).then(r => r.json()),
+      fetch('/api/process/recent').then(r => r.json()).catch(() => []),
+      fetch('/api/admin/config').then(r => r.json()).catch(() => ({}))
+    ]);
+
+    if (trailResp.error) throw new Error(trailResp.error);
+
+    const inst = Array.isArray(recentResp) ? recentResp.find(i => String(i.processInstanceKey) === String(piKey)) : null;
+    const vars = inst ? (inst.variables || {}) : {};
+
+    document.getElementById('useCaseName').textContent = vars.useCaseName || ('Process Instance ' + piKey);
+    if (vars.aiCategory) {
+      const pill = document.getElementById('categoryPill');
+      pill.textContent = vars.aiCategory + ' category';
+      pill.className = 'category-pill cat-' + vars.aiCategory;
+      pill.style.display = 'inline-block';
+    }
+    if (cfgResp.operateBaseUrl) {
+      const link = document.getElementById('operateLink');
+      link.href = cfgResp.operateBaseUrl + '/instances/' + piKey;
+      link.style.display = 'inline-flex';
+    }
+
+    const timeline = trailResp.timeline || [];
+    if (timeline.length === 0) {
+      content.innerHTML = '<div class="empty-state">No history yet for this instance.</div>';
+      return;
+    }
+
+    content.innerHTML = `<div class="timeline">${timeline.map(renderEntry).join('')}</div>`;
+  } catch (err) {
+    content.innerHTML = `<div class="empty-state">Could not load audit trail: ${escHtml(err.message)}</div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>
