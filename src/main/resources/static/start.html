@@ -3,150 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register AI Use Case</title>
+  <title>Start a QA Review</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
-      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
-      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --orange: #f55215; --orange-dark: #d4430f; --orange-light: #ff9a3d;
+      --dark: #0d0d0c; --charcoal: #2c2c2b; --gray: #6e6e6e; --gray-light: #949494;
+      --cream: #f4f3ed; --white: #ffffff; --border: #e2e2df; --border-dark: #dad9d7;
+      --success: #0a7b28; --success-bg: #e6f4ea;
+      --info: #0663c9; --info-bg: #e5f2fc;
+      --error: #c81010; --error-bg: #fce8e8;
+      --font: "Staff", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+    body { background: var(--cream); color: var(--charcoal); font-family: var(--font); font-size: 14px; min-height: 100vh; }
 
-    .nav { display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
-    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .topbar { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px; background: var(--dark); position: sticky; top: 0; z-index: 50; }
+    .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+    .brand-mark { font-weight: 800; font-size: 20px; letter-spacing: .5px; color: var(--orange); }
+    .brand-sub { font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: #c8c7c2; }
     .nav-links { display: flex; gap: 4px; }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
-    .nav-link:hover { color: var(--text); background: var(--surface2); }
-    .nav-link.active { color: #fff; }
+    .nav-link { color: #c8c7c2; text-decoration: none; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 999px; transition: all .15s; }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-link.active { color: #fff; background: var(--orange); }
 
-    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
-    .page-header { margin-bottom: 32px; }
+    main { max-width: 640px; margin: 0 auto; padding: 56px 24px 80px; }
+    .page-header { margin-bottom: 28px; }
     .page-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-    .page-header p { color: var(--muted); font-size: 14px; }
+    .page-header p { color: var(--gray); font-size: 14px; line-height: 1.6; }
 
-    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .field { margin-bottom: 18px; }
-    .field.full { grid-column: 1 / -1; }
+    .form-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .field { margin-bottom: 20px; }
     .field:last-child { margin-bottom: 0; }
-    label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
-    input, textarea, select {
-      background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-      color: var(--text); font-family: var(--font); font-size: 13px; padding: 9px 12px;
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--charcoal); margin-bottom: 6px; }
+    input {
+      background: var(--cream); border: 1px solid var(--border-dark); border-radius: 8px;
+      color: var(--charcoal); font-family: var(--font); font-size: 14px; padding: 10px 14px;
       width: 100%; outline: none; }
-    textarea { resize: vertical; }
-    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
-    select option { background: var(--surface2); }
-    .hint { font-size: 11px; color: #666; margin-top: 5px; line-height: 1.4; }
+    input:focus { border-color: var(--orange); background: var(--white); }
+    .hint { font-size: 11px; color: var(--gray-light); margin-top: 6px; line-height: 1.4; }
 
-    .form-actions { margin-top: 8px; display: flex; align-items: center; gap: 12px; }
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 7px;
-      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-primary:disabled { background: #333; color: var(--muted); cursor: not-allowed; }
-    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: #2a2a2a; }
+    .example-chip { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+      background: var(--info-bg); color: var(--info); border: none; border-radius: 999px;
+      padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .example-chip:hover { filter: brightness(0.95); }
 
-    #result { margin-top: 24px; border-radius: 10px; padding: 20px 24px; display: none; }
-    #result.success { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.3); }
-    #result.error   { background: rgba(239,68,68,.08);  border: 1px solid rgba(239,68,68,.3); }
+    .advanced { margin-top: 4px; }
+    .advanced summary { font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer;
+      list-style: none; display: flex; align-items: center; gap: 6px; padding: 4px 0; }
+    .advanced summary::-webkit-details-marker { display: none; }
+    .advanced summary::before { content: '▸'; font-size: 10px; color: var(--orange); transition: transform .15s; }
+    .advanced[open] summary::before { transform: rotate(90deg); }
+    .advanced-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+
+    .form-actions { margin-top: 24px; display: flex; align-items: center; gap: 12px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: var(--orange-dark); }
+    .btn-primary:disabled { background: var(--border-dark); color: var(--gray-light); cursor: not-allowed; }
+    .btn-ghost { background: transparent; color: var(--dark); border: 1.5px solid var(--border-dark); }
+    .btn-ghost:hover { background: var(--cream); border-color: var(--dark); }
+
+    #result { margin-top: 24px; border-radius: 14px; padding: 20px 24px; display: none; }
+    #result.success { background: var(--success-bg); border: 1px solid rgba(10,123,40,.25); }
+    #result.error   { background: var(--error-bg);   border: 1px solid rgba(200,16,16,.25); }
     .result-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
-    .result-success .result-title { color: #4ade80; }
-    .result-error   .result-title { color: #f87171; }
-    .result-meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; font-family: ui-monospace, monospace; white-space: pre-wrap; }
+    .result-success .result-title { color: var(--success); }
+    .result-error   .result-title { color: var(--error); }
+    .result-meta { color: var(--gray); font-size: 12px; margin-bottom: 14px; font-family: ui-monospace, monospace; white-space: pre-wrap; }
     .result-links { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.2);
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3);
       border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a href="/index.html" class="nav-brand">
-    <span class="brand-mark">G</span>
-    AI Governance
+<header class="topbar">
+  <a href="/index.html" class="brand">
+    <span class="brand-mark">SAFE</span>
+    <span class="brand-sub">Support QA</span>
   </a>
-  <div class="nav-links">
-    <a href="/start.html" class="nav-link active">Register</a>
-    <a href="/tasks.html" class="nav-link">Tasks</a>
+  <nav class="nav-links">
+    <a href="/index.html" class="nav-link">Overview</a>
+    <a href="/start.html" class="nav-link active">Start Review</a>
+    <a href="/tasks.html" class="nav-link">TL Queue</a>
     <a href="/admin.html" class="nav-link">Dashboard</a>
-  </div>
-</nav>
+  </nav>
+</header>
 
 <main>
   <div class="page-header">
-    <h1>Register an AI Use Case</h1>
-    <p>Starts the governance process: ownership assignment, DMN risk categorization, required
-       reviews, sequential build gates, launch approval, and ongoing monitoring.</p>
+    <h1>Start a QA review</h1>
+    <p>Simulates a closed Zendesk ticket entering the review pipeline. Retrieval, deterministic
+       checks, AI scoring, and selection all run automatically from here.</p>
   </div>
 
   <div class="form-card">
-    <form id="registerForm" autocomplete="off">
-      <div class="form-grid">
-        <div class="field full">
-          <label for="useCaseName">Use case name</label>
-          <input id="useCaseName" name="useCaseName" type="text" placeholder="e.g. Support ticket triage assistant" required>
-        </div>
-        <div class="field full">
-          <label for="description">Description</label>
-          <textarea id="description" name="description" rows="3" placeholder="What does this AI use case do?" required></textarea>
-        </div>
-        <div class="field full">
-          <label for="intendedUse">Intended use / users</label>
-          <textarea id="intendedUse" name="intendedUse" rows="2" placeholder="Who uses it, and for what decisions?"></textarea>
-        </div>
-        <div class="field">
-          <label for="submittedBy">Submitted by (email)</label>
-          <input id="submittedBy" name="submittedBy" type="text" placeholder="you@company.com" required>
-        </div>
-        <div class="field">
-          <label for="impactScope">Impact scope</label>
-          <select id="impactScope" name="impactScope">
-            <option value="Individual">Individual</option>
-            <option value="Team">Team</option>
-            <option value="BusinessUnit" selected>Business unit</option>
-            <option value="Enterprise">Enterprise</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="dataSensitivity">Data sensitivity</label>
-          <select id="dataSensitivity" name="dataSensitivity" required>
-            <option value="Public">Public</option>
-            <option value="Internal" selected>Internal</option>
-            <option value="Confidential">Confidential</option>
-            <option value="Restricted">Restricted</option>
-          </select>
-          <div class="hint">Drives the DMN category alongside autonomy level.</div>
-        </div>
-        <div class="field">
-          <label for="autonomyLevel">Autonomy level</label>
-          <select id="autonomyLevel" name="autonomyLevel" required>
-            <option value="Assistive" selected>Assistive — human makes every decision</option>
-            <option value="SemiAutonomous">Semi-autonomous — human reviews some decisions</option>
-            <option value="Autonomous">Autonomous — acts without human review</option>
-          </select>
-        </div>
-        <div class="field full">
-          <label for="recertificationCycle">Recertification cycle</label>
-          <select id="recertificationCycle" name="recertificationCycle">
-            <option value="R/P1Y">Yearly (production default — R/P1Y)</option>
-            <option value="R/P6M">Every 6 months (R/P6M)</option>
-            <option value="R/PT2M" selected>Demo — every 2 minutes (R/PT2M)</option>
-          </select>
-          <div class="hint">ISO-8601 repeating interval used by the boundary timer on the production-monitoring
-            step. Pick the demo option to see recertification fire during a walkthrough.</div>
-        </div>
+    <form id="startForm" autocomplete="off">
+      <div class="field">
+        <label for="zendeskTicketId">Zendesk ticket id</label>
+        <input id="zendeskTicketId" name="zendeskTicketId" type="text" placeholder="e.g. 48213" required>
+        <div class="hint">Any id runs a synthetic, seeded-random ticket profile end to end.</div>
+        <button type="button" class="example-chip" id="useExampleBtn">Use the real example ticket (12345) &rarr;</button>
       </div>
+
+      <details class="advanced">
+        <summary>Advanced &mdash; sampling overrides</summary>
+        <div class="advanced-fields">
+          <div class="field">
+            <label for="spotCheckSamplePercent">High-score spot-check %</label>
+            <input id="spotCheckSamplePercent" type="number" min="0" max="100" placeholder="5 (default)">
+          </div>
+          <div class="field">
+            <label for="randomBaselineSamplePercent">Random baseline %</label>
+            <input id="randomBaselineSamplePercent" type="number" min="0" max="100" placeholder="3 (default)">
+          </div>
+        </div>
+        <div class="hint">Only applied on top of the always-triggered rules (any category &le; 2, or an
+          AI-flagged anomaly always routes to a Team Lead regardless of these percentages).</div>
+      </details>
+
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary" id="submitBtn">Register use case</button>
-        <button type="button" class="btn btn-ghost" id="demoDataBtn">Demo Data</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Start QA review</button>
         <a href="/admin.html" class="btn btn-ghost">View dashboard</a>
       </div>
     </form>
@@ -160,170 +142,58 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function slugify(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
-}
+document.getElementById('useExampleBtn').addEventListener('click', () => {
+  document.getElementById('zendeskTicketId').value = '12345';
+});
 
-// ── Demo Data ────────────────────────────────────────────────────────────────
-// Spans all four DMN categories (Minimal/Limited/High/Critical) so clicking
-// through scenarios exercises different review/gate routing.
-const DEMO_SCENARIOS = [
-  {
-    name: 'Customer support chatbot', dataSensitivity: 'Public', autonomyLevel: 'Assistive', impactScope: 'Enterprise',
-    description: 'Answers common product questions in the support widget and drafts replies for agents to send.',
-    intendedUse: 'Support agents and self-serve customers; agents review every drafted reply before sending.'
-  },
-  {
-    name: 'Marketing copy generator', dataSensitivity: 'Public', autonomyLevel: 'Assistive', impactScope: 'Team',
-    description: 'Drafts social posts and ad copy variants from a campaign brief.',
-    intendedUse: 'Marketing team uses drafts as a starting point; nothing publishes without human edit and approval.'
-  },
-  {
-    name: 'Internal FAQ search assistant', dataSensitivity: 'Internal', autonomyLevel: 'Assistive', impactScope: 'BusinessUnit',
-    description: 'Semantic search over internal wiki and policy docs with a summarized answer.',
-    intendedUse: 'Employees looking up HR and IT policies; links back to source docs for verification.'
-  },
-  {
-    name: 'Meeting notes summarizer', dataSensitivity: 'Internal', autonomyLevel: 'Assistive', impactScope: 'Team',
-    description: 'Transcribes and summarizes internal meetings into action items.',
-    intendedUse: 'Meeting attendees; summaries are shared internally only.'
-  },
-  {
-    name: 'Predictive maintenance alerting', dataSensitivity: 'Internal', autonomyLevel: 'SemiAutonomous', impactScope: 'BusinessUnit',
-    description: 'Flags equipment likely to fail from sensor telemetry and opens a work order for review.',
-    intendedUse: 'Facilities team triages flagged equipment; work orders require sign-off before dispatch.'
-  },
-  {
-    name: 'Resume screening assistant', dataSensitivity: 'Confidential', autonomyLevel: 'Assistive', impactScope: 'BusinessUnit',
-    description: 'Ranks incoming resumes against a job requisition and highlights relevant experience.',
-    intendedUse: 'Recruiters use ranked shortlists as a starting point; every rejection is human-reviewed.'
-  },
-  {
-    name: 'Employee performance review drafting', dataSensitivity: 'Confidential', autonomyLevel: 'Assistive', impactScope: 'BusinessUnit',
-    description: 'Drafts a first pass of a performance review from manager notes and goal tracking data.',
-    intendedUse: 'Managers edit and finalize every draft before it reaches an employee.'
-  },
-  {
-    name: 'Fraud detection scoring engine', dataSensitivity: 'Confidential', autonomyLevel: 'SemiAutonomous', impactScope: 'Enterprise',
-    description: 'Scores transactions in real time and auto-holds high-risk ones pending analyst review.',
-    intendedUse: 'Fraud analysts review held transactions; the model never finalizes a decision itself.'
-  },
-  {
-    name: 'Medical diagnosis support tool', dataSensitivity: 'Restricted', autonomyLevel: 'SemiAutonomous', impactScope: 'Enterprise',
-    description: 'Suggests differential diagnoses from patient history and imaging to clinicians.',
-    intendedUse: 'Licensed clinicians only; suggestions are advisory and logged in the patient record.'
-  },
-  {
-    name: 'Automated loan approval engine', dataSensitivity: 'Restricted', autonomyLevel: 'Autonomous', impactScope: 'Enterprise',
-    description: 'Approves or denies small consumer loans end-to-end without human review.',
-    intendedUse: 'Applies directly to consumer loan applicants; decisions affect credit access.'
-  },
-  {
-    name: 'Autonomous trading signal executor', dataSensitivity: 'Restricted', autonomyLevel: 'Autonomous', impactScope: 'Enterprise',
-    description: 'Generates and executes trading signals against a live brokerage account without sign-off.',
-    intendedUse: 'Runs unattended against firm capital; no human in the loop before execution.'
-  },
-  {
-    name: 'Autonomous inventory reordering', dataSensitivity: 'Internal', autonomyLevel: 'Autonomous', impactScope: 'BusinessUnit',
-    description: 'Places reorders with suppliers automatically based on demand forecasts, no purchasing sign-off.',
-    intendedUse: 'Runs unattended against live supplier accounts and budget.'
-  }
-];
-const DEMO_SUBMITTERS = [
-  'alice@company.com', 'bob@company.com', 'carol@company.com', 'dave@company.com',
-  'priya@company.com', 'wei@company.com', 'sofia@company.com', 'malik@company.com'
-];
-
-let _lastDemoIdx = -1;
-
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-function fillDemoData() {
-  let idx;
-  do { idx = Math.floor(Math.random() * DEMO_SCENARIOS.length); }
-  while (idx === _lastDemoIdx && DEMO_SCENARIOS.length > 1);
-  _lastDemoIdx = idx;
-
-  const s = DEMO_SCENARIOS[idx];
-  document.getElementById('useCaseName').value = s.name;
-  document.getElementById('description').value = s.description;
-  document.getElementById('intendedUse').value = s.intendedUse;
-  document.getElementById('submittedBy').value = pick(DEMO_SUBMITTERS);
-  document.getElementById('impactScope').value = s.impactScope;
-  document.getElementById('dataSensitivity').value = s.dataSensitivity;
-  document.getElementById('autonomyLevel').value = s.autonomyLevel;
-  document.getElementById('recertificationCycle').value = 'R/PT2M';
-
-  const card = document.querySelector('.form-card');
-  card.style.transition = 'border-color .1s';
-  card.style.borderColor = 'var(--accent)';
-  setTimeout(() => { card.style.borderColor = ''; }, 500);
-}
-
-document.getElementById('demoDataBtn').addEventListener('click', fillDemoData);
-
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
+document.getElementById('startForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
+  const zendeskTicketId = document.getElementById('zendeskTicketId').value.trim();
+  const spotCheck = document.getElementById('spotCheckSamplePercent').value;
+  const randomBaseline = document.getElementById('randomBaselineSamplePercent').value;
 
-  const useCaseName = document.getElementById('useCaseName').value.trim();
-  const variables = {
-    useCaseId: 'AIUC-' + slugify(useCaseName) + '-' + Date.now().toString(36),
-    useCaseName,
-    description: document.getElementById('description').value.trim(),
-    intendedUse: document.getElementById('intendedUse').value.trim(),
-    submittedBy: document.getElementById('submittedBy').value.trim(),
-    impactScope: document.getElementById('impactScope').value,
-    dataSensitivity: document.getElementById('dataSensitivity').value,
-    autonomyLevel: document.getElementById('autonomyLevel').value,
-    recertificationCycle: document.getElementById('recertificationCycle').value
-  };
+  const variables = { zendeskTicketId };
+  if (spotCheck !== '') variables.spotCheckSamplePercent = Number(spotCheck);
+  if (randomBaseline !== '') variables.randomBaselineSamplePercent = Number(randomBaseline);
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Registering…';
+  btn.innerHTML = '<span class="spinner"></span> Starting…';
 
   try {
     const resp = await fetch('/api/process/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ processId: 'AiGovernanceProcess', variables })
+      body: JSON.stringify({ processId: 'SupportQaReview', variables })
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || 'Unknown error');
 
-    let operateUrl = null;
-    try {
-      const cfg = await (await fetch('/api/admin/config')).json();
-      operateUrl = cfg.operateBaseUrl + '/instances/' + data.processInstanceKey;
-    } catch (_) {}
-
-    showResult('success', useCaseName, data.processInstanceKey, operateUrl);
-    document.getElementById('registerForm').reset();
+    showResult('success', zendeskTicketId, data.processInstanceKey);
   } catch (err) {
-    showResult('error', null, null, null, err.message);
+    showResult('error', null, null, err.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Register use case';
+    btn.textContent = 'Start QA review';
   }
 });
 
-function showResult(type, useCaseName, piKey, operateUrl, errorMsg) {
+function showResult(type, ticketId, piKey, errorMsg) {
   const el = document.getElementById('result');
   el.className = type;
   el.style.display = 'block';
 
   if (type === 'success') {
     el.innerHTML = `
-      <div class="result-title">✓ Registered "${escHtml(useCaseName)}"</div>
+      <div class="result-title">&#10003; Review started for ticket ${escHtml(ticketId)}</div>
       <div class="result-meta">Process instance: ${piKey}</div>
       <div class="result-links">
-        <a href="/tasks.html" class="btn btn-primary" style="font-size:12px;padding:6px 14px">Review tasks →</a>
-        <a href="/admin.html" class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Dashboard</a>
-        ${operateUrl ? `<a href="${operateUrl}" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:6px 14px">Operate ↗</a>` : ''}
+        <a href="/admin.html" class="btn btn-primary" style="font-size:12px;padding:6px 14px">Dashboard &rarr;</a>
+        <a href="/tasks.html" class="btn btn-ghost" style="font-size:12px;padding:6px 14px">TL Queue</a>
       </div>`;
   } else {
     el.innerHTML = `
-      <div class="result-title">Failed to register use case</div>
+      <div class="result-title">Failed to start review</div>
       <div class="result-meta">${escHtml(errorMsg)}</div>`;
   }
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

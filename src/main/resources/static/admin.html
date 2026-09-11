@@ -3,169 +3,261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Review Dashboard</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
-      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
-      --success: #22c55e; --warning: #f59e0b; --info: #3b82f6; --error: #ef4444;
-      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --orange: #f55215; --orange-dark: #d4430f; --orange-light: #ff9a3d;
+      --dark: #0d0d0c; --charcoal: #2c2c2b; --gray: #6e6e6e; --gray-light: #949494;
+      --cream: #f4f3ed; --white: #ffffff; --border: #e2e2df; --border-dark: #dad9d7;
+      --success: #0a7b28; --success-bg: #e6f4ea;
+      --info: #0663c9; --info-bg: #e5f2fc;
+      --warning: #a15c00; --warning-bg: #fdf1de;
+      --error: #c81010; --error-bg: #fce8e8;
+      --font: "Staff", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+    body { background: var(--cream); color: var(--charcoal); font-family: var(--font); font-size: 14px; min-height: 100vh; }
 
-    .nav { display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
-    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .topbar { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px; background: var(--dark); position: sticky; top: 0; z-index: 50; }
+    .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+    .brand-mark { font-weight: 800; font-size: 20px; letter-spacing: .5px; color: var(--orange); }
+    .brand-sub { font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: #c8c7c2; }
     .nav-links { display: flex; gap: 4px; }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
-    .nav-link:hover { color: var(--text); background: var(--surface2); }
-    .nav-link.active { color: #fff; }
+    .nav-link { color: #c8c7c2; text-decoration: none; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 999px; transition: all .15s; }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-link.active { color: #fff; background: var(--orange); }
 
-    main { max-width: 1150px; margin: 0 auto; padding: 40px 24px 80px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: var(--orange-dark); }
+    .btn-ghost { background: transparent; color: var(--dark); border: 1.5px solid var(--border-dark); }
+    .btn-ghost:hover { background: var(--white); border-color: var(--dark); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+    main { max-width: 1140px; margin: 0 auto; padding: 40px 24px 80px; }
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
     .page-header h1 { font-size: 26px; font-weight: 700; }
     .header-actions { display: flex; align-items: center; gap: 8px; }
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px;
-      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: #2a2a2a; }
-    .btn-warn { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
-    .btn-warn:hover { background: rgba(239,68,68,.2); }
-    .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
-    .stat-label { font-size: 11px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-    .stat-value { font-size: 28px; font-weight: 700; }
-    .stat-value.blue  { color: var(--accent); }
-    .stat-value.amber { color: var(--warning); }
-    .stat-value.green { color: var(--success); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    @media (max-width: 860px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-label { font-size: 11px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.green  { color: var(--success); }
+    .stat-value.red    { color: var(--error); }
 
-    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .table-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
     .table-toolbar { display: flex; align-items: center; justify-content: space-between;
       padding: 14px 20px; border-bottom: 1px solid var(--border); }
-    .table-toolbar-title { font-size: 13px; font-weight: 600; }
-    .last-updated { font-size: 12px; color: var(--muted); }
+    .table-toolbar-title { font-size: 13px; font-weight: 700; }
+    .last-updated { font-size: 12px; color: var(--gray); }
     table { width: 100%; border-collapse: collapse; }
-    th { font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
-      color: var(--muted); padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
-    td { padding: 12px 16px; border-bottom: 1px solid #1f1f1f; vertical-align: middle; font-size: 13px; }
+    th { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      color: var(--gray); padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); background: var(--cream); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255,255,255,.02); }
+    tr:hover td { background: rgba(245,82,21,.03); }
 
-    .use-case-name { font-weight: 600; font-size: 13px; }
-    .pi-key { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .ticket-subject { font-weight: 700; font-size: 13px; }
+    .ticket-meta { font-family: ui-monospace, monospace; font-size: 11px; color: var(--gray); margin-top: 2px; }
 
-    .badge, .category-pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
-      padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
-    .badge-active  { background: rgba(59,130,246,.15);  color: #60a5fa; }
-    .badge-review  { background: rgba(245,158,11,.15);  color: #fbbf24; }
-    .badge-done    { background: rgba(34,197,94,.15);   color: #4ade80; }
-    .badge-unknown { background: rgba(136,136,136,.12); color: var(--muted); }
-    .cat-Minimal  { background: rgba(34,197,94,.15);  color: #4ade80; }
-    .cat-Limited  { background: rgba(59,130,246,.15); color: #60a5fa; }
-    .cat-High     { background: rgba(245,158,11,.15); color: #fbbf24; }
-    .cat-Critical { background: rgba(239,68,68,.15);  color: #f87171; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+    .badge-active     { background: var(--info-bg);    color: var(--info); }
+    .badge-exceeds    { background: var(--success-bg); color: var(--success); }
+    .badge-meets      { background: var(--info-bg);    color: var(--info); }
+    .badge-notmet     { background: var(--error-bg);   color: var(--error); }
+    .badge-unknown    { background: var(--border);     color: var(--gray); }
+    .badge-human      { background: var(--warning-bg); color: var(--warning); }
 
     .step-text { font-size: 12px; }
-    .time-cell { font-size: 12px; color: var(--muted); }
-    .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .time-cell { font-size: 12px; color: var(--gray); }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
     .empty-state p { margin-top: 10px; font-size: 13px; }
-    .empty-state a { color: var(--accent); text-decoration: none; }
+    .empty-state a { color: var(--orange); text-decoration: none; font-weight: 600; }
 
     .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
     .dot-blue  { background: var(--info); }
-    .dot-amber { background: var(--warning); animation: pulse 1.5s infinite; }
+    .dot-amber { background: var(--orange-light); animation: pulse 1.5s infinite; }
     .dot-green { background: var(--success); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-    .spinner-sm { display: inline-block; width: 10px; height: 10px; border: 1.5px solid rgba(255,255,255,.15);
-      border-top-color: var(--muted); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+    .spinner-sm { display: inline-block; width: 10px; height: 10px; border: 1.5px solid rgba(0,0,0,.1);
+      border-top-color: var(--gray); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(12px);
-      background: #1a1a1a; border: 1px solid var(--success); color: var(--success);
-      padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      opacity: 0; transition: opacity .2s, transform .2s; z-index: 300; pointer-events: none; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.error { border-color: var(--error); color: #f87171; }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a href="/index.html" class="nav-brand">
-    <span class="brand-mark">G</span>
-    AI Governance
+<header class="topbar">
+  <a href="/index.html" class="brand">
+    <span class="brand-mark">SAFE</span>
+    <span class="brand-sub">Support QA</span>
   </a>
-  <div class="nav-links">
-    <a href="/start.html" class="nav-link">Register</a>
-    <a href="/tasks.html" class="nav-link">Tasks</a>
+  <nav class="nav-links">
+    <a href="/index.html" class="nav-link">Overview</a>
+    <a href="/start.html" class="nav-link">Start Review</a>
+    <a href="/tasks.html" class="nav-link">TL Queue</a>
     <a href="/admin.html" class="nav-link active">Dashboard</a>
-  </div>
-</nav>
+  </nav>
+</header>
 
 <main>
   <div class="page-header">
-    <h1>Dashboard</h1>
+    <h1>Review Dashboard</h1>
     <div class="header-actions">
-      <a href="/start.html" class="btn btn-primary">+ Register Use Case</a>
-      <button class="btn btn-ghost" id="refreshBtn" onclick="loadInstances()">Refresh</button>
+      <a href="/start.html" class="btn btn-primary">+ Start Review</a>
+      <button class="btn btn-ghost" id="refreshBtn" onclick="loadInstances(); loadReviewRateReport(); loadQualityTrendReport(); loadCostReport(); loadCalibrationReport();">Refresh</button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <span class="table-toolbar-title">Human Review Rate &mdash; All Runs (target: 5&ndash;8%)</span>
+      <span class="last-updated" id="reviewRateUpdated"></span>
+    </div>
+    <div style="padding: 20px 20px 4px;">
+      <div class="stats" style="margin-bottom: 16px;">
+        <div class="stat-card">
+          <div class="stat-label">Tickets Scored</div>
+          <div class="stat-value" id="rr-total">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Routed to Review</div>
+          <div class="stat-value orange" id="rr-routed">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Review Rate</div>
+          <div class="stat-value" id="rr-rate">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">In 5&ndash;8% Target?</div>
+          <div class="stat-value" id="rr-band" style="font-size:16px">&mdash;</div>
+        </div>
+      </div>
+      <div id="rr-breakdown" style="padding-bottom:16px; font-size:12px; color:var(--gray)"></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <span class="table-toolbar-title">Quality Trend &mdash; All Scored Tickets</span>
+      <span class="last-updated" id="qtUpdated"></span>
+    </div>
+    <div style="padding: 20px 20px 4px;">
+      <div class="stats" style="margin-bottom: 16px;">
+        <div class="stat-card">
+          <div class="stat-label">Tickets Scored</div>
+          <div class="stat-value" id="qt-total">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Score</div>
+          <div class="stat-value orange" id="qt-avg">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Score Range</div>
+          <div class="stat-value" style="font-size:18px" id="qt-range">&mdash;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Anomaly Rate</div>
+          <div class="stat-value" id="qt-anomaly">&mdash;</div>
+        </div>
+      </div>
+      <div id="qt-ratings" style="padding-bottom:12px; font-size:12px; color:var(--gray)"></div>
+      <div id="qt-categories" style="padding-bottom:16px; font-size:12px; color:var(--gray)"></div>
+    </div>
+  </div>
+
+  <div class="stats" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="table-card">
+      <div class="table-toolbar">
+        <span class="table-toolbar-title">Model Cost &amp; Token Usage</span>
+        <span class="last-updated" id="costUpdated"></span>
+      </div>
+      <div style="padding: 20px;">
+        <div class="stats" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 12px;">
+          <div class="stat-card">
+            <div class="stat-label">Total Tokens</div>
+            <div class="stat-value orange" id="cost-tokens">&mdash;</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Tokens / Ticket</div>
+            <div class="stat-value" style="font-size:20px" id="cost-avg-tokens">&mdash;</div>
+          </div>
+        </div>
+        <div id="cost-breakdown" style="font-size:12px; color:var(--gray)"></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-toolbar">
+        <span class="table-toolbar-title">Calibration &mdash; TL Override Rate</span>
+        <span class="last-updated" id="calUpdated"></span>
+      </div>
+      <div style="padding: 20px;">
+        <div class="stats" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 12px;">
+          <div class="stat-card">
+            <div class="stat-label">Human Reviewed</div>
+            <div class="stat-value" id="cal-reviewed">&mdash;</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Override Rate</div>
+            <div class="stat-value orange" id="cal-override">&mdash;</div>
+          </div>
+        </div>
+        <div id="cal-breakdown" style="font-size:12px; color:var(--gray)"></div>
+      </div>
     </div>
   </div>
 
   <div class="stats">
     <div class="stat-card">
-      <div class="stat-label">Total Registered</div>
+      <div class="stat-label">Started (this session)</div>
       <div class="stat-value" id="stat-total">—</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Active</div>
-      <div class="stat-value blue" id="stat-active">—</div>
+      <div class="stat-label">In Progress</div>
+      <div class="stat-value orange" id="stat-active">—</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Closed</div>
+      <div class="stat-label">Awaiting TL Review</div>
+      <div class="stat-value" id="stat-review">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Recorded</div>
       <div class="stat-value green" id="stat-done">—</div>
     </div>
   </div>
 
   <div class="table-card">
     <div class="table-toolbar">
-      <span class="table-toolbar-title">AI Use Cases</span>
+      <span class="table-toolbar-title">Reviews This Session</span>
       <span class="last-updated" id="lastUpdated"></span>
     </div>
     <div id="tableContainer">
       <table>
         <thead>
           <tr>
-            <th>Use Case</th>
-            <th>Category</th>
-            <th>Registered</th>
+            <th>Ticket</th>
+            <th>Started</th>
             <th>Current Step</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>Result</th>
           </tr>
         </thead>
         <tbody id="tableBody">
-          <tr><td colspan="6"><div class="empty-state">Loading…</div></td></tr>
+          <tr><td colspan="4"><div class="empty-state">Loading…</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </main>
 
-<div class="toast" id="toast"></div>
-
 <script>
-let operateBaseUrl = '';
-let tasklistBaseUrl = '';
-
 function relativeTime(iso) {
   const diff = Date.now() - new Date(iso).getTime();
   const s = Math.floor(diff / 1000);
@@ -176,14 +268,30 @@ function relativeTime(iso) {
 }
 
 function escHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function stepBadge(stepId, state) {
-  if (state === 'completed' || (!stepId && state !== 'active')) return '<span class="badge badge-done">Closed</span>';
+function stepBadgeHtml(currentStep, state) {
+  if (state === 'active' && currentStep === 'Task_TlReview') return '<span class="badge badge-human">Awaiting TL review</span>';
+  if (state === 'completed' || (!currentStep && state !== 'active')) return '';
   if (state === 'unknown') return '<span class="badge badge-unknown">Unknown</span>';
-  if (!stepId) return '<span class="badge badge-unknown">—</span>';
-  return '<span class="badge badge-active">Active</span>';
+  if (!currentStep) return '<span class="badge badge-unknown">—</span>';
+  return '<span class="badge badge-active">In progress</span>';
+}
+
+function resultBadgeHtml(vars, state) {
+  const effective = vars.effectiveRating;
+  const provisional = vars.overallProvisionalRating;
+  const rating = effective || provisional;
+  if (!rating) {
+    return state === 'completed'
+      ? '<span class="badge badge-unknown">No result recorded</span>'
+      : '<span class="badge badge-unknown">Scoring…</span>';
+  }
+  const cls = rating === 'Exceeds' ? 'badge-exceeds' : rating === 'Meets' ? 'badge-meets' : 'badge-notmet';
+  const label = rating === 'NeedsImprovement' ? 'Needs Improvement' : rating;
+  const source = effective ? (vars.finalRatingSource === 'human' ? ' (TL)' : ' (AI)') : ' (provisional)';
+  return `<span class="badge ${cls}">${escHtml(label)}${source}</span>`;
 }
 
 async function loadInstances() {
@@ -192,122 +300,197 @@ async function loadInstances() {
     const tbody = document.getElementById('tableBody');
 
     if (!instances || instances.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
-        <div style="font-size:32px">📋</div>
-        <p>No use cases registered yet. <a href="/start.html">Register one →</a></p>
+      tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">
+        <div style="font-size:32px;color:var(--orange-light)">&#9635;</div>
+        <p>No reviews started this session. <a href="/start.html">Start one &rarr;</a></p>
       </div></td></tr>`;
-      updateStats([], []);
+      updateStats([], [], []);
       return;
     }
 
     tbody.innerHTML = instances.map(inst => {
       const piKey = inst.processInstanceKey;
-      const v = inst.variables || {};
-      const category = v.aiCategory
-        ? `<span class="category-pill cat-${escHtml(v.aiCategory)}">${escHtml(v.aiCategory)}</span>`
-        : '<span class="category-pill badge-unknown">Pending</span>';
+      const ticketId = (inst.variables || {}).zendeskTicketId;
       return `<tr id="row-${piKey}">
         <td>
-          <div class="use-case-name">${escHtml(v.useCaseName || '—')}</div>
-          <div class="pi-key">pi ${piKey}</div>
+          <div class="ticket-subject" id="subject-${piKey}">${ticketId ? `Ticket ${escHtml(ticketId)}` : '—'}</div>
+          <div class="ticket-meta">pi ${piKey}</div>
         </td>
-        <td id="cat-${piKey}">${category}</td>
         <td class="time-cell">${relativeTime(inst.startedAt)}</td>
         <td id="step-${piKey}"><span class="spinner-sm"></span></td>
-        <td id="status-${piKey}"><span class="badge badge-unknown">—</span></td>
-        <td class="actions-cell" id="actions-${piKey}">
-          <a href="/audit.html?piKey=${piKey}" class="btn btn-ghost btn-sm">Trace →</a>
-          ${operateBaseUrl ? `<a href="${operateBaseUrl}/instances/${piKey}" target="_blank" class="btn btn-ghost btn-sm">Operate ↗</a>` : ''}
-          <button class="btn btn-warn btn-sm" onclick="reportIncident('${piKey}', '${escHtml(v.useCaseId || '')}', '${escHtml(v.useCaseName || '')}')">Report Incident</button>
-        </td>
+        <td id="result-${piKey}"><span class="badge badge-unknown">—</span></td>
       </tr>`;
     }).join('');
 
-    const stepResults = await Promise.allSettled(
-      instances.map(inst =>
-        fetch(`/api/admin/instance-step/${inst.processInstanceKey}`)
-          .then(r => r.json())
-          .then(d => ({ piKey: inst.processInstanceKey, ...d }))
-      )
-    );
+    const [stepResults, varResults] = await Promise.all([
+      Promise.allSettled(instances.map(inst =>
+        fetch(`/api/admin/instance-step/${inst.processInstanceKey}`).then(r => r.json())
+          .then(d => ({ piKey: inst.processInstanceKey, ...d })))),
+      Promise.allSettled(instances.map(inst =>
+        fetch(`/api/process/${inst.processInstanceKey}/variables`).then(r => r.json())
+          .then(d => ({ piKey: inst.processInstanceKey, variables: d.variables || {} }))))
+    ]);
 
-    const enriched = stepResults.map((r, i) => {
-      if (r.status === 'fulfilled') return r.value;
-      return { piKey: instances[i].processInstanceKey, currentStep: '', state: 'unknown' };
-    });
+    const steps = stepResults.map((r, i) =>
+      r.status === 'fulfilled' ? r.value : { piKey: instances[i].processInstanceKey, currentStep: '', state: 'unknown' });
+    const varsByPiKey = varResults.map((r, i) =>
+      r.status === 'fulfilled' ? r.value : { piKey: instances[i].processInstanceKey, variables: {} });
 
-    enriched.forEach(({ piKey, currentStep, state }) => {
+    steps.forEach(({ piKey, currentStep, state }) => {
       const stepCell = document.getElementById(`step-${piKey}`);
-      const statusCell = document.getElementById(`status-${piKey}`);
       if (!stepCell) return;
-
       const dotClass = state === 'active' ? 'dot-blue' : state === 'completed' ? 'dot-green' : 'dot-amber';
+      const badge = stepBadgeHtml(currentStep, state);
       stepCell.innerHTML = state === 'completed' || !currentStep
-        ? `<span class="step-text">Closed</span>`
-        : `<span class="dot ${dotClass}"></span><span class="step-text">${escHtml(currentStep)}</span>`;
-
-      statusCell.innerHTML = stepBadge(currentStep, state);
+        ? `<span class="step-text">Completed</span>`
+        : `<span class="dot ${dotClass}"></span><span class="step-text">${escHtml(currentStep)}</span> ${badge}`;
     });
 
-    updateStats(instances, enriched);
+    varsByPiKey.forEach(({ piKey, variables }) => {
+      const subjectCell = document.getElementById(`subject-${piKey}`);
+      const resultCell = document.getElementById(`result-${piKey}`);
+      const step = steps.find(s => s.piKey === piKey) || {};
+      if (subjectCell && variables.ticketSubject) subjectCell.textContent = variables.ticketSubject;
+      if (resultCell) resultCell.innerHTML = resultBadgeHtml(variables, step.state);
+    });
+
+    updateStats(instances, steps, varsByPiKey);
     document.getElementById('lastUpdated').textContent = 'Updated ' + relativeTime(new Date().toISOString());
 
   } catch (err) {
     document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="6"><div class="empty-state"><p>Could not load instances: ${escHtml(err.message)}</p></div></td></tr>`;
+      `<tr><td colspan="4"><div class="empty-state"><p>Could not load reviews: ${escHtml(err.message)}</p></div></td></tr>`;
   }
 }
 
-function updateStats(instances, enriched) {
+function updateStats(instances, steps, varsByPiKey) {
   const total = instances.length;
-  const done  = enriched.filter(e => e.state === 'completed' || (!e.currentStep && e.state !== 'active')).length;
+  const done = steps.filter(s => s.state === 'completed' || (!s.currentStep && s.state !== 'active')).length;
+  const awaitingReview = steps.filter(s => s.state === 'active' && s.currentStep === 'Task_TlReview').length;
   const active = total - done;
 
-  document.getElementById('stat-total').textContent  = total;
-  document.getElementById('stat-active').textContent = active;
-  document.getElementById('stat-done').textContent   = done;
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-active').textContent  = active;
+  document.getElementById('stat-review').textContent  = awaitingReview;
+  document.getElementById('stat-done').textContent    = done;
 }
 
-async function reportIncident(piKey, useCaseId, useCaseName) {
-  if (!useCaseId) { showToast('This use case has no useCaseId to correlate on.', true); return; }
-  const reason = window.prompt(`Report a material change or incident for "${useCaseName}":`);
-  if (reason === null) return;
+const CHANNEL_LABELS = {
+  LowProvisionalScore: 'Low score',
+  AnomalyFlagged: 'Anomaly flagged',
+  HighScoreSpotCheck: 'High-score spot-check',
+  RandomBaseline: 'Random baseline',
+  None: 'Not reviewed'
+};
 
+async function loadReviewRateReport() {
   try {
-    const res = await fetch('/api/process/message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messageName: 'IncidentReported',
-        correlationKey: useCaseId,
-        variables: { incidentReason: reason, incidentReportedAt: new Date().toISOString() }
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-    showToast('Incident reported — reassessment task created.');
-    loadInstances();
+    const r = await fetch('/api/admin/review-rate-report').then(r => r.json());
+    if (r.error) throw new Error(r.error);
+
+    document.getElementById('rr-total').textContent = r.totalTickets;
+    document.getElementById('rr-routed').textContent = r.routedToReview;
+    document.getElementById('rr-rate').textContent = r.reviewRatePercent + '%';
+
+    const bandEl = document.getElementById('rr-band');
+    if (r.totalTickets === 0) {
+      bandEl.innerHTML = '<span class="badge badge-unknown">No data yet</span>';
+    } else if (r.reviewRatePercent >= 5 && r.reviewRatePercent <= 8) {
+      bandEl.innerHTML = '<span class="badge badge-exceeds">In band</span>';
+    } else if (r.reviewRatePercent < 5) {
+      bandEl.innerHTML = '<span class="badge badge-notmet">Below target</span>';
+    } else {
+      bandEl.innerHTML = '<span class="badge badge-human">Above target</span>';
+    }
+
+    const channels = Object.keys(CHANNEL_LABELS).filter(c => (r.byChannel || {})[c]);
+    document.getElementById('rr-breakdown').textContent = channels.length
+      ? channels.map(c => `${CHANNEL_LABELS[c]}: ${r.byChannel[c]}`).join('  ·  ')
+      : 'No breakdown available yet.';
+
+    document.getElementById('reviewRateUpdated').textContent = 'Updated ' + relativeTime(new Date().toISOString());
   } catch (err) {
-    showToast('Failed to report incident: ' + err.message, true);
+    document.getElementById('rr-breakdown').textContent = 'Could not load review rate: ' + err.message;
   }
 }
 
-function showToast(msg, isError) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (isError ? ' error' : '');
-  setTimeout(() => t.classList.remove('show'), 4000);
+const RATING_LABELS = { Exceeds: 'Exceeds', Meets: 'Meets', NeedsImprovement: 'Needs Improvement', 'ai-unreviewed': 'AI (unreviewed)', human: 'TL (human)' };
+const CATEGORY_LABELS = {
+  toneProfessionalism: 'Tone & Professionalism', nextStepsOwnership: 'Next Steps & Ownership', callChannelJudgment: 'Call/Channel Judgment',
+  rootCauseIdentified: 'Root Cause Identified', technicalAccuracy: 'Technical Accuracy', completeness: 'Completeness',
+  jiraBugTicket: 'Jira Bug Ticket', internalNotes: 'Internal Notes', followUpCommitments: 'Follow-Up Commitments'
+};
+
+async function loadQualityTrendReport() {
+  try {
+    const r = await fetch('/api/admin/quality-trend-report').then(r => r.json());
+    if (r.error) throw new Error(r.error);
+
+    document.getElementById('qt-total').textContent = r.ticketsScored;
+    document.getElementById('qt-avg').textContent = r.avgScorePercent != null ? r.avgScorePercent + '%' : '—';
+    document.getElementById('qt-range').textContent = r.ticketsScored > 0 ? `${r.minScorePercent}% – ${r.maxScorePercent}%` : '—';
+    document.getElementById('qt-anomaly').textContent = r.anomalyRatePercent + '% (' + r.anomalyFlaggedCount + ')';
+
+    const ratings = Object.entries(r.ratingDistribution || {});
+    document.getElementById('qt-ratings').textContent = ratings.length
+      ? 'Rating mix: ' + ratings.map(([k, v]) => `${RATING_LABELS[k] || k}: ${v}`).join('  ·  ')
+      : 'No ratings recorded yet.';
+
+    const categories = Object.entries(r.avgScoreByCategory || {});
+    document.getElementById('qt-categories').textContent = categories.length
+      ? 'Avg by category: ' + categories.map(([k, v]) => `${CATEGORY_LABELS[k] || k}: ${v}`).join('  ·  ')
+      : 'No category scores recorded yet.';
+
+    document.getElementById('qtUpdated').textContent = 'Updated ' + relativeTime(new Date().toISOString());
+  } catch (err) {
+    document.getElementById('qt-categories').textContent = 'Could not load quality trend: ' + err.message;
+  }
+}
+
+async function loadCostReport() {
+  try {
+    const r = await fetch('/api/admin/cost-report').then(r => r.json());
+    if (r.error) throw new Error(r.error);
+
+    document.getElementById('cost-tokens').textContent = r.totalTokens.toLocaleString();
+    document.getElementById('cost-avg-tokens').textContent = r.avgTokensPerTicket.toLocaleString();
+    document.getElementById('cost-breakdown').textContent = r.ticketsScored > 0
+      ? `${r.ticketsScored} tickets  ·  ${r.totalModelCalls} model calls (avg ${r.avgModelCallsPerTicket}/ticket)  ·  ${r.totalInputTokens.toLocaleString()} in / ${r.totalOutputTokens.toLocaleString()} out`
+      : 'No token usage recorded yet.';
+
+    document.getElementById('costUpdated').textContent = 'Updated ' + relativeTime(new Date().toISOString());
+  } catch (err) {
+    document.getElementById('cost-breakdown').textContent = 'Could not load cost report: ' + err.message;
+  }
+}
+
+async function loadCalibrationReport() {
+  try {
+    const r = await fetch('/api/admin/calibration-report').then(r => r.json());
+    if (r.error) throw new Error(r.error);
+
+    document.getElementById('cal-reviewed').textContent = r.humanReviewed;
+    document.getElementById('cal-override').textContent = r.overrideRatePercent + '%';
+
+    const ratings = Object.entries(r.effectiveRatingDistribution || {});
+    document.getElementById('cal-breakdown').textContent = r.recordedTickets > 0
+      ? `${r.recordedTickets} recorded  ·  ${r.aiUnreviewed} AI-unreviewed  ·  ${r.overrideCount} overridden  ·  ` +
+        ratings.map(([k, v]) => `${RATING_LABELS[k] || k}: ${v}`).join(', ')
+      : 'No results recorded yet.';
+
+    document.getElementById('calUpdated').textContent = 'Updated ' + relativeTime(new Date().toISOString());
+  } catch (err) {
+    document.getElementById('cal-breakdown').textContent = 'Could not load calibration report: ' + err.message;
+  }
 }
 
 async function init() {
-  try {
-    const cfg = await (await fetch('/api/admin/config')).json();
-    operateBaseUrl  = cfg.operateBaseUrl  || '';
-    tasklistBaseUrl = cfg.tasklistBaseUrl || '';
-  } catch (_) {}
-
-  await loadInstances();
+  await Promise.all([loadInstances(), loadReviewRateReport(), loadQualityTrendReport(), loadCostReport(), loadCalibrationReport()]);
   setInterval(loadInstances, 15000);
+  setInterval(loadReviewRateReport, 15000);
+  setInterval(loadQualityTrendReport, 15000);
+  setInterval(loadCostReport, 15000);
+  setInterval(loadCalibrationReport, 15000);
 }
 
 init();

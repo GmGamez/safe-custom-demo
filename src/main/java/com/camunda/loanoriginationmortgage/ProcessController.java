@@ -19,9 +19,13 @@ public class ProcessController {
     private final CopyOnWriteArrayList<Map<String, Object>> recentInstances = new CopyOnWriteArrayList<>();
 
     private final CamundaClient client;
+    private final CamundaRestHelper restHelper;
+    private final ProcessVariableCache variableCache;
 
-    public ProcessController(CamundaClient client) {
+    public ProcessController(CamundaClient client, CamundaRestHelper restHelper, ProcessVariableCache variableCache) {
         this.client = client;
+        this.restHelper = restHelper;
+        this.variableCache = variableCache;
     }
 
     @PostMapping("/start")
@@ -65,28 +69,47 @@ public class ProcessController {
     }
 
     /**
-     * Publishes a message to correlate with a running process instance — e.g. the
-     * "IncidentReported" message that triggers reassessment for an in-production use case.
+     * Merged variable snapshot for a process instance (no task key required), so dashboards can
+     * show ticket context and QA results without needing an open user task. Same three-tier merge
+     * TasksController.getTaskContext uses: initial submission vars, job-worker output cache, then
+     * the Camunda variables/search API as a fallback.
      */
-    @PostMapping("/message")
-    public ResponseEntity<?> publishMessage(@RequestBody PublishMessageRequest request) {
+    @GetMapping("/{piKey}/variables")
+    public ResponseEntity<?> getInstanceVariables(@PathVariable long piKey) {
         try {
-            var result = client.newPublishMessageCommand()
-                    .messageName(request.messageName())
-                    .correlationKey(request.correlationKey())
-                    .variables(request.variables() != null ? request.variables() : Map.of())
-                    .send()
-                    .join();
+            Map<String, Object> variables = new LinkedHashMap<>();
 
-            log.info("Published message '{}' correlationKey={} messageKey={}",
-                    request.messageName(), request.correlationKey(), result.getMessageKey());
+            recentInstances.stream()
+                .filter(e -> piKey == asLong(e.get("processInstanceKey")))
+                .findFirst()
+                .ifPresent(entry -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> initVars = entry.get("variables") instanceof Map<?,?> m
+                        ? (Map<String, Object>) m : Map.of();
+                    variables.putAll(initVars);
+                });
 
-            return ResponseEntity.ok(Map.of("messageKey", result.getMessageKey()));
+            variables.putAll(variableCache.get(piKey));
+
+            try {
+                Map<String, Object> varSearch = restHelper.post("/variables/search",
+                    Map.of("filter", Map.of("processInstanceKey", String.valueOf(piKey))));
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> varItems = (List<Map<String, Object>>) varSearch.getOrDefault("items", List.of());
+                for (Map<String, Object> v : varItems) {
+                    String name = String.valueOf(v.get("name"));
+                    Object rawVal = v.get("value");
+                    if (rawVal == null) continue;
+                    try { variables.putIfAbsent(name, restHelper.mapper.readValue(String.valueOf(rawVal), Object.class)); }
+                    catch (Exception ignored) {}
+                }
+            } catch (Exception ignored) {
+                log.debug("[process] variables/search fallback skipped for piKey={}", piKey);
+            }
+
+            return ResponseEntity.ok(Map.of("variables", variables));
         } catch (Exception e) {
-            String message = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-            if (message == null) message = e.getClass().getSimpleName();
-            log.error("Failed to publish message '{}': {}", request.messageName(), message, e);
-            return ResponseEntity.status(500).body(Map.of("error", message));
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -94,6 +117,11 @@ public class ProcessController {
         return Collections.unmodifiableList(recentInstances);
     }
 
+    private static long asLong(Object raw) {
+        if (raw instanceof Number n) return n.longValue();
+        try { return Long.parseLong(String.valueOf(raw)); }
+        catch (Exception e) { return 0L; }
+    }
+
     public record StartRequest(String processId, Map<String, Object> variables) {}
-    public record PublishMessageRequest(String messageName, String correlationKey, Map<String, Object> variables) {}
 }

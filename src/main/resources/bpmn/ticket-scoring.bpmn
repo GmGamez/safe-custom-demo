@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_TicketScoring" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="TicketScoring" name="Ticket Scoring" isExecutable="true">
+    <bpmn:documentation>Invoked by support-qa-review.bpmn's Ticket Scoring call activity. Runs the three rubric dimensions as independent, parallel AI-agent evaluations - each its own process (communication-evaluation.bpmn, technical-advice-evaluation.bpmn, process-adherence-evaluation.bpmn), invoked here via call activities so each dimension can be deployed and versioned independently - then deterministically combines them into one provisional assessment and persists it. Mirrors the "Ticket Scoring" grouping in the customer-designed QA Review.bpmn reference model.</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_ScoringStart" name="Begin scoring">
+      <bpmn:outgoing>Flow_ScoringStartToFork</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_ScoringStartToFork" sourceRef="StartEvent_ScoringStart" targetRef="Gateway_ScoringFork" />
+    <bpmn:parallelGateway id="Gateway_ScoringFork" name="Score each dimension">
+      <bpmn:incoming>Flow_ScoringStartToFork</bpmn:incoming>
+      <bpmn:outgoing>Flow_ForkToCommunication</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ForkToTechnicalAdvice</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ForkToProcessAdherence</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_ForkToCommunication" sourceRef="Gateway_ScoringFork" targetRef="CallActivity_CommunicationEvaluation" />
+    <bpmn:sequenceFlow id="Flow_ForkToTechnicalAdvice" sourceRef="Gateway_ScoringFork" targetRef="CallActivity_TechnicalAdviceEvaluation" />
+    <bpmn:sequenceFlow id="Flow_ForkToProcessAdherence" sourceRef="Gateway_ScoringFork" targetRef="CallActivity_ProcessAdherenceEvaluation" />
+    <bpmn:callActivity id="CallActivity_CommunicationEvaluation" name="Communication Evaluation">
+      <bpmn:documentation>Scores the three Communication categories (tone/professionalism, next steps/ownership, call/channel judgment) with evidence and confidence per category. Restricted to the get-rubric tool. Deployed as its own process in communication-evaluation.bpmn.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="CommunicationEvaluation" propagateAllChildVariables="true" bindingType="latest" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ForkToCommunication</bpmn:incoming>
+      <bpmn:outgoing>Flow_CommunicationToJoin</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="CallActivity_TechnicalAdviceEvaluation" name="Technical Advice Evaluation">
+      <bpmn:documentation>Scores the three Technical Advice categories (root cause identified, technical accuracy, completeness) with evidence and confidence per category. Restricted to the get-rubric tool. Deployed as its own process in technical-advice-evaluation.bpmn.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="TechnicalAdviceEvaluation" propagateAllChildVariables="true" bindingType="latest" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ForkToTechnicalAdvice</bpmn:incoming>
+      <bpmn:outgoing>Flow_TechnicalAdviceToJoin</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="CallActivity_ProcessAdherenceEvaluation" name="Process Adherence Evaluation">
+      <bpmn:documentation>Scores the three Process Adherence categories (Jira bug ticket, internal notes, follow-up commitments) with evidence and confidence per category. The jiraBugTicket category is mechanically determined already and must be carried through unchanged. Restricted to the get-rubric and lookup-jira-issue tools - the only dimension that needs the Jira lookup. Deployed as its own process in process-adherence-evaluation.bpmn.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="ProcessAdherenceEvaluation" propagateAllChildVariables="true" bindingType="latest" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ForkToProcessAdherence</bpmn:incoming>
+      <bpmn:outgoing>Flow_ProcessAdherenceToJoin</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_CommunicationToJoin" sourceRef="CallActivity_CommunicationEvaluation" targetRef="Gateway_ScoringJoin" />
+    <bpmn:sequenceFlow id="Flow_TechnicalAdviceToJoin" sourceRef="CallActivity_TechnicalAdviceEvaluation" targetRef="Gateway_ScoringJoin" />
+    <bpmn:sequenceFlow id="Flow_ProcessAdherenceToJoin" sourceRef="CallActivity_ProcessAdherenceEvaluation" targetRef="Gateway_ScoringJoin" />
+    <bpmn:parallelGateway id="Gateway_ScoringJoin" name="All dimensions scored">
+      <bpmn:incoming>Flow_CommunicationToJoin</bpmn:incoming>
+      <bpmn:incoming>Flow_TechnicalAdviceToJoin</bpmn:incoming>
+      <bpmn:incoming>Flow_ProcessAdherenceToJoin</bpmn:incoming>
+      <bpmn:outgoing>Flow_JoinToOverallScore</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_JoinToOverallScore" sourceRef="Gateway_ScoringJoin" targetRef="Task_DetermineOverallScore" />
+    <bpmn:serviceTask id="Task_DetermineOverallScore" name="Overall Score Determination">
+      <bpmn:documentation>Deterministically combines the three per-dimension results into one 9-category assessment: merges categoryScores, computes lowestCategoryScore, ORs the three anomaly flags/reasons together, and derives overallScorePercent/overallProvisionalRating (Exceeds/Meets/NeedsImprovement) using the weighted-scoring formula. Not an AI call - keeps the aggregation step auditable and reproducible.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="determine-overall-score" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_JoinToOverallScore</bpmn:incoming>
+      <bpmn:outgoing>Flow_OverallScoreToPersist</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_OverallScoreToPersist" sourceRef="Task_DetermineOverallScore" targetRef="Task_PersistScore" />
+    <bpmn:serviceTask id="Task_PersistScore" name="Persist Score">
+      <bpmn:documentation>Assembles and persists the provisional qaAssessment (categoryScores, overallProvisionalRating, overallScorePercent, lowestCategoryScore, anomalyFlagged, anomalyReasons) for audit - the "AIScore" write in the customer-designed reference model.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="persist-score" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_OverallScoreToPersist</bpmn:incoming>
+      <bpmn:outgoing>Flow_PersistToScoringEnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_PersistToScoringEnd" sourceRef="Task_PersistScore" targetRef="EndEvent_ScoringComplete" />
+    <bpmn:endEvent id="EndEvent_ScoringComplete" name="Scoring complete">
+      <bpmn:incoming>Flow_PersistToScoringEnd</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TicketScoring">
+      <bpmndi:BPMNShape id="Shape_StartEvent_ScoringStart" bpmnElement="StartEvent_ScoringStart">
+        <dc:Bounds x="160" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="154" y="285" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ScoringFork" bpmnElement="Gateway_ScoringFork">
+        <dc:Bounds x="230" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="207" y="292" width="97" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CallActivity_CommunicationEvaluation" bpmnElement="CallActivity_CommunicationEvaluation">
+        <dc:Bounds x="330" y="90" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CallActivity_TechnicalAdviceEvaluation" bpmnElement="CallActivity_TechnicalAdviceEvaluation">
+        <dc:Bounds x="330" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CallActivity_ProcessAdherenceEvaluation" bpmnElement="CallActivity_ProcessAdherenceEvaluation">
+        <dc:Bounds x="330" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ScoringJoin" bpmnElement="Gateway_ScoringJoin">
+        <dc:Bounds x="490" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="467" y="292" width="97" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DetermineOverallScore" bpmnElement="Task_DetermineOverallScore">
+        <dc:Bounds x="580" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PersistScore" bpmnElement="Task_PersistScore">
+        <dc:Bounds x="720" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ScoringComplete" bpmnElement="EndEvent_ScoringComplete">
+        <dc:Bounds x="860" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="843" y="285" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScoringStartToFork" bpmnElement="Flow_ScoringStartToFork">
+        <di:waypoint x="196" y="260" />
+        <di:waypoint x="230" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ForkToCommunication" bpmnElement="Flow_ForkToCommunication">
+        <di:waypoint x="255" y="235" />
+        <di:waypoint x="255" y="130" />
+        <di:waypoint x="330" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ForkToTechnicalAdvice" bpmnElement="Flow_ForkToTechnicalAdvice">
+        <di:waypoint x="280" y="260" />
+        <di:waypoint x="330" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ForkToProcessAdherence" bpmnElement="Flow_ForkToProcessAdherence">
+        <di:waypoint x="255" y="285" />
+        <di:waypoint x="255" y="390" />
+        <di:waypoint x="330" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CommunicationToJoin" bpmnElement="Flow_CommunicationToJoin">
+        <di:waypoint x="430" y="130" />
+        <di:waypoint x="515" y="130" />
+        <di:waypoint x="515" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TechnicalAdviceToJoin" bpmnElement="Flow_TechnicalAdviceToJoin">
+        <di:waypoint x="430" y="260" />
+        <di:waypoint x="490" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ProcessAdherenceToJoin" bpmnElement="Flow_ProcessAdherenceToJoin">
+        <di:waypoint x="430" y="390" />
+        <di:waypoint x="515" y="390" />
+        <di:waypoint x="515" y="285" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_JoinToOverallScore" bpmnElement="Flow_JoinToOverallScore">
+        <di:waypoint x="540" y="260" />
+        <di:waypoint x="580" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_OverallScoreToPersist" bpmnElement="Flow_OverallScoreToPersist">
+        <di:waypoint x="680" y="260" />
+        <di:waypoint x="720" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PersistToScoringEnd" bpmnElement="Flow_PersistToScoringEnd">
+        <di:waypoint x="820" y="260" />
+        <di:waypoint x="860" y="260" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

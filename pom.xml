@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.camunda</groupId>
-    <artifactId>camunda-process-demo</artifactId>
+    <artifactId>Safe-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>camunda-process-demo</name>
     <description>Camunda 8 process orchestration demo scaffold</description>

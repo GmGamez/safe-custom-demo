@@ -1,0 +1,492 @@
+﻿{
+   "ticket" : {
+      "url" : "https://host.zendesk.com/api/v2/tickets/12345.json",
+      "id" : 12345,
+      "external_id" : null,
+      "via" : {
+         "channel" : "web",
+         "source" : {
+            "from" : {},
+            "to" : {},
+            "rel" : null
+         }
+      },
+      "created_at" : "2026-07-15T16:00:57Z",
+      "updated_at" : "2026-08-26T19:02:03Z",
+      "generated_timestamp" : 1787770923,
+      "type" : null,
+      "subject" : "Inconsistent behavior between Form / Flow - Trouble with looping on Flow 2026.2",
+      "raw_subject" : "Inconsistent behavior between Form / Flow - Trouble with looping on Flow 2026.2",
+      "description" : "Over the past weekend, I upgraded FME Flow to 2026.2 (Build 26333).\n\nI'm experiencing an issue where a workspace runs differently (incorrectly) on Flow than it does on Form. I think this is tied to looping.\n\nThis prevents me from running a key production workflow on flow.\n\n Basically what is happening is I have a pipeline that relies on three polling loops to ensure that entities are created in a system and they appear there. The workbench shouldn't proceed if any of these loops fail for any reason. If they exceed the maximum count, etc., the workbench shouldn't progress. When I run the workbench in FME form, everything works as expected and the loops behave correctly. However when I run this on FME flow, I get extremely inconsistent results. It's almost as if the loops are pointing to stale caches or something else. Because as soon as I run on form, I get the expected result. And when I run on flow, it's like the loops are ignored and downstream transformers in the workbench are called.\n\n\n This worked fine on 2025.2 which I just upgraded from but it is not working on 2026.2.",
+      "priority" : "high",
+      "status" : "solved",
+      "recipient" : null,
+      "requester_id" : 123,
+      "submitter_id" : 123,
+      "assignee_id" : 456,
+      "organization_id" : 789,
+      "group_id" : 890,
+      "collaborator_ids" : [],
+      "follower_ids" : [],
+      "email_cc_ids" : [],
+      "forum_topic_id" : null,
+      "problem_id" : null,
+      "has_incidents" : false,
+      "is_public" : true,
+      "due_at" : null,
+      "tags" : [ "2026", "account_class_direct_customer", "agent_copilot_enabled", "beta_alert_yes", "bump1", "bump_solve", "call_notes_added_yes", "category_used_to_work", "deployment_platform_on-premises_windows", "deployment_type_express", "fme_flowtopic_jobs", "impact_significant/large", "intent__software__feature_feedback__not_working", "intent_confidence__high", "jira_escalated", "job_issue_type_other", "language__en", "language_confidence__high", "product_fme_flow__formerly_fme_server", "sentiment__neutral", "sentiment_confidence__high", "support_call_yes", "urgency_high" ],
+      "custom_fields" : [
+         {
+            "id" : 17892355368461,
+            "value" : null
+         },
+         {
+            "id" : 17893594460173,
+            "value" : "fme_flowtopic_jobs"
+         },
+         {
+            "id" : 24374364222861,
+            "value" : null
+         },
+         {
+            "id" : 24374364762637,
+            "value" : null
+         },
+         {
+            "id" : 24374419590285,
+            "value" : "2026"
+         },
+         {
+            "id" : 24374430496141,
+            "value" : "category_used_to_work"
+         },
+         {
+            "id" : 24374454144013,
+            "value" : "product_fme_flow__formerly_fme_server"
+         },
+         {
+            "id" : 24374469545229,
+            "value" : "Build 26333 - win64"
+         },
+         {
+            "id" : 24374601252493,
+            "value" : "deployment_type_express"
+         },
+         {
+            "id" : 24374626243213,
+            "value" : "job_issue_type_other"
+         },
+         {
+            "id" : 24374628654605,
+            "value" : null
+         },
+         {
+            "id" : 24374631172749,
+            "value" : "deployment_platform_on-premises_windows"
+         },
+         {
+            "id" : 24390790189197,
+            "value" : "impact_significant/large"
+         },
+         {
+            "id" : 24390860659981,
+            "value" : "urgency_high"
+         },
+         {
+            "id" : 24566125521421,
+            "value" : null
+         },
+         {
+            "id" : 24609607026573,
+            "value" : "language_confidence__high"
+         },
+         {
+            "id" : 24609628191245,
+            "value" : "language__en"
+         },
+         {
+            "id" : 24609628203021,
+            "value" : "sentiment__neutral"
+         },
+         {
+            "id" : 24609628247053,
+            "value" : "sentiment_confidence__high"
+         },
+         {
+            "id" : 25215969306509,
+            "value" : null
+         },
+         {
+            "id" : 27094997087757,
+            "value" : null
+         },
+         {
+            "id" : 27095052097549,
+            "value" : null
+         },
+         {
+            "id" : 27097088143117,
+            "value" : null
+         },
+         {
+            "id" : 27097441409549,
+            "value" : null
+         },
+         {
+            "id" : 27097982448909,
+            "value" : null
+         },
+         {
+            "id" : 27098211786765,
+            "value" : null
+         },
+         {
+            "id" : 27098389375117,
+            "value" : null
+         },
+         {
+            "id" : 30531570956557,
+            "value" : null
+         },
+         {
+            "id" : 30949616765453,
+            "value" : "intent__software__feature_feedback__not_working"
+         },
+         {
+            "id" : 30949644328461,
+            "value" : "intent_confidence__high"
+         },
+         {
+            "id" : 34122769725837,
+            "value" : false
+         },
+         {
+            "id" : 36937041932429,
+            "value" : null
+         },
+         {
+            "id" : 38102685920013,
+            "value" : null
+         },
+         {
+            "id" : 38630982956045,
+            "value" : null
+         },
+         {
+            "id" : 39975664658573,
+            "value" : null
+         },
+         {
+            "id" : 39975664662925,
+            "value" : null
+         },
+         {
+            "id" : 39975671744781,
+            "value" : null
+         },
+         {
+            "id" : 39975671747213,
+            "value" : null
+         },
+         {
+            "id" : 40904169478669,
+            "value" : null
+         },
+         {
+            "id" : 40961918286605,
+            "value" : null
+         },
+         {
+            "id" : 41299584279437,
+            "value" : "support_call_yes"
+         },
+         {
+            "id" : 41299603635597,
+            "value" : "call_notes_added_yes"
+         },
+         {
+            "id" : 41505951546765,
+            "value" : null
+         },
+         {
+            "id" : 41506014621965,
+            "value" : null
+         },
+         {
+            "id" : 41506081011469,
+            "value" : null
+         },
+         {
+            "id" : 41506093582349,
+            "value" : null
+         },
+         {
+            "id" : 41979309706765,
+            "value" : null
+         },
+         {
+            "id" : 41979321774349,
+            "value" : null
+         },
+         {
+            "id" : 45269512999309,
+            "value" : null
+         },
+         {
+            "id" : 45832171294733,
+            "value" : null
+         },
+         {
+            "id" : 45832201110413,
+            "value" : null
+         },
+         {
+            "id" : 46339727371405,
+            "value" : null
+         },
+         {
+            "id" : 46522176869901,
+            "value" : null
+         }
+      ],
+      "satisfaction_rating" : {
+         "score" : "offered"
+      },
+      "sharing_agreement_ids" : [],
+      "custom_status_id" : 17687975722765,
+      "comment_count" : 25,
+      "fields" : [
+         {
+            "id" : 17892355368461,
+            "value" : null
+         },
+         {
+            "id" : 17893594460173,
+            "value" : "fme_flowtopic_jobs"
+         },
+         {
+            "id" : 24374364222861,
+            "value" : null
+         },
+         {
+            "id" : 24374364762637,
+            "value" : null
+         },
+         {
+            "id" : 24374419590285,
+            "value" : "2026"
+         },
+         {
+            "id" : 24374430496141,
+            "value" : "category_used_to_work"
+         },
+         {
+            "id" : 24374454144013,
+            "value" : "product_fme_flow__formerly_fme_server"
+         },
+         {
+            "id" : 24374469545229,
+            "value" : "Build 26333 - win64"
+         },
+         {
+            "id" : 24374601252493,
+            "value" : "deployment_type_express"
+         },
+         {
+            "id" : 24374626243213,
+            "value" : "job_issue_type_other"
+         },
+         {
+            "id" : 24374628654605,
+            "value" : null
+         },
+         {
+            "id" : 24374631172749,
+            "value" : "deployment_platform_on-premises_windows"
+         },
+         {
+            "id" : 24390790189197,
+            "value" : "impact_significant/large"
+         },
+         {
+            "id" : 24390860659981,
+            "value" : "urgency_high"
+         },
+         {
+            "id" : 24566125521421,
+            "value" : null
+         },
+         {
+            "id" : 24609607026573,
+            "value" : "language_confidence__high"
+         },
+         {
+            "id" : 24609628191245,
+            "value" : "language__en"
+         },
+         {
+            "id" : 24609628203021,
+            "value" : "sentiment__neutral"
+         },
+         {
+            "id" : 24609628247053,
+            "value" : "sentiment_confidence__high"
+         },
+         {
+            "id" : 25215969306509,
+            "value" : null
+         },
+         {
+            "id" : 27094997087757,
+            "value" : null
+         },
+         {
+            "id" : 27095052097549,
+            "value" : null
+         },
+         {
+            "id" : 27097088143117,
+            "value" : null
+         },
+         {
+            "id" : 27097441409549,
+            "value" : null
+         },
+         {
+            "id" : 27097982448909,
+            "value" : null
+         },
+         {
+            "id" : 27098211786765,
+            "value" : null
+         },
+         {
+            "id" : 27098389375117,
+            "value" : null
+         },
+         {
+            "id" : 30531570956557,
+            "value" : null
+         },
+         {
+            "id" : 30949616765453,
+            "value" : "intent__software__feature_feedback__not_working"
+         },
+         {
+            "id" : 30949644328461,
+            "value" : "intent_confidence__high"
+         },
+         {
+            "id" : 34122769725837,
+            "value" : false
+         },
+         {
+            "id" : 36937041932429,
+            "value" : null
+         },
+         {
+            "id" : 38102685920013,
+            "value" : null
+         },
+         {
+            "id" : 38630982956045,
+            "value" : null
+         },
+         {
+            "id" : 39975664658573,
+            "value" : null
+         },
+         {
+            "id" : 39975664662925,
+            "value" : null
+         },
+         {
+            "id" : 39975671744781,
+            "value" : null
+         },
+         {
+            "id" : 39975671747213,
+            "value" : null
+         },
+         {
+            "id" : 40904169478669,
+            "value" : null
+         },
+         {
+            "id" : 40961918286605,
+            "value" : null
+         },
+         {
+            "id" : 41299584279437,
+            "value" : "support_call_yes"
+         },
+         {
+            "id" : 41299603635597,
+            "value" : "call_notes_added_yes"
+         },
+         {
+            "id" : 41505951546765,
+            "value" : null
+         },
+         {
+            "id" : 41506014621965,
+            "value" : null
+         },
+         {
+            "id" : 41506081011469,
+            "value" : null
+         },
+         {
+            "id" : 41506093582349,
+            "value" : null
+         },
+         {
+            "id" : 41979309706765,
+            "value" : null
+         },
+         {
+            "id" : 41979321774349,
+            "value" : null
+         },
+         {
+            "id" : 45269512999309,
+            "value" : null
+         },
+         {
+            "id" : 45832171294733,
+            "value" : null
+         },
+         {
+            "id" : 45832201110413,
+            "value" : null
+         },
+         {
+            "id" : 46339727371405,
+            "value" : null
+         },
+         {
+            "id" : 46522176869901,
+            "value" : null
+         }
+      ],
+      "followup_ids" : [],
+      "slas" : {
+         "policy_metrics" : [
+            {
+               "breach_at" : null,
+               "stage" : "achieved",
+               "metric" : "next_reply_time"
+            },
+            {
+               "breach_at" : null,
+               "stage" : "achieved",
+               "metric" : "first_reply_time"
+            }
+         ]
+      },
+      "allow_channelback" : false,
+      "allow_attachments" : true,
+      "from_messaging_channel" : false,
+      "support_type" : "agent"
+   }
+}

@@ -1,0 +1,1173 @@
+﻿{
+   "comments" : [
+      {
+         "id" : 47398017475853,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Over the past weekend, I upgraded FME Flow to 2026.2 (Build 26333).\n\nI'm experiencing an issue where a workspace runs differently (incorrectly) on Flow than it does on Form. I think this is tied to looping.\n\nThis prevents me from running a key production workflow on flow.\n\n Basically what is happening is I have a pipeline that relies on three polling loops to ensure that entities are created in a system and they appear there. The workbench shouldn't proceed if any of these loops fail for any reason. If they exceed the maximum count, etc., the workbench shouldn't progress. When I run the workbench in FME form, everything works as expected and the loops behave correctly. However when I run this on FME flow, I get extremely inconsistent results. It's almost as if the loops are pointing to stale caches or something else. Because as soon as I run on form, I get the expected result. And when I run on flow, it's like the loops are ignored and downstream transformers in the workbench are called.\n\n\n This worked fine on 2025.2 which I just upgraded from but it is not working on 2026.2.",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">Over the past weekend, I upgraded FME Flow to 2026.2 (Build 26333).<br><br>I'm experiencing an issue where a workspace runs differently (incorrectly) on Flow than it does on Form. I think this is tied to looping.&nbsp;<br><br>This prevents me from running a key production workflow on flow.<br><br>&nbsp;Basically what is happening is I have a pipeline that relies on three polling loops to ensure that entities are created in a system and they appear there. The workbench shouldn't proceed if any of these loops fail for any reason. If they exceed the maximum count, etc., the workbench shouldn't progress. When I run the workbench in FME form, everything works as expected and the loops behave correctly. However when I run this on FME flow, I get extremely inconsistent results. It's almost as if the loops are pointing to stale caches or something else. Because as soon as I run on form, I get the expected result. And when I run on flow, it's like the loops are ignored and downstream transformers in the workbench are called.<br><br><br>&nbsp;This worked fine on 2025.2 which I just upgraded from but it is not working on 2026.2.</p></div>",
+         "plain_body" : "Over the past weekend, I upgraded FME Flow to 2026.2 (Build 26333).\n\nI'm experiencing an issue where a workspace runs differently (incorrectly) on Flow than it does on Form. I think this is tied to looping.&nbsp;\n\nThis prevents me from running a key production workflow on flow.\n\n&nbsp;Basically what is happening is I have a pipeline that relies on three polling loops to ensure that entities are created in a system and they appear there. The workbench shouldn't proceed if any of these loops fail for any reason. If they exceed the maximum count, etc., the workbench shouldn't progress. When I run the workbench in FME form, everything works as expected and the loops behave correctly. However when I run this on FME flow, I get extremely inconsistent results. It's almost as if the loops are pointing to stale caches or something else. Because as soon as I run on form, I get the expected result. And when I run on flow, it's like the loops are ignored and downstream transformers in the workbench are called.\n\n\n&nbsp;This worked fine on 2025.2 which I just upgraded from but it is not working on 2026.2.",
+         "public" : true,
+         "attachments" : [
+            {
+               "url" : "",
+               "id" : 47398016183437,
+               "file_name" : "ETL-V30_FLOW.fmw",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "application/unknown",
+               "size" : 7207206,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            }
+         ],
+         "audit_id" : 47398017475725,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "email_ccs" : [ 123 ]
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-15T16:00:57Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : ,
+               "longitude" : 
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47398106718861,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "As an additional test, I ran this using a workspace runner on FME form. It almost seems like the looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">As an additional test, I ran this using a workspace runner on FME form. It almost seems like the looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.</p></div>",
+         "plain_body" : "As an additional test, I ran this using a workspace runner on FME form. It almost seems like the looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47398100328717,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "email_ccs" : [ 123 ]
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-15T16:02:02Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47401127455245,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "I used Claude to try and make this more concise. Hoping this helps:\n\nSUMMARY\nWorkspace with polling loops that gate downstream execution runs correctly in\ninteractive FME Form, but inconsistently bypasses loop gating when run headless\n(FME Flow, or WorkspaceRunner within Form) — downstream transformers fire even\nwhen loop conditions (max iteration count, etc.) were not met.\n\nENVIRONMENT\nFME Flow/Form 2026.2, Build 26333. Upgraded this past weekend from 2025.2, where\nthis same workspace ran correctly in all execution modes.\n\nWORKSPACE DETAIL\nThree sequential polling loops (legacy custom-transformer \"Insert Transformer\nLoop\" pattern) confirm entities exist in [target system] after creation. The\nworkbench must not proceed past a loop if it fails or exceeds its max iteration\ncount.\n\nEXPECTED\nAny loop failure/max-count-exceeded halts the workbench — no downstream\ntransformers should run.\n\nACTUAL\n- Run interactively in FME Form: correct every time.\n- Run via FME Flow, or via WorkspaceRunner inside Form: inconsistent — loop\n gating is intermittently ignored and downstream transformers run anyway, as\n if loop state is stale or skipped.\n\nISOLATING TEST\nReproduced the failure via WorkspaceRunner inside FME Form itself, with no Flow\ninvolved. Only manually running the job with the canvas open in Form is\nreliable. This points to headless/batch engine execution generally, not\nsomething Flow-specific.\n\nSUSPECTED CAUSE\n2026.2 introduces Native Looping in Workspaces, a re-architected loop execution\nengine. Per your docs, workspaces built before 2026.2 (this one included) still\nrun on the legacy custom-transformer loop implementation — but the underlying\nengine changed to support the new feature. Given the timing, we suspect a\nregression in loop iteration/state handling specific to headless execution.\nNot currently listed in Known Issues for 2026.2.\n\nIMPACT\nBlocks a production workflow from running on FME Flow.\n\nREQUEST\nPlease advise on a workaround or timeline for a fix, and let us know if this is\nreproducible on your end. Happy to share the .fmw and side-by-side job logs\n(headless vs. interactive) if useful.",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">I used Claude to try and make this more concise. Hoping this helps:<br><br>SUMMARY<br>Workspace with polling loops that gate downstream execution runs correctly in<br>interactive FME Form, but inconsistently bypasses loop gating when run headless<br>(FME Flow, or WorkspaceRunner within Form) — downstream transformers fire even<br>when loop conditions (max iteration count, etc.) were not met.</p><p dir=\"auto\">ENVIRONMENT<br>FME Flow/Form 2026.2, Build 26333. Upgraded this past weekend from 2025.2, where<br>this same workspace ran correctly in all execution modes.</p><p dir=\"auto\">WORKSPACE DETAIL<br>Three sequential polling loops (legacy custom-transformer \"Insert Transformer<br>Loop\" pattern) confirm entities exist in [target system] after creation. The<br>workbench must not proceed past a loop if it fails or exceeds its max iteration<br>count.</p><p dir=\"auto\">EXPECTED<br>Any loop failure/max-count-exceeded halts the workbench — no downstream<br>transformers should run.</p><p dir=\"auto\">ACTUAL<br>- Run interactively in FME Form: correct every time.<br>- Run via FME Flow, or via WorkspaceRunner inside Form: inconsistent — loop<br>&nbsp;gating is intermittently ignored and downstream transformers run anyway, as<br>&nbsp;if loop state is stale or skipped.</p><p dir=\"auto\">ISOLATING TEST<br>Reproduced the failure via WorkspaceRunner inside FME Form itself, with no Flow<br>involved. Only manually running the job with the canvas open in Form is<br>reliable. This points to headless/batch engine execution generally, not<br>something Flow-specific.</p><p dir=\"auto\">SUSPECTED CAUSE<br>2026.2 introduces Native Looping in Workspaces, a re-architected loop execution<br>engine. Per your docs, workspaces built before 2026.2 (this one included) still<br>run on the legacy custom-transformer loop implementation — but the underlying<br>engine changed to support the new feature. Given the timing, we suspect a<br>regression in loop iteration/state handling specific to headless execution.<br>Not currently listed in Known Issues for 2026.2.</p><p dir=\"auto\">IMPACT<br>Blocks a production workflow from running on FME Flow.</p><p dir=\"auto\">REQUEST<br>Please advise on a workaround or timeline for a fix, and let us know if this is<br>reproducible on your end. Happy to share the .fmw and side-by-side job logs<br>(headless vs. interactive) if useful.</p></div>",
+         "plain_body" : "I used Claude to try and make this more concise. Hoping this helps:\n\nSUMMARY\nWorkspace with polling loops that gate downstream execution runs correctly in\ninteractive FME Form, but inconsistently bypasses loop gating when run headless\n(FME Flow, or WorkspaceRunner within Form) — downstream transformers fire even\nwhen loop conditions (max iteration count, etc.) were not met.  ENVIRONMENT\nFME Flow/Form 2026.2, Build 26333. Upgraded this past weekend from 2025.2, where\nthis same workspace ran correctly in all execution modes.  WORKSPACE DETAIL\nThree sequential polling loops (legacy custom-transformer \"Insert Transformer\nLoop\" pattern) confirm entities exist in [target system] after creation. The\nworkbench must not proceed past a loop if it fails or exceeds its max iteration\ncount.  EXPECTED\nAny loop failure/max-count-exceeded halts the workbench — no downstream\ntransformers should run.  ACTUAL\n- Run interactively in FME Form: correct every time.\n- Run via FME Flow, or via WorkspaceRunner inside Form: inconsistent — loop\n&nbsp;gating is intermittently ignored and downstream transformers run anyway, as\n&nbsp;if loop state is stale or skipped.  ISOLATING TEST\nReproduced the failure via WorkspaceRunner inside FME Form itself, with no Flow\ninvolved. Only manually running the job with the canvas open in Form is\nreliable. This points to headless/batch engine execution generally, not\nsomething Flow-specific.  SUSPECTED CAUSE\n2026.2 introduces Native Looping in Workspaces, a re-architected loop execution\nengine. Per your docs, workspaces built before 2026.2 (this one included) still\nrun on the legacy custom-transformer loop implementation — but the underlying\nengine changed to support the new feature. Given the timing, we suspect a\nregression in loop iteration/state handling specific to headless execution.\nNot currently listed in Known Issues for 2026.2.  IMPACT\nBlocks a production workflow from running on FME Flow.  REQUEST\nPlease advise on a workaround or timeline for a fix, and let us know if this is\nreproducible on your end. Happy to share the .fmw and side-by-side job logs\n(headless vs. interactive) if useful.",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47401156320781,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "email_ccs" : [ 123 ]
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-15T17:30:08Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47424833792013,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nThank you for contacting Safe Software. I can help you with your request.\nIn order to get started troubleshooting, can you please provide the following information:\n- Job log(s) for a successful and/or failed job in FME Flow (<FMEFlowSystemShare>\\resources\\logs\\engine\\current\\jobs\\<number>\\job_<value>.log\n- Job log(s) for a successful and/or failed job in FME Form\n\nPlease note that the default location for the File System Share is C:\\ProgramData\\Safe Software\\FMEFlow\n\nAre you able to share sample data so we can reproduce this behavior? Please note any data shared will only be used for testing purposes and will be deleted upon the ticket's closure. I understand data may be sensitive so please let me know if you are unable to do so and we can find a workaround solution.\nI hope this helps. Please let me know if you have any questions or need help with locating the log files.\nThank you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n\nShirley C | Technical Support Specialist\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com | FME Community| Safe Support\n\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>Thank you for contacting Safe Software. I can help you with your request.<br>In order to get started troubleshooting, can you please provide the following information:<br><ul dir=\"auto\"><li>Job log(s) for a successful and/or failed job in FME Flow (&lt;FMEFlowSystemShare&gt;\\resources\\logs\\engine\\current\\jobs\\&lt;number&gt;\\job_&lt;value&gt;.log</li><li>Job log(s) for a successful and/or failed job in FME Form</li></ul>Please note that the default location for the File System Share is C:\\ProgramData\\Safe Software\\FMEFlow<br>&nbsp;<br>Are you able to share sample data so we can reproduce this behavior? Please note any data shared will only be used for testing purposes and will be deleted upon the ticket's closure. I understand data may be sensitive so please let me know if you are unable to do so and we can find a workaround solution.<br>I hope this helps. Please let me know if you have any questions or need help with locating the log files.<br>Thank you.<br>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––<br>&nbsp;<br>Shirley C&nbsp;|&nbsp;Technical Support Specialist<br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com&nbsp;|&nbsp;FME\">www.safe.com&nbsp;|&nbsp;FME</a> Community| Safe Support<br>&nbsp;<br>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––<br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nThank you for contacting Safe Software. I can help you with your request.\nIn order to get started troubleshooting, can you please provide the following information:\n  Job log(s) for a successful and/or failed job in FME Flow (&lt;FMEFlowSystemShare&gt;\\resources\\logs\\engine\\current\\jobs\\&lt;number&gt;\\job_&lt;value&gt;.log  Job log(s) for a successful and/or failed job in FME Form  Please note that the default location for the File System Share is C:\\ProgramData\\Safe Software\\FMEFlow\n&nbsp;\nAre you able to share sample data so we can reproduce this behavior? Please note any data shared will only be used for testing purposes and will be deleted upon the ticket's closure. I understand data may be sensitive so please let me know if you are unable to do so and we can find a workaround solution.\nI hope this helps. Please let me know if you have any questions or need help with locating the log files.\nThank you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47424833791629,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "email_ccs" : [ 123 ]
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-16T14:56:57Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 2,
+               "longitude" : 2
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47432353605773,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Hello,\n\n\n\nLogs attached from Flow and Form.\n\n\n\nI can't really attach any sample data as everything is retrieved from a database with whitelisted IPs that I don't have access to. I'm happy to schedule a screen share. I think that would be the most effective means to troubleshoot.",
+         "html_body" : "<div class=\"zd-comment zd-comment-pre-styled\" dir=\"auto\">Hello,<div><br></div><div>Logs attached from Flow and Form.</div><div><br></div><div>I can't really attach any sample data as everything is retrieved from a database with whitelisted IPs that I don't have access to. I'm happy to schedule a screen share. I think that would be the most effective means to troubleshoot.</div><div><div><br></div></div></div>",
+         "plain_body" : "Hello, \n  Logs attached from Flow and Form.  \n  I can't really attach any sample data as everything is retrieved from a database with whitelisted IPs that I don't have access to. I'm happy to schedule a screen share. I think that would be the most effective means to troubleshoot.",
+         "public" : true,
+         "attachments" : [
+            {
+               "url" : "",
+               "id" : 47432353607181,
+               "file_name" : "FLOW_job_4927.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "application/octet-stream",
+               "size" : 416915,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : 47432353618317,
+               "file_name" : "FORM_Log_.txt",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/plain",
+               "size" : 524633,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            }
+         ],
+         "audit_id" : 47432353605645,
+         "via" : {
+            "channel" : "email",
+            "source" : {
+               "from" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "original_recipients" : [ "email@email.com", "support@safe.com" ]
+               },
+               "to" : {
+                  "name" : "Safe Software Support",
+                  "address" : "support@safe.com"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-16T18:12:28Z",
+         "metadata" : {
+            "system" : {
+               "message_id" : "<>",
+               "client" : "Apple Mail (2.3864.600.51.1.1)",
+               "email_id" : "",
+               "ip_address" : "1.1.1.1",
+               "raw_email_identifier" : "",
+               "json_email_identifier" : "",
+               "eml_redacted" : false,
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {},
+            "flags" : [ 15 ],
+            "flags_options" : {
+               "15" : {
+                  "trusted" : true
+               }
+            },
+            "trusted" : true,
+            "suspension_type_id" : null
+         }
+      },
+      {
+         "id" : 47504436272013,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "hello, I want to follow up and see if there is any potential resolution here. I have been running this locally :(",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">hello, I want to follow up and see if there is any potential resolution here. I have been running this locally :(</p></div>",
+         "plain_body" : "hello, I want to follow up and see if there is any potential resolution here. I have been running this locally :(",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47504423471245,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-20T14:02:00Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47504615169549,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nI apologize for the delay. I would like to schedule a screen share to gain a better understanding of the error. Please feel free to book a time that works for you.\nhttps://calendly.com/shirley-chan-safe/info-gathering\nPlease also feel free to share the meeting invite with anyone else on your team that may be interested.\nI understand there's a large time difference between us so please let me know if you would like me to adjust my hours.\nThank you for your patience at this time. I look forward to speaking with you.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>I apologize for the delay. I would like to schedule a screen share to gain a better understanding of the error. Please feel free to book a time that works for you.<br><a rel=\"noopener noreferrer\" href=\"https://calendly.com/shirley-chan-safe/info-gathering\">https://calendly.com/shirley-chan-safe/info-gathering</a><br>Please also feel free to share the meeting invite with anyone else on your team that may be interested.<br>I understand there's a large time difference between us so please let me know if you would like me to adjust my hours.<br>Thank you for your patience at this time. I look forward to speaking with you.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nI apologize for the delay. I would like to schedule a screen share to gain a better understanding of the error. Please feel free to book a time that works for you.\nhttps://calendly.com/shirley-chan-safe/info-gathering\nPlease also feel free to share the meeting invite with anyone else on your team that may be interested.\nI understand there's a large time difference between us so please let me know if you would like me to adjust my hours.\nThank you for your patience at this time. I look forward to speaking with you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47504615167501,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-20T14:08:08Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47537491008909,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "_Call Prep:_\n\n_Questions_\n\n- _did it ever work in 2026?_\n- _is there a particular poll causing the issue?_\n- _noticed native looping in 2026, used same function in 2025?_\n- _clarify this statement \"looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.\"_",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><i>Call Prep:</i><br>&nbsp;<br><i>Questions</i><br><ul dir=\"auto\"><li><i>did it ever work in 2026?</i></li><li><i>is there a particular poll causing the issue?</i></li><li><i>noticed native looping in 2026, used same function in 2025?</i></li><li><i>clarify this statement \"looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.\"</i></li></ul></div>",
+         "plain_body" : "Call Prep:\n&nbsp;\nQuestions\n  did it ever work in 2026?  is there a particular poll causing the issue?  noticed native looping in 2026, used same function in 2025?  clarify this statement \"looping does not work when it's run in headless mode. So when it's run on the workspace runner or in FME flow, I get inconsistent results. When I run jobs individually with the workspace open in FME form, I get results as expected.\"",
+         "public" : false,
+         "attachments" : [],
+         "audit_id" : 47537491007501,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {},
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-21T15:45:06Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47563688193293,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Adding to ticket per request on troubleshooting call. Thank you!",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">Adding to ticket per request on troubleshooting call. Thank you!</p></div>",
+         "plain_body" : "Adding to ticket per request on troubleshooting call. Thank you!",
+         "public" : true,
+         "attachments" : [
+            {
+               "url" : "",
+               "id" : 47563666254989,
+               "file_name" : "ETL-V31_FLOW.fmwt",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "application/unknown",
+               "size" : 1071907,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : 47563695333005,
+               "file_name" : "FME_FORM_job_13790.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 331531,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : 47563695345805,
+               "file_name" : "FME_FLOW_job_13790.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 174687,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            }
+         ],
+         "audit_id" : 47563688193165,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-22T14:00:50Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47563811488653,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "_Call Summary:_\n\n\n- _built 2025 using custom transformers, upgrade 2026 and used native looping_\n- _cached version of loops? ignoring run time order of workspace?_\n- _Workspace Runner and Automation is the same thing_\n- _WorkspaceRunner in Form is giving the same result_\n- _SQL Query causing issues?_\n- _max number iterations value '' is not a valid number in form initially_\n- _want to run it in Automations_\n- _workaround is using 2025_\n- _currently blocking production, request to escalate_",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><i>Call Summary:</i><br>&nbsp;<br><ul dir=\"auto\"><li><i>built 2025 using custom transformers, upgrade 2026 and used native looping</i></li><li><i>cached version of loops? ignoring run time order of workspace? </i></li><li><i>Workspace Runner and Automation is the same thing</i></li><li><i>WorkspaceRunner in Form is giving the same result</i></li><li><i>SQL Query causing issues?</i></li><li><i><u>max number iterations value '' is not a valid number</u> in form initially</i></li><li><i>want to run it in Automations</i></li><li><i>workaround is using 2025</i></li><li><i>currently blocking production, request to escalate</i></li></ul></div>",
+         "plain_body" : "Call Summary:\n&nbsp;\n  built 2025 using custom transformers, upgrade 2026 and used native looping  cached version of loops? ignoring run time order of workspace?   Workspace Runner and Automation is the same thing  WorkspaceRunner in Form is giving the same result  SQL Query causing issues?  max number iterations value '' is not a valid number in form initially  want to run it in Automations  workaround is using 2025  currently blocking production, request to escalate",
+         "public" : false,
+         "attachments" : [],
+         "audit_id" : 47563811486349,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {},
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-22T14:02:20Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47576359706893,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nThank you for taking the time to meet with my team. I spoke with my team and we wanted to run one more test.\nIn FME Form, please rerun the workspace with **caching turned off**. Does this output match with Flow's output? We have seen in the past where Form's outputs differ when caching is turned on/off.\nPlease feel free to try the above in a test environment and let us know the results.\nI hope this helps. Please let me know if you have any questions.\nThank you for your patience.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>Thank you for taking the time to meet with my team. I spoke with my team and we wanted to run one more test.<br>In FME Form, please rerun the workspace with <strong>caching turned off</strong>. Does this output match with Flow's output? We have seen in the past where Form's outputs differ when caching is turned on/off.<br>Please feel free to try the above in a test environment and let us know the results.<br>I hope this helps. Please let me know if you have any questions.<br>Thank you for your patience.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nThank you for taking the time to meet with my team. I spoke with my team and we wanted to run one more test.\nIn FME Form, please rerun the workspace with caching turned off. Does this output match with Flow's output? We have seen in the past where Form's outputs differ when caching is turned on/off.\nPlease feel free to try the above in a test environment and let us know the results.\nI hope this helps. Please let me know if you have any questions.\nThank you for your patience.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47576359706765,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-22T20:22:38Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47588321237517,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Hey Shirley,\n\n\n\nThanks for working with me!\n\n\n\nAttached are two logs - one run on FORM (Caching Off), One Run on FLOW.\n\n\n\nThese logs both match up at least the warnings do. With that I think the weird behavior is coming from a specific loop right after the Kafka connector.\n\n\n\n ![](cid:01KY7EM11BPX2AW7KHPP4PRTWX)\n\n\n\nSeems like any time features are passed through this loop on flow we get odd behavior, but they run just fine on form. I don't have any new features we can pass through right now. But let me see if later today we can pass some assets through this and I'll try to replicate. I'll try to run it on flow first, and then I'll run it locally on form with caching off first, and then with caching on.\n\n\n\n\n\nIf you think of anything in the meantime, I would love to hear it. Thanks again - Vaughn",
+         "html_body" : "<div class=\"zd-comment zd-comment-pre-styled\" dir=\"auto\">Hey Shirley,<div><br></div><div>Thanks for working with me!</div><div><br></div><div>Attached are two logs - one run on FORM (Caching Off), One Run on FLOW.</div><div><br></div><div>These logs both match up at least the warnings do. With that I think the weird behavior is coming from a specific loop right after the Kafka connector.</div><div><br></div><div></div><div></div><div><br></div><div>Seems like any time features are passed through this loop on flow we get odd behavior, but they run just fine on form.&nbsp;I don't have any new features we can pass through right now. But let me see if later today we can pass some assets through this and I'll try to replicate. I'll try to run it on flow first, and then I'll run it locally on form with caching off first, and then with caching on.</div><div><br></div><div><br></div><div>If you think of anything in the meantime, I would love to hear it. Thanks again - Vaughn</div><div></div><div></div><div></div><div><br><div><br></div></div></div>",
+         "plain_body" : "Hey Shirley, \n  Thanks for working with me!  \n  Attached are two logs - one run on FORM (Caching Off), One Run on FLOW.  \n  These logs both match up at least the warnings do. With that I think the weird behavior is coming from a specific loop right after the Kafka connector.  \n    \n  Seems like any time features are passed through this loop on flow we get odd behavior, but they run just fine on form.&nbsp;I don't have any new features we can pass through right now. But let me see if later today we can pass some assets through this and I'll try to replicate. I'll try to run it on flow first, and then I'll run it locally on form with caching off first, and then with caching on.  \n  \n  If you think of anything in the meantime, I would love to hear it. Thanks again - Vaughn",
+         "public" : true,
+         "attachments" : [
+            {
+               "url" : "",
+               "id" : 47588321241485,
+               "file_name" : "PastedGraphic-1.png",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "image/png",
+               "size" : 700899,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : [
+                  {
+                     "url" : "",
+                     "id" : 47588329036941,
+                     "file_name" : "PastedGraphic-1_thumb.png",
+                     "content_url" : "",
+                     "mapped_content_url" : "",
+                     "content_type" : "image/png",
+                     "size" : 3501,
+                     "width" : 80,
+                     "height" : 32,
+                     "inline" : false,
+                     "deleted" : false,
+                     "malware_access_override" : false,
+                     "malware_scan_result" : "not_scanned"
+                  }
+               ]
+            },
+            {
+               "url" : "",
+               "id" : 47588350963085,
+               "file_name" : "FME_FORM_CACHE_OFF_job_13790.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "application/octet-stream",
+               "size" : 334586,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : 47588350972685,
+               "file_name" : "FME_FLOW_job_15025.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "application/octet-stream",
+               "size" : 332624,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            }
+         ],
+         "audit_id" : 47588321237389,
+         "via" : {
+            "channel" : "email",
+            "source" : {
+               "from" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "original_recipients" : [ "email@email.com", "support@safe.com" ]
+               },
+               "to" : {
+                  "name" : "Safe Software Support",
+                  "address" : "support@safe.com"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-23T12:18:50Z",
+         "metadata" : {
+            "system" : {
+               "message_id" : "<>",
+               "client" : "Apple Mail (2.3864.600.51.1.1)",
+               "email_id" : "",
+               "ip_address" : "1.1.1.1",
+               "raw_email_identifier" : "",
+               "json_email_identifier" : "",
+               "eml_redacted" : false,
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {},
+            "flags" : [ 15 ],
+            "flags_options" : {
+               "15" : {
+                  "trusted" : true
+               }
+            },
+            "trusted" : true,
+            "suspension_type_id" : null
+         }
+      },
+      {
+         "id" : 47596684917773,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : " I got a chance to try this again with assets that needed to pass through the problem loop.\nOn FME flow, the loop behavior was ‘sticky’ (seems like the loop cache is not refreshing).\nWhen I switched to FME Form with (Data Caching Disabled) the job progressed correctly as I would have hoped - features immediately cleared the loop.\n\nI understand this could be chalked up to \"the system (sake) hasn't had a chance to process the assets, therefore the loop is performing as expected. I am attaching another log from FME Flow where I bumped the max Poll Count up to 50 iterations. Notice that Logger_11 Always has the same asset count ‘2026-7-23 12:39:12 | Logger_11: Still waiting for 114 Assets to appear in SAKE... Try # 1.’\n\nWhen I run this on Form - it passes the polling on the first try (log attached)\n\nThis leads me into another looping bug - loops seem to disregard paramaters on flow. My workspace was published with a MAX_POLL_COUNT paramater with a value of ‘6’\n\nwhen i run this on FLOW, with the following setting ‘MAX_POLL_COUNT 50’\n\nThe logger tells me this paramater is being ignored.\n\n1377\n\n2026-7-23 12:47:34 | Logger_13: Exiting SAKE Site Asset Sync Loop for Max Retry Exceeded... Tried 6 rounds of polling...\n\nAlso - Loops will error out when a database connection is set via a user parameter. The loop will only recognize a database connection correctly if it is passed through as a attribute value. I need to be able to set database connections to allow a user to pick a given environment (PROD / STAGE / QA1 / etc…).\n\n\n\n\nThis is leading me to believe that something within this loop or loops in general is broken on FLOW\n\n\n\n![]()",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">&nbsp;I got a chance to try this again with assets that needed to pass through the problem loop.&nbsp;<br>On FME flow, the loop behavior was ‘sticky’ (seems like the loop cache is not refreshing).&nbsp;<br>When I switched to FME Form with (Data Caching Disabled) the job progressed correctly as I would have hoped - features immediately cleared the loop. &nbsp;<br><br>I understand this could be chalked up to \"the system (sake) hasn't had a chance to process the assets, therefore the loop is performing as expected. I am attaching another log from FME Flow where I bumped the max Poll Count up to 50 iterations. Notice that Logger_11 Always has the same asset count ‘2026-7-23 12:39:12 | Logger_11: Still waiting for 114 Assets to appear in SAKE... Try # 1.’<br><br>When I run this on Form - it passes the polling on the first try (log attached)<br><br>This leads me into another looping bug - loops seem to disregard paramaters on flow. My workspace was published with a MAX_POLL_COUNT paramater with a value of ‘6’<br><br>when i run this on FLOW, with the following setting ‘MAX_POLL_COUNT 50’<br><br>The logger tells me this paramater is being ignored.&nbsp;<br><br>1377</p><p dir=\"auto\">2026-7-23 12:47:34 | Logger_13: Exiting SAKE Site Asset Sync Loop for Max Retry Exceeded... Tried 6 rounds of polling...<br><br>Also - Loops will error out when a database connection is set via a user parameter. The loop will only recognize a database connection correctly if it is passed through as a attribute value. I need to be able to set database connections to allow a user to pick a given environment (PROD / STAGE / QA1 / etc…).<br><br><br><br><br>This is leading me to believe that something within this loop or loops in general is broken on FLOW<br><br>&nbsp;</p><figure><img src=\"\" width=\"316\" height=\"260\"></figure></div>",
+         "plain_body" : "&nbsp;I got a chance to try this again with assets that needed to pass through the problem loop.&nbsp;\nOn FME flow, the loop behavior was ‘sticky’ (seems like the loop cache is not refreshing).&nbsp;\nWhen I switched to FME Form with (Data Caching Disabled) the job progressed correctly as I would have hoped - features immediately cleared the loop. &nbsp;\n\nI understand this could be chalked up to \"the system (sake) hasn't had a chance to process the assets, therefore the loop is performing as expected. I am attaching another log from FME Flow where I bumped the max Poll Count up to 50 iterations. Notice that Logger_11 Always has the same asset count ‘2026-7-23 12:39:12 | Logger_11: Still waiting for 114 Assets to appear in SAKE... Try # 1.’\n\nWhen I run this on Form - it passes the polling on the first try (log attached)\n\nThis leads me into another looping bug - loops seem to disregard paramaters on flow. My workspace was published with a MAX_POLL_COUNT paramater with a value of ‘6’\n\nwhen i run this on FLOW, with the following setting ‘MAX_POLL_COUNT 50’\n\nThe logger tells me this paramater is being ignored.&nbsp;\n\n1377  2026-7-23 12:47:34 | Logger_13: Exiting SAKE Site Asset Sync Loop for Max Retry Exceeded... Tried 6 rounds of polling...\n\nAlso - Loops will error out when a database connection is set via a user parameter. The loop will only recognize a database connection correctly if it is passed through as a attribute value. I need to be able to set database connections to allow a user to pick a given environment (PROD / STAGE / QA1 / etc…).\n\n\n\n\nThis is leading me to believe that something within this loop or loops in general is broken on FLOW\n\n&nbsp;",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47596684917389,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-23T16:55:58Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47626905940109,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nThank you for checking if turning off the caching has any effect. This is helpful for the developers in understanding where the root issue is.\nWould you be able to resend the log files for the 2026-7-23 12:47:34 run (for Form and Flow)?\nI'll continue to check with the development team to see if they are able to reproduce this issue or find the root cause. I hope to get back to you soon.\nIn the meantime, if you have any other questions or comments, please do not hesitate to reach out.\nThank you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n\nShirley C | Technical Support Specialist\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com | FME Community| Safe Support\n\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>Thank you for checking if turning off the caching has any effect. This is helpful for the developers in understanding where the root issue is.<br>Would you be able to resend the log files for the 2026-7-23 12:47:34 run (for Form and Flow)?<br>I'll continue to check with the development team to see if they are able to reproduce this issue or find the root cause. I hope to get back to you soon.<br>In the meantime, if you have any other questions or comments, please do not hesitate to reach out.<br>Thank you.<br>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––<br>&nbsp;<br>Shirley C&nbsp;|&nbsp;Technical Support Specialist<br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com&nbsp;|&nbsp;FME\">www.safe.com&nbsp;|&nbsp;FME</a> Community| Safe Support<br>&nbsp;<br>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––<br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nThank you for checking if turning off the caching has any effect. This is helpful for the developers in understanding where the root issue is.\nWould you be able to resend the log files for the 2026-7-23 12:47:34 run (for Form and Flow)?\nI'll continue to check with the development team to see if they are able to reproduce this issue or find the root cause. I hope to get back to you soon.\nIn the meantime, if you have any other questions or comments, please do not hesitate to reach out.\nThank you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47626905938701,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-24T19:02:55Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Agent-Graph/latest TicketsMutationService/updateTicket JavaStarter/4.74.1",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47723471843725,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Here are log files showing jobs where the looping ‘looped out’ then ran successfully when triggered again, immediately after. I still think there is some weird caching issue going on with the loops",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">Here are log files showing jobs where the looping ‘looped out’ then ran successfully when triggered again, immediately after. I still think there is some weird caching issue going on with the loops</p></div>",
+         "plain_body" : "Here are log files showing jobs where the looping ‘looped out’ then ran successfully when triggered again, immediately after. I still think there is some weird caching issue going on with the loops",
+         "public" : true,
+         "attachments" : [
+            {
+               "url" : "",
+               "id" : 0,
+               "file_name" : "job_21328_stuck.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 215065,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : ,
+               "file_name" : "job_21320_stuck.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 120919,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : ,
+               "file_name" : "job_21353_stuck.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 121006,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : ,
+               "file_name" : "job_21323_passed.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 366236,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : ,
+               "file_name" : "job_21355_passed.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 382842,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            },
+            {
+               "url" : "",
+               "id" : ,
+               "file_name" : "job_21337_passed.log",
+               "content_url" : "",
+               "mapped_content_url" : "",
+               "content_type" : "text/x-log",
+               "size" : 372735,
+               "width" : null,
+               "height" : null,
+               "inline" : false,
+               "deleted" : false,
+               "malware_access_override" : false,
+               "malware_scan_result" : "malware_not_found",
+               "thumbnails" : []
+            }
+         ],
+         "audit_id" : 47723471843597,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-29T01:47:49Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47723465812493,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "does FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\"><p dir=\"auto\">does FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?</p></div>",
+         "plain_body" : "does FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47723513303693,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-29T01:51:09Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47767272518413,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Internal Notes:\n\n_Comparison of log job_21355_passed.log and job_21328_stuck.log_\n\n_Both start the same way_\n`Starting the first of up to 25 iterations of custom transformer 'Insights_Sync_Tester_Site_Asset'`\n\n_But the stuck log exits after 6 iterations_\n`Loop 'Insights_Sync_Tester_Site_Asset': Completed 6 iterations. 1 features were passed, 5 features require further processing.`\n\n_The iteration count it tied to parameter called $(MAX_POLL_COUNT). Set to 25 but appears the loop is ignoring this value._",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Internal Notes:<br>&nbsp;<br><i>Comparison of log job_21355_passed.log and job_21328_stuck.log</i><br>&nbsp;<br><i>Both start the same way</i><br><code><i>Starting the first of up to 25 iterations of custom transformer 'Insights_Sync_Tester_Site_Asset'</i></code><br>&nbsp;<br><i>But the stuck log exits after 6 iterations</i><br><code><i>Loop 'Insights_Sync_Tester_Site_Asset': Completed 6 iterations. 1 features were passed, 5 features require further processing.</i></code><br>&nbsp;<br><i>The iteration count it tied to parameter called $(MAX_POLL_COUNT). Set to 25 but appears the loop is ignoring this value.</i><br></div>",
+         "plain_body" : "Internal Notes:\n&nbsp;\nComparison of log job_21355_passed.log and job_21328_stuck.log\n&nbsp;\nBoth start the same way\nStarting the first of up to 25 iterations of custom transformer 'Insights_Sync_Tester_Site_Asset'\n&nbsp;\nBut the stuck log exits after 6 iterations\nLoop 'Insights_Sync_Tester_Site_Asset': Completed 6 iterations. 1 features were passed, 5 features require further processing.\n&nbsp;\nThe iteration count it tied to parameter called $(MAX_POLL_COUNT). Set to 25 but appears the loop is ignoring this value.",
+         "public" : false,
+         "attachments" : [],
+         "audit_id" : 47767272518029,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {},
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-30T15:43:29Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47775240222477,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nThank you for sending the log files. I spoke to our team and we wish to do a deeper dive into this issue and see if we can reproduce this behavior. We hope to get back to you soon with our findings.\nIn the meantime, if you have any other questions or need any other help, please do not hesitate to reach out.\nThank you for your patience at this time.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>Thank you for sending the log files. I spoke to our team and we wish to do a deeper dive into this issue and see if we can reproduce this behavior. We hope to get back to you soon with our findings.<br>In the meantime, if you have any other questions or need any other help, please do not hesitate to reach out.<br>Thank you for your patience at this time.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nThank you for sending the log files. I spoke to our team and we wish to do a deeper dive into this issue and see if we can reproduce this behavior. We hope to get back to you soon with our findings.\nIn the meantime, if you have any other questions or need any other help, please do not hesitate to reach out.\nThank you for your patience at this time.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47775240208397,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-07-30T19:38:46Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 47954563170829,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Hello,\n\n\n\nI’m awaiting a response from the SAFE side.\n\nThis is still blocking production.",
+         "html_body" : "<div class=\"zd-comment zd-comment-pre-styled\" dir=\"auto\"><div dir=\"ltr\"></div><div dir=\"ltr\">Hello,</div><div dir=\"ltr\"><br></div><div dir=\"ltr\">I’m awaiting a response from the SAFE side.&nbsp;</div><div dir=\"ltr\">This is still blocking production.&nbsp;</div><div dir=\"ltr\"><br></div></div>",
+         "plain_body" : "Hello,  \n  I’m awaiting a response from the SAFE side.&nbsp;  This is still blocking production.&nbsp;",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 47954563170701,
+         "via" : {
+            "channel" : "email",
+            "source" : {
+               "from" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "original_recipients" : [ "email@email.com", "support@safe.com" ]
+               },
+               "to" : {
+                  "name" : "Safe Software Support",
+                  "address" : "support@safe.com"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-07T00:03:51Z",
+         "metadata" : {
+            "system" : {
+               "message_id" : "",
+               "client" : "",
+               "email_id" : "",
+               "ip_address" : "1.1.1.1",
+               "raw_email_identifier" : "",
+               "json_email_identifier" : "",
+               "eml_redacted" : false,
+               "location" : "United States",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {},
+            "flags" : [ 15 ],
+            "flags_options" : {
+               "15" : {
+                  "trusted" : true
+               }
+            },
+            "trusted" : true,
+            "suspension_type_id" : null
+         }
+      },
+      {
+         "id" : 48022638626445,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nI want to give you a quick update on this. I have looped in our developers and they believe this may be a Form issue. Our developer who worked on the native looping functionality is currently looking at the log files and workspaces. They may have some more questions and/or troubleshooting suggestions in the upcoming days.\nI apologize for the delay on this. We appreciate your patience with this brand-new functionality.\nPlease let me know if you have any questions or need any other help in the meantime. I hope to get back to you soon.\nThank you.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>I want to give you a quick update on this. I have looped in our developers and they believe this may be a Form issue. Our developer who worked on the native looping functionality is currently looking at the log files and workspaces. They may have some more questions and/or troubleshooting suggestions in the upcoming days.<br>I apologize for the delay on this. We appreciate your patience with this brand-new functionality.<br>Please let me know if you have any questions or need any other help in the meantime. I hope to get back to you soon.<br>Thank you.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nI want to give you a quick update on this. I have looped in our developers and they believe this may be a Form issue. Our developer who worked on the native looping functionality is currently looking at the log files and workspaces. They may have some more questions and/or troubleshooting suggestions in the upcoming days.\nI apologize for the delay on this. We appreciate your patience with this brand-new functionality.\nPlease let me know if you have any questions or need any other help in the meantime. I hope to get back to you soon.\nThank you.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48022685258381,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-10T15:50:37Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 48024072190093,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Thanks. Sounds good. I am happy to try to help",
+         "html_body" : "<div class=\"zd-comment zd-comment-pre-styled\" dir=\"auto\"><div dir=\"ltr\"></div><div dir=\"ltr\">Thanks. Sounds good. I am happy to try to help</div></div>",
+         "plain_body" : "Thanks. Sounds good. I am happy to try to help",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48024072189965,
+         "via" : {
+            "channel" : "email",
+            "source" : {
+               "from" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "original_recipients" : [ "email@email.com", "support@safe.com" ]
+               },
+               "to" : {
+                  "name" : "Safe Software Support",
+                  "address" : "support@safe.com"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-10T16:31:03Z",
+         "metadata" : {
+            "system" : {
+               "message_id" : "",
+               "client" : "",
+               "email_id" : "",
+               "ip_address" : "",
+               "raw_email_identifier" : "",
+               "json_email_identifier" : "",
+               "eml_redacted" : false,
+               "location" : "United States",
+               "latitude" : 0
+               "longitude" : -0
+            },
+            "custom" : {},
+            "flags" : [ 15 ],
+            "flags_options" : {
+               "15" : {
+                  "trusted" : true
+               }
+            },
+            "trusted" : true,
+            "suspension_type_id" : null
+         }
+      },
+      {
+         "id" : 48066778702477,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nThank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.\nFor your reference, the ticket number is: [FMEFORM-38238].\nI will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.\n\nIn the meantime, we have three suggested workarounds:\n\nOption 1: Pass the value in as an attribute\nBefore the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.\nAttributes travel with the features, so they carry the correct value into the loop.\n\nOption 2: Use a deployment parameter\nIf the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.\nBest fit for database connections and environment settings. It's set on the Flow server rather than per job.\n\nOption 3 : Move the check to after the loop\nInstead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.\nThe loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.\n\nWe believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.\n\nI hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>Thank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.<br>For your reference, the ticket number is: [FMEFORM-38238].<br>I will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.<br>&nbsp;<br>In the meantime, we have three suggested workarounds:<br>&nbsp;<br>Option 1: Pass the value in as an attribute<br>Before the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.<br>Attributes travel with the features, so they carry the correct value into the loop.<br>&nbsp;<br>Option 2: Use a deployment parameter<br>If the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.<br>Best fit for database connections and environment settings. It's set on the Flow server rather than per job.<br>&nbsp;<br>Option 3 : Move the check to after the loop<br>Instead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.<br>The loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.<br>&nbsp;<br>We believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.<br>&nbsp;<br>I hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.<br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nThank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.\nFor your reference, the ticket number is: [FMEFORM-38238].\nI will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.\n&nbsp;\nIn the meantime, we have three suggested workarounds:\n&nbsp;\nOption 1: Pass the value in as an attribute\nBefore the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.\nAttributes travel with the features, so they carry the correct value into the loop.\n&nbsp;\nOption 2: Use a deployment parameter\nIf the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.\nBest fit for database connections and environment settings. It's set on the Flow server rather than per job.\n&nbsp;\nOption 3 : Move the check to after the loop\nInstead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.\nThe loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.\n&nbsp;\nWe believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.\n&nbsp;\nI hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48066773768333,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-11T21:08:46Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 48094418718989,
+         "type" : "Comment",
+         "author_id" : 123,
+         "body" : "Thank you! I am still wondering about an answer on this question:\ndoes FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?\n\nAny ideas for this one?\n\n\n\n> On Aug 11, 2026, at 5:08 PM, Safe Software Support <support@safe.com> wrote:\n>\n>\n>\n>\n>\n> Hi Vaughn,\n>\n>\n>\n> Thank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.\n>\n> For your reference, the ticket number is: [FMEFORM-38238].\n>\n> I will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.\n>\n>\n>\n> In the meantime, we have three suggested workarounds:\n>\n>\n>\n> Option 1: Pass the value in as an attribute\n>\n> Before the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.\n>\n> Attributes travel with the features, so they carry the correct value into the loop.\n>\n>\n>\n> Option 2: Use a deployment parameter\n>\n> If the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.\n>\n> Best fit for database connections and environment settings. It's set on the Flow server rather than per job.\n>\n>\n>\n> Option 3 : Move the check to after the loop\n>\n> Instead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.\n>\n> The loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.\n>\n>\n>\n> We believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.\n>\n>\n>\n> I hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.\n>\n>\n>\n> **––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n>\n>\n>\n> **Shirley C | Technical Support Specialist**\n>\n>\n>\n> Safe Software Inc.\n>\n> Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n>\n> **www.safe.com**** | ****FME Community****|****Safe Support**\n>\n>\n>\n> **––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n>\n> https://support.safe.com/hc/requests/67158\n>\n>\n>\n>\n>\n>\n>\n> On August 10, 2026 at 4:31:03 PM UTC, email@email.com wrote:\n>\n> > Thanks. Sounds good. I am happy to try to help",
+         "html_body" : "<div class=\"zd-comment zd-comment-pre-styled\" dir=\"auto\"><div><div><div>Thank you! I am still wondering about an answer on this question:</div><span style=\"color: rgb(43, 46, 47); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 300; letter-spacing: -0.37px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;\"><span><span style=\"font-size: 14px;\">does FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?<br><br></span></span></span>Any ideas for this one?</div><div><br></div><blockquote><div>On Aug 11, 2026, at 5:08 PM, Safe Software Support &lt;support@safe.com&gt; wrote:</div><div><br></div><div><br></div><div dir=\"auto\" style=\"width: 100% !important; margin: 0; padding: 0;\"><div style=\" font-size: 14px; line-height: 1.5; color: #444444;\"><p dir=\"auto\"><br></p><div dir=\"auto\" class=\"zd-comment\"><div>Hi Vaughn,</div><div>&nbsp;</div><div>Thank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.</div><div>For your reference, the ticket number is: [FMEFORM-38238].</div><div>I will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.</div><div>&nbsp;</div><div>In the meantime, we have three suggested workarounds:</div><div>&nbsp;</div><div>Option 1: Pass the value in as an attribute</div><div>Before the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.</div><div>Attributes travel with the features, so they carry the correct value into the loop.</div><div>&nbsp;</div><div>Option 2: Use a deployment parameter</div><div>If the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.</div><div>Best fit for database connections and environment settings. It's set on the Flow server rather than per job.</div><div>&nbsp;</div><div>Option 3 : Move the check to after the loop</div><div>Instead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.</div><div>The loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.</div><div>&nbsp;</div><div>We believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.</div><div>&nbsp;</div><div>I hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.</div><div>&nbsp;</div><div><b>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</b></div><div>&nbsp;</div><div><b>Shirley C&nbsp;|&nbsp;Technical Support Specialist</b></div><div>&nbsp;</div><div>Safe Software Inc.</div><div>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1</div><div><a href=\"http://www.safe.com/\" rel=\"noreferrer\"><b><u>www.safe.com</u></b></a><b>&nbsp;|&nbsp;</b><a href=\"https://community.safe.com/\" rel=\"noreferrer\"><b>FME Community</b></a><b>| </b><a href=\"http://www.safe.com/support\" rel=\"noreferrer\"><b>Safe Support</b></a></div><div>&nbsp;</div><div><b>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</b></div></div><p dir=\"auto\"><a href=\"https://support.safe.com/hc/requests/67158\" rel=\"noreferrer\">https://support.safe.com/hc/requests/67158</a></p></div><div><br></div><div style=\" font-size: 12px; line-height: 1.5; color: #aaaaaa; padding-top: 10px; margin: 10px 0 14px;\"><br></div><div><br></div><div><div>On August 10, 2026 at 4:31:03 PM UTC, <a href=\"mailto:email@email.com\" rel=\"noreferrer\">email@email.com</a> wrote:</div><blockquote style=\"border-left-width: 1px; border-left-color: rgb(204,204,204); border-left-style: solid; padding-left: 1ex; margin: 0px 0px 0px 0.8ex;\"><div dir=\"ltr\"><br></div><div dir=\"ltr\">Thanks. Sounds good. I am happy to try to help</div><div dir=\"ltr\"><div><br></div></div></blockquote></div></div></blockquote></div></div>",
+         "plain_body" : "Thank you! I am still wondering about an answer on this question: does FME Flow pool/reuse connections for database readers inside custom-transformer loops across iterations, and if so, what isolation level or refresh behavior does that pooled connection use?\n\nAny ideas for this one?  \n   On Aug 11, 2026, at 5:08 PM, Safe Software Support &lt;support@safe.com&gt; wrote:  \n  \n    \n   Hi Vaughn,  &nbsp;  Thank you for your patience on this matter. Our developers believe this is a bug in the native looping functionality. It looks like the published parameter's value isn't reaching the transformers inside the loop and it's defaulting to the value saved in the workspace. This is not the expected behaviour. I have gone ahead and filed this with our development team for their review.  For your reference, the ticket number is: [FMEFORM-38238].  I will go ahead and mark this case as With Development, so that you can be notified when a fix is implemented and released.  &nbsp;  In the meantime, we have three suggested workarounds:  &nbsp;  Option 1: Pass the value in as an attribute  Before the loop, use an AttributeCreator to copy the parameter into an attribute. Inside the loop, use that attribute instead of the parameter.  Attributes travel with the features, so they carry the correct value into the loop.  &nbsp;  Option 2: Use a deployment parameter  If the value is per-environment (PROD / STAGE / QA1), use a deployment parameter rather than a user parameter. Deployment parameters do reach inside loops correctly today.  Best fit for database connections and environment settings. It's set on the Flow server rather than per job.  &nbsp;  Option 3 : Move the check to after the loop  Instead of testing \"have we polled too many times?\" inside the loop, set the loop's Maximum Iterations to the parameter, and do the test after the loop. Parameters work normally outside the loop.  The loop adds an iteration-number attribute to features, so a Tester after the loop can compare that against parameter and stop the workspace if it ran out of retries.  &nbsp;  We believe option 1 and 2 will work best in your situation but feel free to explore option 3 as well.  &nbsp;  I hope this helps. Once again, thank you for your patience on this matter. Please let me know if you have any questions or need help with the workarounds.  &nbsp;  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––  &nbsp;  Shirley C&nbsp;|&nbsp;Technical Support Specialist  &nbsp;  Safe Software Inc.  Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1  www.safe.com&nbsp;|&nbsp;FME Community| Safe Support  &nbsp;  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––   https://support.safe.com/hc/requests/67158   \n  \n  \n   On August 10, 2026 at 4:31:03 PM UTC, email@email.com wrote:   \n  Thanks. Sounds good. I am happy to try to help",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48094418718861,
+         "via" : {
+            "channel" : "email",
+            "source" : {
+               "from" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last",
+                  "original_recipients" : [ "email@email.com", "support@safe.com" ]
+               },
+               "to" : {
+                  "name" : "Safe Software Support",
+                  "address" : "support@safe.com"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-12T20:06:11Z",
+         "metadata" : {
+            "system" : {
+               "message_id" : "",
+               "client" : "",
+               "email_id" : "",
+               "ip_address" : "",
+               "raw_email_identifier" : "",
+               "json_email_identifier" : "",
+               "eml_redacted" : false,
+               "location" : "United States",
+               "latitude" : 1,
+               "longitude" : 1
+            },
+            "custom" : {},
+            "flags" : [ 15 ],
+            "flags_options" : {
+               "15" : {
+                  "trusted" : true
+               }
+            },
+            "trusted" : true,
+            "suspension_type_id" : null
+         }
+      },
+      {
+         "id" : 48149289133197,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nI apologize for the delay on this. I have reached out to our developers regarding your question. I hope to get back to you soon.\nIn the meantime, please let me know if you have any other questions.\nThank you for your patience.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>I apologize for the delay on this. I have reached out to our developers regarding your question. I hope to get back to you soon.<br>In the meantime, please let me know if you have any other questions.<br>Thank you for your patience.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nI apologize for the delay on this. I have reached out to our developers regarding your question. I hope to get back to you soon.\nIn the meantime, please let me know if you have any other questions.\nThank you for your patience.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48149296943117,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-14T16:52:47Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+               "ip_address" : "",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      },
+      {
+         "id" : 48206567914125,
+         "type" : "Comment",
+         "author_id" : 456,
+         "body" : "Hi Vaughn,\n\nMSSQL Reader database connections are reused if they have `Persistent Connection` set to `Yes`. The connection sharing is for the entire translation, not just the loop. If the `Persistent Connection` set to `Yes`, it stays open for all iterations. Writers tend not to have this option so it will always use a new connection.\nI hope this helps. Please let me know if you have any questions or need clarification on the above.\nThank you for your patience on this matter.\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**\n\n**Shirley C | Technical Support Specialist**\n\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\n**www.safe.com**** | ****FME Community****|****Safe Support**\n\n**––––––––––––––––––––––––––––––––––––––––––––––––––––––––––**",
+         "html_body" : "<div class=\"zd-comment\" dir=\"auto\">Hi Vaughn,<br>&nbsp;<br>MSSQL Reader database connections are reused if they have <code>Persistent Connection</code> set to <code>Yes</code>. The connection sharing is for the entire translation, not just the loop. If the <code>Persistent Connection</code> set to <code>Yes</code>, it stays open for all iterations. Writers tend not to have this option so it will always use a new connection.<br>I hope this helps. Please let me know if you have any questions or need clarification on the above.<br>Thank you for your patience on this matter.<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br>&nbsp;<br><strong>Shirley C&nbsp;|&nbsp;Technical Support Specialist</strong><br>&nbsp;<br>Safe Software Inc.<br>Suite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1<br><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/\"><strong><u>www.safe.com</u></strong></a><strong>&nbsp;|&nbsp;</strong><a rel=\"noopener noreferrer\" href=\"https://community.safe.com/\"><strong>FME Community</strong></a><strong>| </strong><a rel=\"noopener noreferrer\" href=\"http://www.safe.com/support\"><strong>Safe Support</strong></a><br>&nbsp;<br><strong>––––––––––––––––––––––––––––––––––––––––––––––––––––––––––</strong><br></div>",
+         "plain_body" : "Hi Vaughn,\n&nbsp;\nMSSQL Reader database connections are reused if they have Persistent Connection set to Yes. The connection sharing is for the entire translation, not just the loop. If the Persistent Connection set to Yes, it stays open for all iterations. Writers tend not to have this option so it will always use a new connection.\nI hope this helps. Please let me know if you have any questions or need clarification on the above.\nThank you for your patience on this matter.\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n&nbsp;\nShirley C&nbsp;|&nbsp;Technical Support Specialist\n&nbsp;\nSafe Software Inc.\nSuite 1200 - 9639 137A Street, Surrey, BC Canada V3T 0M1\nwww.safe.com&nbsp;|&nbsp;FME Community| Safe Support\n&nbsp;\n––––––––––––––––––––––––––––––––––––––––––––––––––––––––––",
+         "public" : true,
+         "attachments" : [],
+         "audit_id" : 48206567910029,
+         "via" : {
+            "channel" : "web",
+            "source" : {
+               "from" : {},
+               "to" : {
+                  "address" : "email@email.com",
+                  "name" : "First Last"
+               },
+               "rel" : null
+            }
+         },
+         "created_at" : "2026-08-17T19:29:15Z",
+         "metadata" : {
+            "system" : {
+               "client" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+               "ip_address" : "1.1.1.1",
+               "location" : "Canada",
+               "latitude" : 0,
+               "longitude" : 0
+            },
+            "custom" : {}
+         }
+      }
+   ],
+   "next_page" : null,
+   "previous_page" : null,
+   "count" : 25
+}

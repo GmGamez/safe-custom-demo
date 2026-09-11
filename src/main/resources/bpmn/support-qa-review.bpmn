@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_SupportQaReview" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="SupportQaReview" name="Support QA Review" isExecutable="true">
+    <bpmn:documentation>Trial process for Safe Software's internal, AI-assisted Support QA rubric review. Shaped to match the "QA Review" reference model Safe Software's Support Team Leads designed with us (context/QA Review.bpmn): a closed Zendesk ticket is the input; deterministic checks handle the mechanically verifiable signals (SLA timing, Jira linking); a "Ticket Scoring" call activity (ticket-scoring.bpmn) runs three independent, parallel AI-agent evaluations (Communication, Technical Advice, Process Adherence - each its own process, see communication-evaluation.bpmn / technical-advice-evaluation.bpmn / process-adherence-evaluation.bpmn), each with evidence and confidence per category, before a deterministic Overall Score Determination and Persist Score step; a selection engine (DMN rules plus configurable sampling) routes 5-8% of tickets to a Team Lead for the final human decision. Every provisional assessment, tool call, selection reason, and human override is recorded for audit. AI-generated assessments are provisional only - the Team Lead is the owner of the final QA decision.</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_TicketClosed" name="Zendesk ticket closed">
+      <bpmn:outgoing>Flow_StartToSnapshot</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_StartToSnapshot" sourceRef="StartEvent_TicketClosed" targetRef="Task_FetchTicketSnapshot" />
+    <bpmn:serviceTask id="Task_FetchTicketSnapshot" name="Retrieve controlled ticket snapshot">
+      <bpmn:documentation>Pulls the thread, approved metadata, tags, and identifiers for the closed ticket through a controlled data-access boundary - the agents later in this process never talk to Zendesk directly.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="fetch-ticket-snapshot" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_StartToSnapshot</bpmn:incoming>
+      <bpmn:outgoing>Flow_SnapshotToChecks</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_SnapshotToChecks" sourceRef="Task_FetchTicketSnapshot" targetRef="Task_RunDeterministicChecks" />
+    <bpmn:serviceTask id="Task_RunDeterministicChecks" name="Run deterministic checks">
+      <bpmn:documentation>Mechanically verifiable signals that don't need judgment: first-response time against SLA, whether a Jira bug ticket is linked, reply count, and response-cadence, plus presence checks for internal notes and follow-up commitments.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="run-deterministic-checks" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_SnapshotToChecks</bpmn:incoming>
+      <bpmn:outgoing>Flow_ChecksToScoring</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_ChecksToScoring" sourceRef="Task_RunDeterministicChecks" targetRef="CallActivity_TicketScoring" />
+    <bpmn:callActivity id="CallActivity_TicketScoring" name="Ticket Scoring">
+      <bpmn:documentation>Runs the three rubric dimensions as independent, parallel AI-agent evaluations (each restricted to its own approved tools), then deterministically combines them into one provisional assessment and persists it. Mirrors the "Ticket Scoring" grouping in the customer-designed QA Review.bpmn reference model. Deployed as its own process in ticket-scoring.bpmn, which in turn calls out to each dimension's own process - broken out so every stage of scoring can be deployed/versioned independently of the overall review process.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="TicketScoring" propagateAllChildVariables="true" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ChecksToScoring</bpmn:incoming>
+      <bpmn:outgoing>Flow_ScoringToSelectionRules</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_ScoringToSelectionRules" sourceRef="CallActivity_TicketScoring" targetRef="Task_SelectionRules" />
+    <bpmn:businessRuleTask id="Task_SelectionRules" name="Apply selection rules">
+      <bpmn:documentation>Deterministic part of the selection engine: any category below Meets Standard, or any AI-flagged anomaly, always routes to a human - never sampled, never skipped.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="QaReviewSelectionRules" resultVariable="selectionRulesResult" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=selectionRulesResult.triggerReview" target="triggerReview" />
+          <zeebe:output source="=selectionRulesResult.triggerReason" target="triggerReason" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ScoringToSelectionRules</bpmn:incoming>
+      <bpmn:outgoing>Flow_SelectionRulesToSampling</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_SelectionRulesToSampling" sourceRef="Task_SelectionRules" targetRef="Task_ApplySampleSelection" />
+    <bpmn:serviceTask id="Task_ApplySampleSelection" name="Apply sample selection">
+      <bpmn:documentation>Adds the two sampling-based channels (a spot-check of high scorers, a random baseline) on top of the always-triggered rules, using TL-configured sample percentages (spotCheckSamplePercent, randomBaselineSamplePercent - default 5% and 3%), and settles on the final routing decision and reason.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="apply-sample-selection" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_SelectionRulesToSampling</bpmn:incoming>
+      <bpmn:outgoing>Flow_SamplingToGateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_SamplingToGateway" sourceRef="Task_ApplySampleSelection" targetRef="Gateway_SelectionRouting" />
+    <bpmn:exclusiveGateway id="Gateway_SelectionRouting" name="Route to human review?" default="Flow_GatewayToRecord">
+      <bpmn:incoming>Flow_SamplingToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToTlReview</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToRecord</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_GatewayToTlReview" name="Outside boundary - selected for review" sourceRef="Gateway_SelectionRouting" targetRef="Task_TlReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=routeToHumanReview = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToRecord" name="Within boundary - not selected" sourceRef="Gateway_SelectionRouting" targetRef="Task_RecordQaResult" />
+    <bpmn:userTask id="Task_TlReview" name="Team Lead QA review">
+      <bpmn:documentation>The Team Lead reviews the provisional AI assessment and supporting evidence, assigns the final Meets / NeedsImprovement / Exceeds rating, and adds coaching notes. The TL remains the owner of the final QA decision - the AI assessment is input, not a decision. Matches the "Manual Review" step in the customer-designed reference model; kept as a Camunda user task rather than the modeled Slack notification since we don't have Slack credentials wired up for the trial.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:assignmentDefinition candidateGroups="support-team-leads" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_GatewayToTlReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_TlReviewToRecord</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_TlReviewToRecord" sourceRef="Task_TlReview" targetRef="Task_RecordQaResult" />
+    <bpmn:serviceTask id="Task_RecordQaResult" name="Record QA result">
+      <bpmn:documentation>Persists the provisional AI assessment, tool activity, selection reason, and (if reviewed) the final human rating and any override, for audit and trial evaluation - the "Persist Score with notes" / adjustedScore write in the customer-designed reference model, extended to also cover the skip path so every ticket gets a final audit record. Reporting distinguishes provisional AI-only results from human-confirmed ones via finalRatingSource.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="record-qa-result" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_GatewayToRecord</bpmn:incoming>
+      <bpmn:incoming>Flow_TlReviewToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordQaResult" targetRef="EndEvent_QaReviewComplete" />
+    <bpmn:endEvent id="EndEvent_QaReviewComplete" name="QA review complete">
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SupportQaReview">
+      <bpmndi:BPMNShape id="Shape_StartEvent" bpmnElement="StartEvent_TicketClosed">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="135" y="285" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FetchTicketSnapshot" bpmnElement="Task_FetchTicketSnapshot">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RunDeterministicChecks" bpmnElement="Task_RunDeterministicChecks">
+        <dc:Bounds x="400" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CallActivity_TicketScoring" bpmnElement="CallActivity_TicketScoring">
+        <dc:Bounds x="560" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SelectionRules" bpmnElement="Task_SelectionRules">
+        <dc:Bounds x="720" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ApplySampleSelection" bpmnElement="Task_ApplySampleSelection">
+        <dc:Bounds x="880" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_SelectionRouting" bpmnElement="Gateway_SelectionRouting" isMarkerVisible="true">
+        <dc:Bounds x="1040" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="195" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_TlReview" bpmnElement="Task_TlReview">
+        <dc:Bounds x="1160" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordQaResult" bpmnElement="Task_RecordQaResult">
+        <dc:Bounds x="1340" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent" bpmnElement="EndEvent_QaReviewComplete">
+        <dc:Bounds x="1500" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1493" y="285" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToSnapshot" bpmnElement="Flow_StartToSnapshot">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="240" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SnapshotToChecks" bpmnElement="Flow_SnapshotToChecks">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="400" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ChecksToScoring" bpmnElement="Flow_ChecksToScoring">
+        <di:waypoint x="500" y="260" />
+        <di:waypoint x="560" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ScoringToSelectionRules" bpmnElement="Flow_ScoringToSelectionRules">
+        <di:waypoint x="660" y="260" />
+        <di:waypoint x="720" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SelectionRulesToSampling" bpmnElement="Flow_SelectionRulesToSampling">
+        <di:waypoint x="820" y="260" />
+        <di:waypoint x="880" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SamplingToGateway" bpmnElement="Flow_SamplingToGateway">
+        <di:waypoint x="980" y="260" />
+        <di:waypoint x="1040" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToTlReview" bpmnElement="Flow_GatewayToTlReview">
+        <di:waypoint x="1065" y="235" />
+        <di:waypoint x="1065" y="140" />
+        <di:waypoint x="1160" y="140" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1046" y="100" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToRecord" bpmnElement="Flow_GatewayToRecord">
+        <di:waypoint x="1090" y="260" />
+        <di:waypoint x="1340" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1184" y="238" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_TlReviewToRecord" bpmnElement="Flow_TlReviewToRecord">
+        <di:waypoint x="1260" y="140" />
+        <di:waypoint x="1390" y="140" />
+        <di:waypoint x="1390" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1440" y="260" />
+        <di:waypoint x="1500" y="260" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

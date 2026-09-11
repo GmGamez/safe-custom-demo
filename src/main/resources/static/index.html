@@ -3,114 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Governance Portal</title>
+  <title>Support QA Review</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f0f; --surface: #1a1a1a; --surface2: #222;
-      --border: #2a2a2a; --accent: #0078f2; --accent-hover: #0062cc;
-      --text: #e5e5e5; --muted: #888; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --orange: #f55215; --orange-dark: #d4430f; --orange-light: #ff9a3d;
+      --dark: #0d0d0c; --charcoal: #2c2c2b; --gray: #6e6e6e; --gray-light: #949494;
+      --cream: #f4f3ed; --white: #ffffff; --border: #e2e2df; --border-dark: #dad9d7;
+      --success: #0a7b28; --success-bg: #e6f4ea;
+      --info: #0663c9; --info-bg: #e5f2fc;
+      --error: #c81010; --error-bg: #fce8e8;
+      --font: "Staff", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+    body { background: var(--cream); color: var(--charcoal); font-family: var(--font); font-size: 14px; min-height: 100vh; }
 
-    .nav { display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 56px; background: #111; border-bottom: 1px solid var(--border); }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
-    .brand-mark { background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+    .topbar { display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px; background: var(--dark); position: sticky; top: 0; z-index: 50; }
+    .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+    .brand-mark { font-weight: 800; font-size: 20px; letter-spacing: .5px; color: var(--orange); }
+    .brand-sub { font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: #c8c7c2; }
     .nav-links { display: flex; gap: 4px; }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 6px; }
-    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link { color: #c8c7c2; text-decoration: none; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 999px; transition: all .15s; }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-link.active { color: #fff; background: var(--orange); }
 
-    main { max-width: 900px; margin: 0 auto; padding: 72px 24px 80px; }
-    .hero { text-align: center; margin-bottom: 48px; }
-    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 14px; }
-    .hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 14px; }
-    .hero p { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 620px; margin: 0 auto; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: var(--orange-dark); }
+    .btn-ghost { background: transparent; color: var(--dark); border: 1.5px solid var(--border-dark); }
+    .btn-ghost:hover { background: var(--white); border-color: var(--dark); }
 
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 56px; }
-    @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 28px 24px; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-    .card:hover { border-color: var(--accent); background: #1d1d1d; }
-    .card-icon { font-size: 26px; margin-bottom: 14px; }
+    main { max-width: 1000px; margin: 0 auto; padding: 64px 24px 80px; }
+    .hero { text-align: center; margin-bottom: 56px; }
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 16px; }
+    .hero h1 { font-size: 34px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 16px; line-height: 1.2; }
+    .hero p { color: var(--gray); font-size: 15px; line-height: 1.7; max-width: 640px; margin: 0 auto; }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 64px; }
+    @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 28px 24px; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      transition: all .15s; }
+    .card:hover { border-color: var(--orange); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+    .card-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--cream);
+      display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
+      color: var(--orange); margin-bottom: 16px; }
     .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 13px; line-height: 1.55; flex: 1; margin-bottom: 20px; }
-    .card-action { font-size: 13px; font-weight: 600; color: var(--accent); }
+    .card p { color: var(--gray); font-size: 13px; line-height: 1.55; flex: 1; margin-bottom: 20px; }
+    .card-action { font-size: 13px; font-weight: 600; color: var(--orange); }
 
-    .lifecycle { border-top: 1px solid var(--border); padding-top: 36px; }
-    .lifecycle-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 20px; text-align: center; }
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-    .step { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 12px 14px; }
-    .step-num { font-size: 10px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-    .step-name { font-size: 12px; font-weight: 600; }
+    .pipeline { border-top: 1px solid var(--border-dark); padding-top: 40px; }
+    .pipeline-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 24px; text-align: center; }
+    .pipeline-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .pipeline-step { background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; }
+    .pipeline-step-num { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 5px; }
+    .pipeline-step-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+    .pipeline-step-detail { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+    .rubric-note { margin-top: 40px; background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px; font-size: 13px; color: var(--gray); line-height: 1.6; }
+    .rubric-note strong { color: var(--charcoal); }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a href="/index.html" class="nav-brand">
-    <span class="brand-mark">G</span>
-    AI Governance
+<header class="topbar">
+  <a href="/index.html" class="brand">
+    <span class="brand-mark">SAFE</span>
+    <span class="brand-sub">Support QA</span>
   </a>
-  <div class="nav-links">
-    <a href="/start.html" class="nav-link">Register</a>
-    <a href="/tasks.html" class="nav-link">Tasks</a>
+  <nav class="nav-links">
+    <a href="/index.html" class="nav-link active">Overview</a>
+    <a href="/start.html" class="nav-link">Start Review</a>
+    <a href="/tasks.html" class="nav-link">TL Queue</a>
     <a href="/admin.html" class="nav-link">Dashboard</a>
-  </div>
-</nav>
+  </nav>
+</header>
 
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">Camunda 8</div>
-    <h1>AI Use Case Governance</h1>
-    <p>Orchestrates the full lifecycle of an AI use case — intake, ownership, risk categorization,
-       parallel Security/Privacy/Legal/Compliance/Architecture/RAI reviews, sequential build gates,
-       launch approval with residual risk acceptance, production monitoring with timed recertification,
-       and event-driven reassessment on incidents — down to decommissioning and access revocation.</p>
+    <div class="hero-eyebrow">Camunda 8 Trial &middot; Agentic AI Orchestration</div>
+    <h1>AI-assisted Support QA review</h1>
+    <p>Every closed Zendesk ticket runs through deterministic checks and three parallel AI-agent
+       evaluations against Safe Software's shared 9-category QA rubric, with a configurable
+       selection engine routing the tickets that most need a human look to a Team Lead. AI-generated
+       assessments are provisional &mdash; the Team Lead remains the owner of every final QA decision.</p>
   </div>
 
   <div class="cards">
     <a href="/start.html" class="card">
-      <div class="card-icon">📝</div>
-      <h2>Register a Use Case</h2>
-      <p>Intake a new AI use case: description, data sensitivity, and autonomy level. This starts a
-         governed, auditable process instance.</p>
-      <div class="card-action">Register a use case →</div>
+      <div class="card-icon">&#9654;</div>
+      <h2>Start a Review</h2>
+      <p>Kick off a QA review for a closed ticket by Zendesk ticket id, and optionally tune the
+         review-sampling percentages.</p>
+      <div class="card-action">Start a review &rarr;</div>
     </a>
     <a href="/tasks.html" class="card">
-      <div class="card-icon">✅</div>
-      <h2>Task Inbox</h2>
-      <p>Assign owners, complete reviews and gates, accept launch risk, and handle recertification
-         or reassessment tasks as they come up.</p>
-      <div class="card-action">Open task inbox →</div>
+      <div class="card-icon">&#10003;</div>
+      <h2>Team Lead Queue</h2>
+      <p>Review tickets selected for human sign-off &mdash; full rubric evidence, confidence, and
+         anomaly flags &mdash; and record the final rating.</p>
+      <div class="card-action">Open the queue &rarr;</div>
     </a>
     <a href="/admin.html" class="card">
-      <div class="card-icon">📊</div>
-      <h2>Dashboard</h2>
-      <p>Track every use case's category and current lifecycle step, and report an incident to
-         trigger reassessment on a live instance.</p>
-      <div class="card-action">View dashboard →</div>
+      <div class="card-icon">&#9635;</div>
+      <h2>Review Dashboard</h2>
+      <p>Track every review started this session &mdash; current step, provisional AI rating, and
+         final human-confirmed outcome.</p>
+      <div class="card-action">View dashboard &rarr;</div>
     </a>
   </div>
 
-  <div class="lifecycle">
-    <div class="lifecycle-label">Lifecycle</div>
-    <div class="steps">
-      <div class="step"><div class="step-num">01</div><div class="step-name">Register use case</div></div>
-      <div class="step"><div class="step-num">02</div><div class="step-name">Assign owners</div></div>
-      <div class="step"><div class="step-num">03</div><div class="step-name">Determine category (DMN)</div></div>
-      <div class="step"><div class="step-num">04</div><div class="step-name">Route required reviews</div></div>
-      <div class="step"><div class="step-num">05</div><div class="step-name">Model evaluation gate</div></div>
-      <div class="step"><div class="step-num">06</div><div class="step-name">Design consultation gate</div></div>
-      <div class="step"><div class="step-num">07</div><div class="step-name">Pre-build / pre-prod gates</div></div>
-      <div class="step"><div class="step-num">08</div><div class="step-name">Launch + risk acceptance</div></div>
-      <div class="step"><div class="step-num">09</div><div class="step-name">Monitor + recertify</div></div>
-      <div class="step"><div class="step-num">10</div><div class="step-name">Reassess on incident</div></div>
-      <div class="step"><div class="step-num">11</div><div class="step-name">Decommission</div></div>
+  <div class="pipeline">
+    <div class="pipeline-label">How a review moves through the process</div>
+    <div class="pipeline-steps">
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">01</div>
+        <div class="pipeline-step-name">Ticket closed</div>
+        <div class="pipeline-step-detail">Controlled snapshot retrieved</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">02</div>
+        <div class="pipeline-step-name">Deterministic checks</div>
+        <div class="pipeline-step-detail">SLA, Jira link, cadence</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">03</div>
+        <div class="pipeline-step-name">Ticket scoring</div>
+        <div class="pipeline-step-detail">3 parallel AI-agent evaluations</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">04</div>
+        <div class="pipeline-step-name">Selection engine</div>
+        <div class="pipeline-step-detail">DMN rules + configurable sampling</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">05</div>
+        <div class="pipeline-step-name">Team Lead review</div>
+        <div class="pipeline-step-detail">~5&ndash;8% of tickets, human decision</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">06</div>
+        <div class="pipeline-step-name">Recorded for audit</div>
+        <div class="pipeline-step-detail">Provisional + final outcome</div>
+      </div>
     </div>
+  </div>
+
+  <div class="rubric-note">
+    <strong>The rubric:</strong> Communication, Technical Advice, and Process Adherence &mdash; three
+    categories each, scored 4-Excellent / 3-Meets Standard / 2-Developing / 1-Does Not Meet, or Not
+    Applicable. Categories are weighted (Technical Advice counts most, at 44.4% of the final score) to
+    produce one overall percentage and rating: Exceeds, Meets, or Needs Improvement.
   </div>
 </main>
 </body>

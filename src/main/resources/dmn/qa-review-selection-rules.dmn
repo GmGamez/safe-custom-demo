@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="qa_review_selection_rules_definitions" name="QA Review Selection Rules" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.46.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <decision id="QaReviewSelectionRules" name="QA Review Selection Rules">
+    <decisionTable id="decisionTable_1" hitPolicy="FIRST">
+      <input id="input_1" label="Lowest Category Score">
+        <inputExpression id="inputExpression_1" typeRef="number">
+          <text>lowestCategoryScore</text>
+        </inputExpression>
+      </input>
+      <input id="input_2" label="Anomaly Flagged">
+        <inputExpression id="inputExpression_2" typeRef="boolean">
+          <text>anomalyFlagged</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Trigger Review" name="triggerReview" typeRef="boolean" />
+      <output id="output_2" label="Trigger Reason" name="triggerReason" typeRef="string">
+        <outputValues id="outputValues_2">
+          <text>"LowProvisionalScore","AnomalyFlagged",""</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>Every ticket scoring below Meets Standard on any category is reviewed in full, not sampled</description>
+        <inputEntry id="ie_1_1">
+          <text>&lt;= 2</text>
+        </inputEntry>
+        <inputEntry id="ie_1_2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="oe_1_1">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="oe_1_2">
+          <text>"LowProvisionalScore"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>Anything the AI flags as atypical always gets a human look, regardless of score</description>
+        <inputEntry id="ie_2_1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="ie_2_2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="oe_2_1">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="oe_2_2">
+          <text>"AnomalyFlagged"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>Not automatically triggered - still eligible for the spot-check / random-baseline sampling downstream</description>
+        <inputEntry id="ie_3_1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="ie_3_2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="oe_3_1">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="oe_3_2">
+          <text>""</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1">
+      <dmndi:DMNShape id="DMNShape_QaReviewSelectionRules" dmnElementRef="QaReviewSelectionRules">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
