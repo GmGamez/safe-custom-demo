@@ -1,4 +1,4 @@
-# Support QA Review — Camunda 8 Process Demo
+# Safe Custom Demo — Support QA Review (Camunda 8)
 
 Spring Boot (Java 17) + Camunda 8.8 app built for Safe Software's Camunda trial: an internal,
 AI-assisted Support QA review process. It deploys BPMN/DMN process resources to a Camunda 8 SaaS

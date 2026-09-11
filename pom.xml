@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.camunda</groupId>
-    <artifactId>Safe-demo</artifactId>
+    <artifactId>safe-custom-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>camunda-process-demo</name>
-    <description>Camunda 8 process orchestration demo scaffold</description>
-    <url/>
+    <name>safe-custom-demo</name>
+    <description>Camunda 8 Support QA Review demo, built with the Safe Software team</description>
+    <url>https://github.com/GmGamez/safe-custom-demo</url>
     <licenses>
         <license/>
     </licenses>
